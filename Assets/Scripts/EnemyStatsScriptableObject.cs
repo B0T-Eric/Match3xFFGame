@@ -5,5 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "EnemyStatsObject", menuName = "ScriptableObjects/EnemyStatsObject")]
 public class EnemyStatsScriptableObject : ScriptableObject
 {
-    public float maxHealth = Random.Range(250f,500f);
+    public float maxHealth;
+    private void OnEnable()
+    {
+        maxHealth = Random.Range(250, 501);
+    }
 }

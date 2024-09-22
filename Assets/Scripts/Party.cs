@@ -10,7 +10,10 @@ public class Party : MonoBehaviour
     public List<GameObject> selectedCharacters = new List<GameObject>();
     public List<Character> members = new List<Character>();
     public int maxPartySize = 4;
+    public int inventorySize = 7;
     public CharacterDisplayManager partyDisplayManager;
+    public GameObject inventoryDisplay;
+    public List<ItemScriptableObject> inventory;
     public Button confirmButton;
     private void Awake()
     {
@@ -30,6 +33,18 @@ public class Party : MonoBehaviour
             ChangeConfirmButtonState();
         }
     }
+    public void AddItem(ItemScriptableObject item)
+    {
+        if(inventory.Count < inventorySize)
+        {
+            inventory.Add(item);
+        }
+    }
+    public void RemoveItem(ItemScriptableObject item)
+    {
+        inventory.Remove(item);
+    }
+
     private void ChangeConfirmButtonState()
     {
         confirmButton.interactable = selectedCharacters.Count > 0;
@@ -57,7 +72,19 @@ public class Party : MonoBehaviour
             partyDisplayManager.DisplayParty();
             
             GameObject.Find("CharacterSelectCanvas").SetActive(false);
-            
+            inventoryDisplay.SetActive(true);
+        }
+    }
+    public void IncreaseManaAndDamage(ManaType type, int amount)
+    {
+        foreach(Character character in members)
+        {
+            if(character.statsSO.type == type)
+            {
+                character.IncreaseDamage(amount);
+                character.GainMana(amount);
+                Debug.Log("Gained Damage and Mana");
+            }
         }
     }
 }

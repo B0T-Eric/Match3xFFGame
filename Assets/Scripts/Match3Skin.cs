@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using static Unity.Mathematics.math;
@@ -11,6 +12,15 @@ public class Match3Skin : MonoBehaviour
     float dragThreshold = 0.5f;
 
     [SerializeField]
+    TextMeshProUGUI gameOverText, movesText;
+    //turn and move fields
+    [SerializeField]
+    int movesPerTurn;
+    int movesRemaining;
+    int turnCount;
+    Party party;
+
+    [SerializeField]
     Match3Game game;
     Grid2D<Tile> tiles;
     float2 tileOffset;
@@ -19,18 +29,27 @@ public class Match3Skin : MonoBehaviour
     float busyDuration;
 
     [SerializeField]
+    GameObject enemyPrefab;
+    public Canvas enemyCanvas;
+
+    [SerializeField]
     Tile[] tilePrefabs;
 
     [SerializeField, Range(0.1f,20f)]
     float dropSpeed = 8f;
     [SerializeField, Range(0f,10f)]
     float newDropOffset = 2f;
-    public bool IsPlaying => true;
+    public bool IsPlaying =>  IsBusy || game.PossibleMove.IsValid;
     public bool IsBusy => busyDuration > 0f;
 
     public void StartNewGame()
     {
+        party = FindAnyObjectByType<Party>();
         busyDuration = 0f;
+        SpawnEnemy();
+
+        NewTurn();
+        gameOverText.gameObject.SetActive(false);
         game.StartNewGame();
         tileOffset = -0.5f * (float2)(game.Size - 1);
         if (tiles.IsUndefined)
@@ -41,13 +60,13 @@ public class Match3Skin : MonoBehaviour
         {
             for (int y = 0; y < tiles.SizeY; y++)
             {
-                for(int x = 0; x < tiles.SizeX; x++)
+                for (int x = 0; x < tiles.SizeX; x++)
                 {
                     tiles[x, y].Despawn();
                     tiles[x, y] = null;
                 }
             }
-        } 
+        }
         for (int y = 0; y < tiles.SizeY; y++)
         {
             for (int x = 0; x < tiles.SizeX; x++)
@@ -56,6 +75,22 @@ public class Match3Skin : MonoBehaviour
             }
         }
     }
+
+    private void SpawnEnemy()
+    {
+        GameObject enemy = Instantiate(enemyPrefab);
+        RectTransform rect = enemy.GetComponent<RectTransform>();
+        rect.anchoredPosition = new Vector2(-200,0);
+        rect.SetParent(enemyCanvas.transform, false);
+    }
+
+    private void NewTurn()
+    {
+        movesRemaining = movesPerTurn;
+        turnCount = 1;
+        movesText.text = $"Moves Remaining: {movesRemaining} / {movesPerTurn}";
+    }
+
     Tile SpawnTile(TileState t, float x, float y) => tilePrefabs[(int)t - 1].Spawn(new Vector3(x + tileOffset.x, y + tileOffset.y));
     public void DoWork()
     {
@@ -76,6 +111,10 @@ public class Match3Skin : MonoBehaviour
         {
             DropTiles();
         }
+        else if(!IsPlaying)
+        {
+            gameOverText.gameObject.SetActive(true);
+        }
     }
 
     private void DropTiles()
@@ -88,7 +127,7 @@ public class Match3Skin : MonoBehaviour
             if(drop.fromY < tiles.SizeY)
             {
                 tile = tiles[drop.coordinates.x, drop.fromY];
-                //tile.transform.localPosition = new Vector3(drop.coordinates.x + tileOffset.x, drop.coordinates.y + tileOffset.y);
+                
             }
             else
             {
@@ -119,7 +158,30 @@ public class Match3Skin : MonoBehaviour
         {
             tiles[move.From] = b;
             tiles[move.To] = a;
+            DecreaseMovesRemaining();
         }
+    }
+    private void DecreaseMovesRemaining()
+    {
+        movesRemaining--;
+        movesText.text = $"Moves Remaining: {movesRemaining} / {movesPerTurn}";
+        if (movesRemaining == 0)
+        {
+            //end turn
+            turnCount++;
+            EndTurn();
+        }
+    }
+    private void EndTurn()
+    {
+        foreach(Character character in party.members)
+        {
+            character.Attack();
+        }
+        EnemyBehaviour.Instance.Attack();
+        NewTurn();
+        
+        
     }
     public bool EvaluateDrag(Vector3 start, Vector3 end)
     {

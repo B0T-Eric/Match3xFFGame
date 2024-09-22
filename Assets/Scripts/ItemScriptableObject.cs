@@ -6,7 +6,5 @@ public class ItemScriptableObject : ScriptableObject
 {
     public Sprite itemImage;
     public string itemName;
-    public float health;
-    public float damage;
-    public ManaType type;
+    public ManaType manaType;
 }

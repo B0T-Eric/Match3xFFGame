@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using Random = UnityEngine.Random;
 using static Unity.Mathematics.math;
+using System;
 
 public class Match3Game : MonoBehaviour
 {
@@ -11,13 +12,21 @@ public class Match3Game : MonoBehaviour
     int2 size =  8;
     Grid2D<TileState> grid;
     List<Match> matches;
+    
 
     public List<TileDrop> DroppedTiles {  get; private set; }
     public List<int2> ClearedTileCoordinates { get; private set; }
     public bool NeedsFilling { get; private set; }
+    public Move PossibleMove { get; private set; }
     public TileState this[int x, int y] => grid[x, y];
     public TileState this[int2 c] => grid[c];
     public int2 Size => size;
+
+    private Party party;
+    private void Start()
+    {
+        party = FindAnyObjectByType<Party>();
+    }
 
     public bool TryMove(Move move)
     {
@@ -40,6 +49,7 @@ public class Match3Game : MonoBehaviour
             DroppedTiles = new();
         }
         FillGrid();
+        PossibleMove = Move.FindMove(this);
     }
     public void DropTiles()
     {
@@ -66,7 +76,10 @@ public class Match3Game : MonoBehaviour
             }
         }
         NeedsFilling = false;
-        FindMatches();
+        if (!FindMatches())
+        {
+            PossibleMove = Move.FindMove(this);
+        }
     }
     public void ProcessMatches()
     {
@@ -80,6 +93,8 @@ public class Match3Game : MonoBehaviour
             {
                 if (grid[c] != TileState.None)
                 {
+                    //increase damage and mana of party memeber based on the tile clear
+                    AddDamageBasedOnTileState(grid[c], 1);
                     grid[c] = TileState.None;
                     ClearedTileCoordinates.Add(c);
                 }
@@ -87,6 +102,36 @@ public class Match3Game : MonoBehaviour
         }
         matches.Clear();
         NeedsFilling = true;
+    }
+    void AddDamageBasedOnTileState(TileState state,int amount)
+    {
+        Debug.Log("Attempting to add mana and damage");
+        switch (state)
+        {
+            case TileState.A:
+                party.IncreaseManaAndDamage(ManaType.Yellow, amount);
+            break;
+            case TileState.B:
+                party.IncreaseManaAndDamage(ManaType.Green, amount);
+                break;
+            case TileState.C:
+                party.IncreaseManaAndDamage(ManaType.Orange, amount);
+                break;
+            case TileState.D:
+                party.IncreaseManaAndDamage(ManaType.White, amount);
+                break;
+            case TileState.E:
+                party.IncreaseManaAndDamage(ManaType.Blue, amount);
+                break;
+            case TileState.F:
+                party.IncreaseManaAndDamage(ManaType.Purple, amount);
+                break;
+            case TileState.G:
+                party.IncreaseManaAndDamage(ManaType.Pink, amount);
+                break;
+            default: break;
+
+        }
     }
     bool FindMatches()
     {

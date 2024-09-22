@@ -18,9 +18,6 @@ public class Tile : MonoBehaviour
 
     PrefabInstancePool<Tile> pool;
     float disappearProgress;
-
-    public ManaType type;
-
     public Tile Spawn (Vector3 position)
     {
         Tile instance = pool.GetInstance(this);

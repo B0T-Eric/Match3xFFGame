@@ -18,12 +18,6 @@ public class ManaBar : MonoBehaviour
         manaText.SetText($"{character.currentMana} / {character.statsSO.maxMana}");
         SetMana(character.currentMana);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void SetMana(float mana)
     {
         manaBar.value = mana;

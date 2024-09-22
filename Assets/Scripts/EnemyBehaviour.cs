@@ -5,14 +5,29 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    [SerializeField]
-    EnemyStatsScriptableObject enemyStats;
+    private static EnemyBehaviour _instance;
+    public static EnemyBehaviour Instance { get { return _instance; } }
+
+    public EnemyStatsScriptableObject enemyStats;
 
     public float currentHealth;
     private float damage;
     private List<Character> targets;
-
+    public EnemyHealthBar healthBar;
     private Party partyManager;
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
     private void Start()
     {
         currentHealth = enemyStats.maxHealth;
@@ -53,6 +68,12 @@ public class EnemyBehaviour : MonoBehaviour
         {
             target.LoseMana(damagePerTarget);
         }
+    }
+    public void TakeDamage(float amount)
+    {
+        currentHealth -= amount;
+        //update health bar
+
     }
     void Die()
     {
