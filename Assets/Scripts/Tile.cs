@@ -18,6 +18,9 @@ public class Tile : MonoBehaviour
 
     PrefabInstancePool<Tile> pool;
     float disappearProgress;
+
+    public ManaType type;
+
     public Tile Spawn (Vector3 position)
     {
         Tile instance = pool.GetInstance(this);
@@ -31,8 +34,6 @@ public class Tile : MonoBehaviour
     }
     public void Despawn()
     {
-        Debug.Log($"Scale before despawn: {transform.localScale}");
-        transform.localScale = Vector3.one;
         pool.Recycle(this);
     }
     public float Disappear()

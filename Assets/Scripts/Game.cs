@@ -18,10 +18,6 @@ public class Game : MonoBehaviour
             }
             match3.DoWork();
         }
-        else if (Input.GetKeyDown(KeyCode.Space))
-        {
-            match3.StartNewGame();
-        }
     }
 
     private void HandleInput()
