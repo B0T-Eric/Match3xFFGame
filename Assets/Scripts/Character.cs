@@ -1,19 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class Character : MonoBehaviour
 {
     //mana is the resource required for using abilities, and determines characters who are alive or dead
     public float currentMana;
-    CharacterState state;
+    public CharacterState state;
     public CharacterStatsSO statsSO;
     [SerializeField]
     public GameObject prefab;
     public ManaBar manaBar;
+    public TextMeshProUGUI damageText, stateText;
+    private int matchingItemCount = 0;
     private Party party;
-
+    
     //damage 
     float turnDamage = 0;
 
@@ -51,9 +56,19 @@ public class Character : MonoBehaviour
             }
         }      
     }
+    private void Update()
+    {
+        ChangeStateText();
+    }
+
+    private void ChangeStateText()
+    {
+        stateText.text = $"State: {state.ToString()}";
+    }
+
     public void GainMana(float amount)
     {
-        Debug.Log($" current mana = {currentMana} ") ;
+        Debug.Log($" {gameObject.name} current mana = {currentMana} ") ;
         if (state != CharacterState.Dead)
         {
             if (state != CharacterState.Down)
@@ -76,7 +91,7 @@ public class Character : MonoBehaviour
                 UpdateManaBar();
             }
         }
-        Debug.Log($" updated current mana = {currentMana} ");
+        Debug.Log($" {gameObject.name}  updated current mana = {currentMana} ");
     }
     private void UpdateManaBar()
     {
@@ -90,22 +105,30 @@ public class Character : MonoBehaviour
     //increase damage after every match by amount of tiles cleared of mana type
     public void IncreaseDamage(int amount)
     {
-        turnDamage += amount;
-    }
-    public void Attack()
-    {
-        //if there is an item of same mana type deal double damage
+        //if there is an item of same mana type gain double damage
         if (HasMatchingManaType() && party.inventory.Count > 0)
         {
-            turnDamage = turnDamage * 2;
-            EnemyBehaviour.Instance.TakeDamage(turnDamage);
+            turnDamage += ((2*(matchingItemCount))*amount);
+            DisplayDamage();
         }
         else
         {
-            EnemyBehaviour.Instance.TakeDamage(turnDamage);
+            turnDamage += amount;
+            DisplayDamage();
+        }
+    }
+    public void DisplayDamage() 
+    {
+        damageText.SetText($"{turnDamage}");
+    }
+    public void Attack()
+    {
+        if(state != CharacterState.Down || state != CharacterState.Dead)
+        {
+            EnemyBehaviour.Instance.TakeDamage(turnDamage);  
         }
         turnDamage = 0;
-        
+        DisplayDamage();
     }
     private bool HasMatchingManaType()
     {
@@ -114,6 +137,7 @@ public class Character : MonoBehaviour
         {
             if (item.manaType == statsSO.type)
             {
+                matchingItemCount = item.count;
                 return true;
             }
         }

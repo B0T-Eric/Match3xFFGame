@@ -18,7 +18,7 @@ public class CharacterDisplayManager : MonoBehaviour
     }
     public void DisplayParty()
     {
-        switch (party.members.Count) 
+        switch (party.selectedCharacters.Count) 
         {
             case 1:
                 DisplayCharacters(oneMember);
@@ -39,9 +39,10 @@ public class CharacterDisplayManager : MonoBehaviour
     }
     private void DisplayCharacters(Vector2[] positions)
     {
-        for (int i = 0; i < party.members.Count; i++)
+        for (int i = 0; i < party.selectedCharacters.Count; i++)
         {
-            GameObject characterObj = Instantiate(party.members[i].prefab);
+            GameObject characterObj = Instantiate(party.selectedCharacters[i]);
+            party.members.Add(characterObj.GetComponent<Character>());
             RectTransform rect = characterObj.GetComponent<RectTransform>();
             rect.anchoredPosition = positions[i];
             rect.SetParent(this.gameObject.transform,false);

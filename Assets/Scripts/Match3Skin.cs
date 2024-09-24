@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 using static Unity.Mathematics.math;
 
 public class Match3Skin : MonoBehaviour
@@ -12,7 +13,9 @@ public class Match3Skin : MonoBehaviour
     float dragThreshold = 0.5f;
 
     [SerializeField]
-    TextMeshProUGUI gameOverText, movesText;
+    TextMeshProUGUI gameOverText, movesText, turnText;
+    //[SerializeField]
+    //Button restartButton;
     //turn and move fields
     [SerializeField]
     int movesPerTurn;
@@ -27,6 +30,9 @@ public class Match3Skin : MonoBehaviour
     [SerializeField]
     TileSwapper tileSwapper;
     float busyDuration;
+
+    [SerializeField]
+    GameObject rewardPrefab;
 
     [SerializeField]
     GameObject enemyPrefab;
@@ -49,7 +55,9 @@ public class Match3Skin : MonoBehaviour
         SpawnEnemy();
 
         NewTurn();
+        //restartButton.gameObject.SetActive(false);
         gameOverText.gameObject.SetActive(false);
+        this.gameObject.SetActive(true);
         game.StartNewGame();
         tileOffset = -0.5f * (float2)(game.Size - 1);
         if (tiles.IsUndefined)
@@ -86,8 +94,10 @@ public class Match3Skin : MonoBehaviour
 
     private void NewTurn()
     {
+        EnemyBehaviour.Instance.SelectTargets();
         movesRemaining = movesPerTurn;
         turnCount = 1;
+        turnText.text = $"Turn {turnCount}";
         movesText.text = $"Moves Remaining: {movesRemaining} / {movesPerTurn}";
     }
 
@@ -113,8 +123,15 @@ public class Match3Skin : MonoBehaviour
         }
         else if(!IsPlaying)
         {
-            gameOverText.gameObject.SetActive(true);
+            GameOver();
         }
+    }
+    private void GameOver()
+    {
+        enemyCanvas.gameObject.SetActive(false);
+        this.gameObject.SetActive(false);
+        gameOverText.gameObject.SetActive(true);
+
     }
 
     private void DropTiles()
@@ -178,11 +195,55 @@ public class Match3Skin : MonoBehaviour
         {
             character.Attack();
         }
-        EnemyBehaviour.Instance.Attack();
-        NewTurn();
-        
-        
+
+        if(EnemyBehaviour.Instance.currentHealth > 0)
+        {
+            EnemyBehaviour.Instance.Attack();
+        }
+        else if(EnemyBehaviour.Instance.currentHealth < 0)
+        {
+            Victory();
+        }
+        else
+        {
+            if (AllPartyMembersAlive())
+            {
+                NewTurn();
+            }
+            else
+            {
+                GameOver();
+            }
+
+        }
     }
+    private void Victory()
+    {
+        //turn off game, display reward screen
+        enemyCanvas.gameObject.SetActive(false);
+        
+        gameObject.SetActive(false);
+    }
+    private bool AllPartyMembersAlive()
+    {
+        int deadCount = 0;
+        foreach (Character character in party.members)
+        {
+            if(character.state == CharacterState.Dead)
+            {
+                deadCount++;
+            }
+        }
+        if(deadCount == party.members.Count)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     public bool EvaluateDrag(Vector3 start, Vector3 end)
     {
         float2 a = ScreenToTileSpace(start), b = ScreenToTileSpace(end);

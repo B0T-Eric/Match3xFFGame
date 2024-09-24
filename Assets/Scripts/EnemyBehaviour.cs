@@ -14,7 +14,6 @@ public class EnemyBehaviour : MonoBehaviour
     private float damage;
     private List<Character> targets;
     public EnemyHealthBar healthBar;
-    private Party partyManager;
 
     private void Awake()
     {
@@ -31,7 +30,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Start()
     {
         currentHealth = enemyStats.maxHealth;
-        partyManager = FindAnyObjectByType<Party>();
+        targets = new List<Character>();
     }
     private void FixedUpdate()
     {
@@ -43,14 +42,14 @@ public class EnemyBehaviour : MonoBehaviour
     public void SelectTargets()
     {
         //randomise target count - min 1, max all party members
-        int targetCount = Random.Range(1, partyManager.members.Count);
+        int targetCount = Random.Range(1, Party.Instance.members.Count);
         targets = GetTargets(targetCount);
         
     }
     List<Character> GetTargets(int targetCount)
     {
         List<Character> randTargets = new List<Character>();
-        List<Character> availableTargets = new List<Character>(partyManager.members);
+        List<Character> availableTargets = new List<Character>(Party.Instance.members);
         for(int i = 0; i < targetCount; i++)
         {
             int randIndex = Random.Range(0, availableTargets.Count);
@@ -73,7 +72,8 @@ public class EnemyBehaviour : MonoBehaviour
     {
         currentHealth -= amount;
         //update health bar
-
+        healthBar.SetHealth(currentHealth);
+        healthBar.SetHealthText();
     }
     void Die()
     {

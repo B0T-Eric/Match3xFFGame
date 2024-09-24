@@ -7,17 +7,30 @@ using UnityEngine.UI;
 
 public class Party : MonoBehaviour
 {
+    private static Party _instance;
+    public static Party Instance { get { return _instance; } }
+
     public List<GameObject> selectedCharacters = new List<GameObject>();
     public List<Character> members = new List<Character>();
     public int maxPartySize = 4;
     public int inventorySize = 7;
     public CharacterDisplayManager partyDisplayManager;
+    public InventoryDisplayManager inventoryDisplayManager;
     public GameObject inventoryDisplay;
     public List<ItemScriptableObject> inventory;
     public Button confirmButton;
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
     }
     private void Start()
     {
@@ -35,14 +48,27 @@ public class Party : MonoBehaviour
     }
     public void AddItem(ItemScriptableObject item)
     {
-        if(inventory.Count < inventorySize)
+        if(inventory.Contains(item))
+        {
+            inventory[inventory.IndexOf(item)].count++;
+        }
+        else
         {
             inventory.Add(item);
+            inventoryDisplayManager.DisplayItems(inventory);
         }
     }
     public void RemoveItem(ItemScriptableObject item)
     {
-        inventory.Remove(item);
+        if(item.count > 1)
+        {
+            item.count--;
+        }
+        else
+        {
+            inventory.Remove(item);
+            inventoryDisplayManager.DisplayItems(inventory);
+        }
     }
 
     private void ChangeConfirmButtonState()
@@ -65,12 +91,7 @@ public class Party : MonoBehaviour
     {
         if(selectedCharacters.Count > 0)
         {
-            foreach(GameObject character in selectedCharacters)
-            {
-                members.Add(character.GetComponent<Character>());
-            }
             partyDisplayManager.DisplayParty();
-            
             GameObject.Find("CharacterSelectCanvas").SetActive(false);
             inventoryDisplay.SetActive(true);
         }

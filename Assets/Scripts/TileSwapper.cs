@@ -40,7 +40,7 @@ public class TileSwapper
             {
                 progress -= duration;
                 pingPong = false;
-                (tileA,tileB) = (tileA,tileB);
+                (tileA,tileB) = (tileB,tileA);
             }
             else
             {

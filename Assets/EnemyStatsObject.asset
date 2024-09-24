@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e730ded927bb30047a968a27c3fc4dbd, type: 3}
   m_Name: EnemyStatsObject
   m_EditorClassIdentifier: 
+  minRoll: 60
+  maxRoll: 210
   maxHealth: 0
