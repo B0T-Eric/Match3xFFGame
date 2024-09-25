@@ -15,4 +15,5 @@ MonoBehaviour:
   itemImage: {fileID: 21300000, guid: b1c449006f851454c930c1155aca0f58, type: 3}
   itemName: Yellow Orb
   manaType: 1
-  description: 
+  description: Increases Damage Gain for Yellow Tiles
+  count: 0

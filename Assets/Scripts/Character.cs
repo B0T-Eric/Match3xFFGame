@@ -9,7 +9,7 @@ using UnityEngine.PlayerLoop;
 public class Character : MonoBehaviour
 {
     //mana is the resource required for using abilities, and determines characters who are alive or dead
-    public float currentMana;
+    public int currentMana;
     public CharacterState state;
     public CharacterStatsSO statsSO;
     [SerializeField]
@@ -20,14 +20,14 @@ public class Character : MonoBehaviour
     private Party party;
     
     //damage 
-    float turnDamage = 0;
+    int turnDamage = 0;
 
     private void Start()
     {
         currentMana = statsSO.initialMana;
         party = gameObject.transform.root.GetComponent<Party>();
     }
-    public void LoseMana(float amount)
+    public void LoseMana(int amount)
     {
         if(state != CharacterState.Dead)
         {
@@ -66,9 +66,8 @@ public class Character : MonoBehaviour
         stateText.text = $"State: {state.ToString()}";
     }
 
-    public void GainMana(float amount)
+    public void GainMana(int amount)
     {
-        Debug.Log($" {gameObject.name} current mana = {currentMana} ") ;
         if (state != CharacterState.Dead)
         {
             if (state != CharacterState.Down)
@@ -90,8 +89,7 @@ public class Character : MonoBehaviour
                 state = CharacterState.Alive;
                 UpdateManaBar();
             }
-        }
-        Debug.Log($" {gameObject.name}  updated current mana = {currentMana} ");
+        }      
     }
     private void UpdateManaBar()
     {

@@ -15,4 +15,5 @@ MonoBehaviour:
   itemImage: {fileID: 21300000, guid: 29090c9e5312c2a4b98bbcaf55aeb97a, type: 3}
   itemName: Orange Orb
   manaType: 4
-  description: 
+  description: Increases Damage Gain for Orange Tiles
+  count: 0

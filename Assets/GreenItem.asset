@@ -15,4 +15,5 @@ MonoBehaviour:
   itemImage: {fileID: 21300000, guid: 3616653005badb04db500cc70dd78f60, type: 3}
   itemName: Green Orb
   manaType: 2
-  description: 
+  description: Increases Damage Gain for Green Tiles
+  count: 0

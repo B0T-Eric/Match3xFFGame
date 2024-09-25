@@ -15,4 +15,5 @@ MonoBehaviour:
   itemImage: {fileID: 21300000, guid: c07bcd634963c984793106c8170eefe7, type: 3}
   itemName: Blue Orb
   manaType: 3
-  description: 
+  description: Increases Damage Gain for Blue Tiles
+  count: 0

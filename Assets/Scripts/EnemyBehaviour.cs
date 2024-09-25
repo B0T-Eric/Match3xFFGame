@@ -10,8 +10,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     public EnemyStatsScriptableObject enemyStats;
 
-    public float currentHealth;
-    private float damage;
+    public int currentHealth;
+    private int damage;
     private List<Character> targets;
     public EnemyHealthBar healthBar;
 
@@ -32,19 +32,13 @@ public class EnemyBehaviour : MonoBehaviour
         currentHealth = enemyStats.maxHealth;
         targets = new List<Character>();
     }
-    private void FixedUpdate()
-    {
-        if(currentHealth >= 0)
-        {
-            Die();
-        }
-    }
     public void SelectTargets()
     {
         //randomise target count - min 1, max all party members
         int targetCount = Random.Range(1, Party.Instance.members.Count);
-        targets = GetTargets(targetCount);
         
+        targets = GetTargets(targetCount);
+        Debug.Log($"{targets.Count} target count");
     }
     List<Character> GetTargets(int targetCount)
     {
@@ -62,22 +56,24 @@ public class EnemyBehaviour : MonoBehaviour
     {
         //randomly assign damage, then divide between targets
         damage = Random.Range(10, 30);
+        SelectTargets();
+        Debug.Log($"{damage} enemy damage across {targets.Count}");
         int damagePerTarget = Mathf.FloorToInt(damage / targets.Count);
         foreach (Character target in targets)
         {
             target.LoseMana(damagePerTarget);
         }
     }
-    public void TakeDamage(float amount)
+    public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         //update health bar
         healthBar.SetHealth(currentHealth);
         healthBar.SetHealthText();
     }
-    void Die()
+    public void Die()
     {
         //disable game, remove enemy object, display rewards
-
+        Destroy(gameObject);
     }
 }

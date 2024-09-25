@@ -104,7 +104,6 @@ public class Party : MonoBehaviour
             {
                 character.IncreaseDamage(amount);
                 character.GainMana(amount);
-                Debug.Log("Gained Damage and Mana");
             }
         }
     }

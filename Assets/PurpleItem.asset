@@ -15,4 +15,5 @@ MonoBehaviour:
   itemImage: {fileID: 21300000, guid: b1eb3eebc3d16e24c99397b23afcc4ed, type: 3}
   itemName: Purple Orb
   manaType: 7
-  description: 
+  description: Increases Damage Gain for Pink Tiles
+  count: 0

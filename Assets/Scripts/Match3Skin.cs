@@ -199,13 +199,6 @@ public class Match3Skin : MonoBehaviour
         if(EnemyBehaviour.Instance.currentHealth > 0)
         {
             EnemyBehaviour.Instance.Attack();
-        }
-        else if(EnemyBehaviour.Instance.currentHealth < 0)
-        {
-            Victory();
-        }
-        else
-        {
             if (AllPartyMembersAlive())
             {
                 NewTurn();
@@ -214,15 +207,20 @@ public class Match3Skin : MonoBehaviour
             {
                 GameOver();
             }
-
+        }
+        else if(EnemyBehaviour.Instance.currentHealth <= 0)
+        {
+            Victory();
         }
     }
     private void Victory()
     {
         //turn off game, display reward screen
         enemyCanvas.gameObject.SetActive(false);
-        
         gameObject.SetActive(false);
+        EnemyBehaviour.Instance.Die();
+        Instantiate(rewardPrefab);
+
     }
     private bool AllPartyMembersAlive()
     {

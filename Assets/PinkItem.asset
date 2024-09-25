@@ -15,4 +15,5 @@ MonoBehaviour:
   itemImage: {fileID: 21300000, guid: 33fa7dc60429bb54a8479352570d516e, type: 3}
   itemName: Pink Orb
   manaType: 7
-  description: 
+  description: Increases Damage Gain for Pink Tiles
+  count: 0

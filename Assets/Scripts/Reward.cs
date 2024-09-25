@@ -9,21 +9,23 @@ public class Reward : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI rewardText;
     [SerializeField]
-    SpriteRenderer rewardSprite;
+    RawImage rewardSprite;
     [SerializeField]
     List<ItemScriptableObject> items;
     ItemScriptableObject selectedItem;
     private Button button;
     [SerializeField]
-    public Match3Skin match3;
+    Match3Skin match3;
     [SerializeField]
-    
+    Canvas canvas;
     private void Start()
     {
+        canvas = GetComponentInParent<Canvas>();
         button = GetComponent<Button>();
+        match3 = FindAnyObjectByType<Match3Skin>();
         //pick Item from List
         selectedItem = GetItem();
-        rewardSprite.sprite = selectedItem.itemImage;
+        rewardSprite.texture = selectedItem.itemImage.texture;
         rewardText.text = selectedItem.itemName;
         button.onClick.AddListener(EquipItem);
     }
@@ -31,7 +33,8 @@ public class Reward : MonoBehaviour
     private void EquipItem()
     {
         Party.Instance.AddItem(selectedItem);
-        Destroy(gameObject);
+        Destroy(canvas.gameObject);
+        match3.StartNewGame();
     }
 
     private ItemScriptableObject GetItem()
