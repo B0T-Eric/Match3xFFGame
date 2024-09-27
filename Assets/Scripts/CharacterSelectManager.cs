@@ -20,19 +20,9 @@ public class CharacterSelectManager : MonoBehaviour
             foreach (Button button in buttons)
             {
                 SelectionController controller = button.GetComponentInParent<SelectionController>();
-                if (controller == null)
-                {
-                    Debug.Log("Controller is missing");
-                }
                 controller.characterSelectManager = this;
             }
         }
-        else
-        {
-            Debug.Log("Buttons are null");
-        }
-        
-        
         confirmButton.onClick.AddListener(partyManager.ConfirmPartySelection);
         confirmButton.onClick.AddListener(ToggleCanvas);
     }
