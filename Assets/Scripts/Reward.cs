@@ -12,17 +12,22 @@ public class Reward : MonoBehaviour
     RawImage rewardSprite;
     [SerializeField]
     List<ItemScriptableObject> items;
+
     ItemScriptableObject selectedItem;
     private Button button;
+
     [SerializeField]
-    Match3Skin match3;
+    Button continueButton;
+
+
     [SerializeField]
     Canvas canvas;
     private void Start()
     {
+        continueButton.enabled = false;
         canvas = GetComponentInParent<Canvas>();
         button = GetComponent<Button>();
-        match3 = FindAnyObjectByType<Match3Skin>();
+        
         //pick Item from List
         selectedItem = GetItem();
         rewardSprite.texture = selectedItem.itemImage.texture;
@@ -33,8 +38,8 @@ public class Reward : MonoBehaviour
     private void EquipItem()
     {
         Party.Instance.AddItem(selectedItem);
-        Destroy(canvas.gameObject);
-        match3.StartNewGame();
+        gameObject.SetActive(false);
+        continueButton.enabled =true;
     }
 
     private ItemScriptableObject GetItem()

@@ -104,16 +104,21 @@ public class Character : MonoBehaviour
     public void IncreaseDamage(int amount)
     {
         //if there is an item of same mana type gain double damage
-        if (HasMatchingManaType() && party.inventory.Count > 0)
+        if (HasMatchingManaType() && party.inventory.Count > 0 && (state != CharacterState.Down || state != CharacterState.Dead))
         {
             turnDamage += ((2*(matchingItemCount))*amount);
             DisplayDamage();
         }
-        else
+        else if(state != CharacterState.Down || state != CharacterState.Dead)
         {
             turnDamage += amount;
             DisplayDamage();
         }
+    }
+    public void Reset()
+    {
+        turnDamage = 0;
+        DisplayDamage();
     }
     public void DisplayDamage() 
     {

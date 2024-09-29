@@ -9,14 +9,17 @@ using static Unity.Mathematics.math;
 
 public class Match3Skin : MonoBehaviour
 {
+    public static Match3Skin _instance;
+    public static Match3Skin Instance {  get { return _instance; } }
+
     [SerializeField, Range(0.1f, 1f)]
     float dragThreshold = 0.5f;
 
     [SerializeField]
     TextMeshProUGUI gameOverText, movesText, turnText;
-    //[SerializeField]
-    //Button restartButton;
-    //turn and move fields
+
+    [SerializeField]
+    GameObject container;
     [SerializeField]
     int movesPerTurn;
     int movesRemaining;
@@ -48,14 +51,27 @@ public class Match3Skin : MonoBehaviour
     public bool IsPlaying =>  IsBusy || game.PossibleMove.IsValid;
     public bool IsBusy => busyDuration > 0f;
 
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
     public void StartNewGame()
     {
         party = FindAnyObjectByType<Party>();
+        ResetPartyMemberDamage();
+        container.gameObject.SetActive(true);
         busyDuration = 0f;
         SpawnEnemy();
-
+        turnCount = 1;
         NewTurn();
-        //restartButton.gameObject.SetActive(false);
         gameOverText.gameObject.SetActive(false);
         this.gameObject.SetActive(true);
         game.StartNewGame();
@@ -84,8 +100,17 @@ public class Match3Skin : MonoBehaviour
         }
     }
 
+    private void ResetPartyMemberDamage()
+    {
+        foreach(Character character in party.members)
+        {
+            character.Reset();
+        }
+    }
+
     private void SpawnEnemy()
     {
+        enemyCanvas.gameObject.SetActive(true);
         GameObject enemy = Instantiate(enemyPrefab);
         RectTransform rect = enemy.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(-200,0);
@@ -96,7 +121,6 @@ public class Match3Skin : MonoBehaviour
     {
         EnemyBehaviour.Instance.SelectTargets();
         movesRemaining = movesPerTurn;
-        turnCount = 1;
         turnText.text = $"Turn {turnCount}";
         movesText.text = $"Moves Remaining: {movesRemaining} / {movesPerTurn}";
     }
@@ -129,7 +153,7 @@ public class Match3Skin : MonoBehaviour
     private void GameOver()
     {
         enemyCanvas.gameObject.SetActive(false);
-        this.gameObject.SetActive(false);
+        container.gameObject.SetActive(false);
         gameOverText.gameObject.SetActive(true);
 
     }

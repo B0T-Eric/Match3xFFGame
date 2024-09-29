@@ -23,15 +23,26 @@ public class InventoryPopup : MonoBehaviour
         removeItemButton.onClick.AddListener(RemoveSelectedItem);
         descriptionText = descriptionPanel.GetComponentInChildren<TextMeshProUGUI>();
         descriptionPanel.gameObject.SetActive(false);
-        for(int i = 0; i < slots.Count; i++)
+        PopupDisplayItems();
+    }
+
+    public void PopupDisplayItems()
+    {
+        for (int i = 0; i < items.Count; i++)
         {
-            slots[i].item = items[i];
-            slots[i].image.texture = items[i].itemImage.texture;
+            if (items[i] != null)
+            {
+                slots[i].item = items[i];
+                slots[i].image.texture = items[i].itemImage.texture;
+            }
         }
     }
+
     private void RemoveSelectedItem()
     {
         Party.Instance.RemoveItem(selectedItem);
+        Party.Instance.inventoryDisplayManager.DisplayItems(Party.Instance.inventory);
+        PopupDisplayItems();
     }
 
     public void ViewItemDescription()
@@ -46,5 +57,7 @@ public class InventoryPopup : MonoBehaviour
     {
         gameObject.SetActive(false);
         selectedItem = null;
+        descriptionPanel.gameObject.SetActive(false);
+        descriptionText.text = "";
     }
 }

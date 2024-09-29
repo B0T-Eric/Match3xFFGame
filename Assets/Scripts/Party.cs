@@ -19,6 +19,7 @@ public class Party : MonoBehaviour
     public GameObject inventoryDisplay;
     public List<ItemScriptableObject> inventory;
     public Button confirmButton;
+    public InventoryPopup inventoryPopup;
     private void Awake()
     {
         
@@ -55,7 +56,9 @@ public class Party : MonoBehaviour
         else
         {
             inventory.Add(item);
+            inventory[inventory.IndexOf(item)].count++;
             inventoryDisplayManager.DisplayItems(inventory);
+            inventoryPopup.PopupDisplayItems();
         }
     }
     public void RemoveItem(ItemScriptableObject item)
