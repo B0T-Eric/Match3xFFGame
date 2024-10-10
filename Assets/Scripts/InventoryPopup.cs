@@ -35,6 +35,11 @@ public class InventoryPopup : MonoBehaviour
                 slots[i].item = items[i];
                 slots[i].image.texture = items[i].itemImage.texture;
             }
+            if (items[i] == null)
+            {
+                slots[i].item = null;
+                slots[i].image.texture = null;
+            }
         }
     }
 

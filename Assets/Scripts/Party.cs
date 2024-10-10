@@ -52,9 +52,18 @@ public class Party : MonoBehaviour
         if(inventory.Contains(item))
         {
             inventory[inventory.IndexOf(item)].count++;
+            inventoryDisplayManager.DisplayItems(inventory);
+            inventoryPopup.PopupDisplayItems();
         }
         else
         {
+            if(item.itemName == "Ultimate Orb")
+            {
+                foreach(Character character in members)
+                {
+                    character.abilityButton.interactable = true;
+                }
+            }
             inventory.Add(item);
             inventory[inventory.IndexOf(item)].count++;
             inventoryDisplayManager.DisplayItems(inventory);
@@ -66,11 +75,21 @@ public class Party : MonoBehaviour
         if(item.count > 1)
         {
             item.count--;
+            inventoryDisplayManager.DisplayItems(inventory);
+            inventoryPopup.PopupDisplayItems();
         }
         else
         {
+            if(item.itemName == "Ultimate Orb")
+            {
+                foreach(Character character in members)
+                {
+                    character.abilityButton.interactable = false;
+                }
+            }
             inventory.Remove(item);
             inventoryDisplayManager.DisplayItems(inventory);
+            inventoryPopup.PopupDisplayItems();
         }
     }
 

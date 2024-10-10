@@ -119,6 +119,18 @@ public class Match3Skin : MonoBehaviour
 
     private void NewTurn()
     {
+        foreach (Character character in party.members)
+        {
+            if (character.statsSO.type == ManaType.Yellow && character.regenCount > 0 && character.regenActive)
+            {
+                character.GainMana(character.regenCount);
+                character.regenCount--;
+                if(character.regenCount == 0)
+                {
+                    character.regenActive = false;
+                }
+            }
+        }
         EnemyBehaviour.Instance.SelectTargets();
         movesRemaining = movesPerTurn;
         turnText.text = $"Turn {turnCount}";
@@ -215,7 +227,12 @@ public class Match3Skin : MonoBehaviour
     }
     private void EndTurn()
     {
-        foreach(Character character in party.members)
+        if (EnemyBehaviour.Instance.isBurning)
+        {
+            EnemyBehaviour.Instance.TakeDamage(EnemyBehaviour.Instance.burnDamage);
+            EnemyBehaviour.Instance.isBurning = false;
+        }
+        foreach (Character character in party.members)
         {
             character.Attack();
         }

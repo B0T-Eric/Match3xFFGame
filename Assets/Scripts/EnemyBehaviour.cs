@@ -14,7 +14,8 @@ public class EnemyBehaviour : MonoBehaviour
     private int damage;
     private List<Character> targets;
     public EnemyHealthBar healthBar;
-
+    public bool isBurning = false;
+    public int burnDamage = 0;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -57,7 +58,6 @@ public class EnemyBehaviour : MonoBehaviour
         //randomly assign damage, then divide between targets
         damage = Random.Range(10, 30);
         SelectTargets();
-        Debug.Log($"{damage} enemy damage across {targets.Count}");
         int damagePerTarget = Mathf.FloorToInt(damage / targets.Count);
         foreach (Character target in targets)
         {
@@ -76,4 +76,5 @@ public class EnemyBehaviour : MonoBehaviour
         //disable game, remove enemy object, display rewards
         Destroy(gameObject);
     }
+
 }
