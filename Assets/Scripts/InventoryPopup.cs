@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class InventoryPopup : MonoBehaviour
 {
-    public List<ItemScriptableObject> items;
     public ItemScriptableObject selectedItem;
     [SerializeField]
     List<InventorySlot> slots;
@@ -18,7 +17,7 @@ public class InventoryPopup : MonoBehaviour
 
     private void Start()
     {
-        items = Party.Instance.inventory;
+        
         removeItemButton = descriptionPanel.GetComponentInChildren<Button>();
         removeItemButton.onClick.AddListener(RemoveSelectedItem);
         descriptionText = descriptionPanel.GetComponentInChildren<TextMeshProUGUI>();
@@ -28,14 +27,15 @@ public class InventoryPopup : MonoBehaviour
 
     public void PopupDisplayItems()
     {
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < slots.Count; i++)
         {
-            if (items[i] != null)
+            if (i < Party.Instance.inventory.Count)
             {
-                slots[i].item = items[i];
-                slots[i].image.texture = items[i].itemImage.texture;
+                slots[i].item = Party.Instance.inventory[i];
+                slots[i].image.texture = Party.Instance.inventory[i].itemImage.texture;
+
             }
-            if (items[i] == null)
+            else
             {
                 slots[i].item = null;
                 slots[i].image.texture = null;
@@ -43,11 +43,12 @@ public class InventoryPopup : MonoBehaviour
         }
     }
 
-    private void RemoveSelectedItem()
+    public void RemoveSelectedItem()
     {
         Party.Instance.RemoveItem(selectedItem);
         Party.Instance.inventoryDisplayManager.DisplayItems(Party.Instance.inventory);
         PopupDisplayItems();
+        descriptionPanel.gameObject.SetActive(false);
     }
 
     public void ViewItemDescription()

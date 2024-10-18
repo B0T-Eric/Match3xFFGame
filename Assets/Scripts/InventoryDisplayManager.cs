@@ -10,12 +10,21 @@ public class InventoryDisplayManager : MonoBehaviour
     List<RawImage> renderers;
     [SerializeField]
     List<TextMeshProUGUI> textBoxes;
+
     public void DisplayItems(List<ItemScriptableObject> items)
     {
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < renderers.Count; i++)
         {
-            renderers[i].texture = items[i].itemImage.texture;
-            textBoxes[i].text = items[i].count.ToString();
+            if (i < items.Count)
+            {
+                renderers[i].texture = items[i].itemImage.texture;
+                textBoxes[i].text = items[i].count.ToString();
+            }
+            else
+            {
+                renderers[i].texture = null;
+                textBoxes[i].text = "0";
+            }
         }
     }
 }
