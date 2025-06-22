@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
-
+/*
 public class Character : MonoBehaviour
 {
     //mana is the resource required for using abilities, and determines characters who are alive or dead
@@ -177,74 +177,6 @@ public class Character : MonoBehaviour
         }
         return false;
     }
-    private void ActivateAbility()
-    {
-        switch(statsSO.type)
-        {
-            case ManaType.Yellow:
-                if(currentMana > 10)
-                {
-                    LoseMana(10);
-                    regenActive = true;
-                    regenCount = 4;
-                    party.RemoveItem(FindUltimateOrb());
-                }
-                
-            break;
-            case ManaType.Green:
-                if(currentMana > 30)
-                {
-                    LoseMana(30);
-                    foreach (Character character in party.members)
-                    {
-                        character.GainMana(20);
-                    }
-                    party.RemoveItem(FindUltimateOrb());
-                }
-                
-            break;
-            case ManaType.Blue:
-                if(currentMana > 15)
-                {
-                    LoseMana(15);
-                    turnDamage += 20;
-                    party.RemoveItem(FindUltimateOrb());
-                }
-            break;
-            case ManaType.Purple:
-                if(currentMana > 15)
-                {
-                    LoseMana(15);
-                    doubleDamage = true;
-                    party.RemoveItem(FindUltimateOrb());
-                }
-            break;
-            case ManaType.Pink:
-                if (currentMana > 20)
-                {
-                    LoseMana(20);
-                    lifesteal = true;
-                    party.RemoveItem(FindUltimateOrb());
-                }
-            break;
-            case ManaType.Orange:
-                if(currentMana > 25)
-                {
-                    LoseMana(25);
-                    burnActive = true;
-                    party.RemoveItem(FindUltimateOrb());
-                }
-            break;
-            case ManaType.White:
-                if(currentMana > 10)
-                {
-                    LoseMana(10);
-                    Attack();
-                    party.RemoveItem(FindUltimateOrb());
-                }
-            break;
-        }
-    }
 
     private ItemScriptableObject FindUltimateOrb()
     {
@@ -258,3 +190,4 @@ public class Character : MonoBehaviour
         return null;
     }
 }
+*/

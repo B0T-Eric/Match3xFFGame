@@ -809,14 +809,7 @@ MonoBehaviour:
   rewardText: {fileID: 4206806722215601299}
   rewardSprite: {fileID: 8717634681107982554}
   items:
-  - {fileID: 11400000, guid: 9ab5aa06fa0f9934f94ca29db1a47260, type: 2}
-  - {fileID: 11400000, guid: 84c9bf1024c92a946ab0139ee85bb8b8, type: 2}
-  - {fileID: 11400000, guid: 902366d3fd77a964b83cf0486512ce29, type: 2}
-  - {fileID: 11400000, guid: ba45deb73c088a3409d8b11b9428b68a, type: 2}
-  - {fileID: 11400000, guid: 76aef876979dcc64e8f0daa9466adb6f, type: 2}
-  - {fileID: 11400000, guid: 378d5bdae87037b4e8b5ad6a41439599, type: 2}
-  - {fileID: 11400000, guid: 94fca012a65cd914e978f6a35af24b7f, type: 2}
-  - {fileID: 11400000, guid: 0f51955b988b1884b992a43b1b4ff7d0, type: 2}
+  - {fileID: 9187195536599491579, guid: fef925611772cca4d80aac19c074673b, type: 3}
   continueButton: {fileID: 932168558433961478}
   canvas: {fileID: 5784667153303777045}
 --- !u!114 &2753785952172930501
