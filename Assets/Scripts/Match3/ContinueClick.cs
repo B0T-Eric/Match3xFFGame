@@ -15,7 +15,10 @@ public class ContinueClick : MonoBehaviour
     {
         MapController.Instance.IncrementStage();
         //Match3Skin.Instance.StartNewGame();
-        Destroy(RewardCanvas );
-        MapController.LoadMapScene();
+        if(RewardCanvas != null)
+        {
+            Destroy(RewardCanvas);
+        }
+        MapController.Instance.LoadMapScene();
     }
 }

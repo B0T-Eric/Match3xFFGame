@@ -19,11 +19,7 @@ public class EnemyCharacter : BaseCharacter
     int currentTurnDamage;
     private void Awake()
     {
-        if(instance != null && instance != this)
-        {
-            Destroy(this);
-        }
-        else instance = this;
+        instance = this;
     }
     public override void Init()
     {

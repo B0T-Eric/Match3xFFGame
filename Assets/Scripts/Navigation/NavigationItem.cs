@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class NavigationItem : MonoBehaviour
 {
+    public int StageNumber;
+    private int nextStageNumber;
     public void LoadEnemyScene()
     {
         SceneManager.LoadScene("GameScene");
@@ -22,6 +22,18 @@ public class NavigationItem : MonoBehaviour
     /// </summary>
     public void LoadRandomScene()
     {
-
+        int scenePicker = Random.Range(0, 3);
+        switch (scenePicker)
+        {
+            case 0:
+                LoadEnemyScene();
+                break;
+            case 1:
+                LoadRestScene();
+                break;
+            case 2:
+                SceneManager.LoadSceneAsync("BonusScene");
+                break;
+        }
     }
 }

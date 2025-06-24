@@ -558,10 +558,8 @@ MonoBehaviour:
   - {fileID: 8498971211051752283, guid: 4ec47f29440a4044b83759f1c6f36bc9, type: 3}
   - {fileID: 948417887240996118, guid: 19b53084d802cc541aaf6793204a59fc, type: 3}
   - {fileID: 5969348920148989191, guid: 05a95d2aabe278048829a2d1c746f08b, type: 3}
-  xOffset: 50
-  yOffset: 50
-  startPosition: {x: 0, y: 500}
-  endPosition: {x: 0, y: -500}
+  xOffset: 150
+  rowCount: 15
 --- !u!4 &1826078964
 Transform:
   m_ObjectHideFlags: 0

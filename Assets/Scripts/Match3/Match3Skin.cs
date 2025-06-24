@@ -101,7 +101,7 @@ public class Match3Skin : MonoBehaviour
     private void SpawnEnemy()
     {
         enemyCanvas.gameObject.SetActive(true);
-        GameObject enemy = Instantiate(MapController.Instance.EnemyArray[MapController.Instance.CurrentStage]);
+        GameObject enemy = Instantiate(MapController.Instance.EnemyList[MapController.Instance.CurrentStage]);
         RectTransform rect = enemy.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(-200, 0);
         rect.SetParent(enemyCanvas.transform, false);
@@ -172,6 +172,7 @@ public class Match3Skin : MonoBehaviour
             tiles[drop.coordinates] = tile;
             busyDuration = Mathf.Max(tile.Fall(drop.coordinates.y + tileOffset.y, dropSpeed), busyDuration);
         }
+        DecreaseMovesRemaining();
     }
 
     private void ProcessMatches()
@@ -194,7 +195,7 @@ public class Match3Skin : MonoBehaviour
         {
             tiles[move.From] = b;
             tiles[move.To] = a;
-            DecreaseMovesRemaining();
+            
         }
     }
     private void DecreaseMovesRemaining()

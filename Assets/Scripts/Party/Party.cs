@@ -21,6 +21,7 @@ public class Party : MonoBehaviour
     public Button confirmButton;
     public InventoryPopup inventoryPopup;
     public bool HasKnowledgeOfEnemy;
+    public int RestCount;
 
     private void Awake()
     {

@@ -17,5 +17,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/RestScene.unity
+    guid: 9e4dde470d6747b4f8f9ab46e8a51246
+  - enabled: 1
+    path: Assets/Scenes/BossScene.unity
+    guid: 697a61bc2a042534f8bae25bcc77d24f
+  - enabled: 1
+    path: Assets/Scenes/BonusScene.unity
+    guid: de2c902bc283aab4d9cd1b971967cf8e
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
