@@ -125,7 +125,8 @@ public abstract class BaseCharacter : MonoBehaviour
         {
             int damage = GetDamage();
             c.LoseMana(damage);
-            
+            //delegate for apply on hit effects/extra damage
+
         }
         nextTurnPotential = 0;
 
@@ -133,6 +134,7 @@ public abstract class BaseCharacter : MonoBehaviour
     protected virtual int GetDamage()
     {
         int damage = potential;
+        //status based damage amp / conditional damage from abilities or other party members
         foreach(DraggableItem item in items)
         {
             if(item.itemSO.flatDamageIncrease > 0)
@@ -330,7 +332,7 @@ public abstract class BaseCharacter : MonoBehaviour
     public void EquipItem(DraggableItem item)
     {
         items.Add(item);
-        if (item.isOnAttack)
+        if (item is IOnAttackItem)
         {
             onAttack += item.OnAttack;
         }

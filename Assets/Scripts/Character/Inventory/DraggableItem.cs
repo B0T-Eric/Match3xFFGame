@@ -10,7 +10,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public ItemScriptableObject itemSO;
     public Image image;
     public Transform parentAfterDrag;
-    public bool isOnAttack;
+    //public bool isOnAttack;
     public bool isOnDamageTaken;
     public bool isOnTurnEnd;
     public bool isOnTurnStart;
@@ -40,8 +40,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         Debug.Log("End Drag");
-        transform.SetParent(parentAfterDrag);
-        image.raycastTarget = true;
+        if(transform.position.gameObject.GetComponent<CharacterInventorySlot>() != null)
+        {
+            transform.SetParent(parentAfterDrag);
+            image.raycastTarget = true;
+        }
     }
     public BaseStatus ApplyItemStatus()
     {
@@ -66,5 +69,12 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
 
     }
+    public interface IOnAttackItem
+    {
+        void OnAttack(BaseCharacter character);
+    }
+    public class EvilItem : DraggableItem, IOnAttackItem
+    {
 
+    }
 }

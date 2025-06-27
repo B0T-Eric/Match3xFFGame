@@ -10,6 +10,7 @@ public class Match3Game : MonoBehaviour
 {
     [SerializeField]
     int2 size =  8;
+    //remove a tile state from enum to limit amount of tiles dropped?
     Grid2D<TileState> grid;
     List<Match> matches;
     

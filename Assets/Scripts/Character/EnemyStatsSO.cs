@@ -9,6 +9,6 @@ public class EnemyStatsSO : CharacterStatsSO
     public int Higher;
     public void DetermineHealth()
     {
-        maxMana = (int)(Mathf.Round(UnityEngine.Random.Range(Lower, Higher) + 1) * MapController.Instance.EnemyHealthModifier);
+        maxMana = (int)(Mathf.Round(UnityEngine.Random.Range(Lower, Higher) + 1) * MapController.Instance.EnemyHealthModifier); //0.1 added per stage
     }
 }

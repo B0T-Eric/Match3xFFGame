@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 [Serializable]
 public struct Grid2D<T>
-{
+
     T[] cells;
     int2 size;
     public Grid2D(int2 size)
