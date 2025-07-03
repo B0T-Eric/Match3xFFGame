@@ -86,4 +86,8 @@ public class Party : MonoBehaviour
             }
         }
     }
+    public void DisplayCharactersOnGameStart()
+    {
+        GameContainer.Instance.DisplayParty(members);
+    }
 }

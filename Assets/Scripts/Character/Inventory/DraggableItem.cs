@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using static DraggableItem;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -40,7 +41,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         Debug.Log("End Drag");
-        if(transform.position.gameObject.GetComponent<CharacterInventorySlot>() != null)
+        if(transform.GetComponent<CharacterInventorySlot>() != null)
         {
             transform.SetParent(parentAfterDrag);
             image.raycastTarget = true;
@@ -50,31 +51,29 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         return itemSO.status;
     }
+}
+public interface IOnAttackItem
+{
+    void OnAttack(BaseCharacter character);
+}
+public interface IOnDamageTakenItem
+{
+    void OnDamageTaken(BaseCharacter character);
+}
+public interface IOnTurnEnd
+{
+    void OnTurnEnd();
+}
+public interface IOnTurnStart
+{
+    void OnTurnStart();
+}
+public class EvilItem : DraggableItem
+{
     //apply on attack to target character
     public virtual void OnAttack(BaseCharacter character)
     {
         character.statusEffects.Add(ApplyItemStatus());
     }
-    //on damage taken recieve effect to character holding the item
-    public virtual void OnDamageTaken()
-    {
-        
-    }
-    //on turn end apply effect to a character
-    public virtual void OnTurnEnd() 
-    {
-        
-    }
-    public virtual void OnTurnStart() 
-    {
-
-    }
-    public interface IOnAttackItem
-    {
-        void OnAttack(BaseCharacter character);
-    }
-    public class EvilItem : DraggableItem, IOnAttackItem
-    {
-
-    }
 }
+

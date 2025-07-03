@@ -1452,6 +1452,7 @@ MonoBehaviour:
   confirmButton: {fileID: 615813608}
   inventoryPopup: {fileID: 0}
   HasKnowledgeOfEnemy: 0
+  RestCount: 0
 --- !u!1 &350384362
 GameObject:
   m_ObjectHideFlags: 0

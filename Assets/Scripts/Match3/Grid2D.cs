@@ -3,7 +3,8 @@ using Unity.Mathematics;
 
 
 [Serializable]
-public struct Grid2D<T>
+public struct Grid2D<T> 
+{
 
     T[] cells;
     int2 size;

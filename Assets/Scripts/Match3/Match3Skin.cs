@@ -66,6 +66,7 @@ public class Match3Skin : MonoBehaviour
     public void StartNewGame()
     {
         party = FindAnyObjectByType<Party>();
+        party.DisplayCharactersOnGameStart();
         container.gameObject.SetActive(true);
         busyDuration = 0f;
         SpawnEnemy();

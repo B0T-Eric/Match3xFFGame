@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 public enum TurnState { Attack, Heal, Retain}
 
 public delegate void OnAttackDelegate(BaseCharacter character);
-public delegate void OnDamageTakenDelegate();
+public delegate void OnDamageTakenDelegate(BaseCharacter baseCharacter);
 public delegate void OnTurnEndDelegate();
 public delegate void OnTurnStartDelegate();
 
@@ -24,28 +25,36 @@ public abstract class BaseCharacter : MonoBehaviour
     public int nextTurnPotential;
     public float retainMultiplier;
     public ManaType manaType;
-    public List<BaseStatus> statusEffects;
+    public ObservableCollection<BaseStatus> statusEffects;
+    public int secPassiveThreshold = 20;
+    public int thirdPassiveThreshold = 35;
+    int num = 0;
     #endregion
     #region Character States
     public CharacterState state;
     public TurnState turnState;
-    public Button abilityButton;
+    public Button abilityButton, turnStateButton;
     bool AbilityActive = false;
     #endregion
     #region Display
+    public string hexColour;
+    public GameObject partyUi;
+    public Sprite sprite;
+    internal InGameCharacterDisplay display;
     public ManaBar manaBar;
-    public TextMeshProUGUI damageText, stateText;
+    public TextMeshProUGUI damageText;
     public CharacterInventorySlot[] inventorySlots;
     #endregion
-     #region Character Inventory
+    #region Character Inventory
     public List<DraggableItem> items;
-    private OnAttackDelegate onAttack;
-    private OnDamageTakenDelegate onDamageTaken;
-    private OnTurnEndDelegate onTurnEnd;
-    private OnTurnStartDelegate onTurnStart;
+    protected OnAttackDelegate onAttack;
+    protected OnDamageTakenDelegate onDamageTaken;
+    protected OnTurnEndDelegate onTurnEnd;
+    protected OnTurnStartDelegate onTurnStart;
     #endregion
     public virtual void Init()
     {
+        statusEffects = new ObservableCollection<BaseStatus>();
         currentMana = statsSO.initialMana;
         maxMana = statsSO.maxMana;
         state = CharacterState.Alive;
@@ -53,26 +62,49 @@ public abstract class BaseCharacter : MonoBehaviour
         nextTurnPotential = 0;
         items = new List<DraggableItem>();
         inventorySlots = new CharacterInventorySlot[3];
+        statusEffects.CollectionChanged += StatusEffectsChanged;
+        GameObject g = transform.GetChild(0).gameObject;  
+        manaBar = g.GetComponent<ManaBar>();
+        damageText = g.GetComponentInChildren<TextMeshProUGUI>();
+        turnStateButton = g.GetComponentInChildren<Button>();
         inventorySlots[0] = GameObject.Find("ItemSlotOne").GetComponent<CharacterInventorySlot>();
         inventorySlots[1] = GameObject.Find("ItemSlotTwo").GetComponent<CharacterInventorySlot>();
         inventorySlots[2] = GameObject.Find("ItemSlotThree").GetComponent<CharacterInventorySlot>();
+        turnStateButton.onClick.AddListener(ChangeTurnState);
         manaBar.Init(this);
         UpdateDisplays();
     }
+
+    private void StatusEffectsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (display != null)
+        {
+            display.DisplayStatus(statusEffects);
+        }
+    }
+
     protected virtual void UpdateDisplays()
     {
-        ChangeStateText();
+        ChangeStateDisplay();
         DisplayPotential();
-        UpdateManaBar();
+        manaBar.UpdateHealthBar(this);
     }
-    private void ChangeStateText()
+    //update sprite between alive, down and dead.
+    private void ChangeStateDisplay()
     {
-        stateText.text = $"State: {state.ToString()}";
-    }
-    private void UpdateManaBar()
-    {
-        manaBar.SetMana(currentMana);
-        manaBar.SetManaText();
+        if (state == CharacterState.Down) 
+        {
+
+        }
+        else if (state == CharacterState.Dead) 
+        {
+
+        }
+        else 
+        {
+            
+        }
+
     }
     private void DisplayPotential()
     {
@@ -126,7 +158,11 @@ public abstract class BaseCharacter : MonoBehaviour
             int damage = GetDamage();
             c.LoseMana(damage);
             //delegate for apply on hit effects/extra damage
-
+            if(onAttack != null)
+            {
+                onAttack.Invoke(c);
+            }
+            
         }
         nextTurnPotential = 0;
 
@@ -135,15 +171,15 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         int damage = potential;
         //status based damage amp / conditional damage from abilities or other party members
-        foreach(DraggableItem item in items)
+        foreach (DraggableItem item in items)
         {
-            if(item.itemSO.flatDamageIncrease > 0)
+            if (item.itemSO.flatDamageIncrease > 0)
             {
                 damage += item.itemSO.flatDamageIncrease;
             }
-            if(item.itemSO.damageMult > 0)
+            if (item.itemSO.damageMult > 0)
             {
-                damage = (int)(damage *item.itemSO.damageMult);
+                damage = (int)(damage * item.itemSO.damageMult);
             }
         }
         return damage;
@@ -199,6 +235,13 @@ public abstract class BaseCharacter : MonoBehaviour
         {
             amount -= GetDamageReduction();
             currentMana -= amount;
+            if(onDamageTaken != null)
+            {
+                foreach (OnDamageTakenDelegate onDamageTaken in onDamageTaken.GetInvocationList())
+                {
+                    onDamageTaken.Invoke(this);
+                }
+            }
             if(currentMana <= 0  && state == CharacterState.Down)
             {
                 currentMana = 0;
@@ -258,30 +301,54 @@ public abstract class BaseCharacter : MonoBehaviour
     public virtual void TurnStart()
     {
         potential = nextTurnPotential;
-
+        if(onTurnStart != null)
+        {
+            foreach (OnTurnStartDelegate onTurnStart in onTurnStart.GetInvocationList())
+            {
+                onTurnStart.Invoke();
+            }
+        }
+        
+        CheckStatusDurations();
         UpdateDisplays();
     }
     public virtual void TurnEnd()
     {
-        List<BaseStatus> effects = new();
+        if (onTurnEnd != null)
+        {
+            foreach (OnTurnEndDelegate onTurnEnd in onTurnEnd.GetInvocationList())
+            {
+                onTurnEnd.Invoke();
+            } 
+        }
+        CheckStatusDurations();
+    }
+    //find an remove all status's with 0 or less duration/stacks since they're no longer effective
+    private void CheckStatusDurations()
+    {
+        List<int> indexs = new List<int>();
         foreach (BaseStatus status in statusEffects)
         {
-            if(status.duration > 0)
+            if (status is IDurationStatus)
             {
-                status.duration--;
+                IDurationStatus s = (IDurationStatus)status;
+                if (s.Duration <= 0)
+                {
+                    indexs.Add(statusEffects.IndexOf(status));
+                }
             }
-            if(status.duration == 0)
+            if (status is IStackableStatus)
             {
-                effects.Add(status);
+                IStackableStatus s = (IStackableStatus)status;
+                if(s.StackCount <= 0)
+                {
+                    indexs.Add(statusEffects.IndexOf(status));
+                }
             }
         }
-        foreach(BaseStatus status in effects)
+        for (int i = 0; i < indexs.Count; i++)
         {
-            RemoveStatusEffect(status);
-        }
-        foreach(OnTurnEndDelegate onTurnEnd in onTurnEnd.GetInvocationList())
-        {
-            onTurnEnd.Invoke();
+            statusEffects.RemoveAt(indexs[i]);
         }
     }
     //calculate retain amount after items / other effects
@@ -289,8 +356,17 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         return 0.75f;
     }
-    public void ChangeTurnState(int num)
+    public void ChangeTurnState()
     {
+        
+        if(num == 2)
+        {
+            num = 0;
+        }
+        else
+        {
+            num++;
+        }
         switch (num)
         {
             case 0: turnState = TurnState.Attack; break;
@@ -309,24 +385,33 @@ public abstract class BaseCharacter : MonoBehaviour
     //first check if it exists to then either increase stack coun (if possible) and increase duration
     public virtual void AddStatusEffect(BaseStatus status)
     {
-        if (statusEffects.Contains(status))
+        statusEffects.Add(status);
+        if(status is IOnTurnEnd)
         {
-            if (status.isStackable)
-            {
-                statusEffects[statusEffects.IndexOf(status)].stackCount++;
-            }
-            statusEffects[statusEffects.IndexOf(status)].duration = status.duration;
+            IOnTurnEnd end = (IOnTurnEnd)status;
+            onTurnEnd += end.OnTurnEnd;
         }
-        else
+        if(status is IOnTurnStart)
         {
-            statusEffects.Add(status);
+            IOnTurnStart start = (IOnTurnStart)status;
+            onTurnStart += start.OnTurnStart;
         }
-            
     }
     //remove a status effected from list on character
-    public virtual void RemoveStatusEffect(BaseStatus status)
+    public virtual void RemoveStatusEffect(int index)
     {
-        statusEffects.Remove(status);
+        BaseStatus status = statusEffects[index];
+        if (status is IOnTurnEnd)
+        {
+            IOnTurnEnd end = (IOnTurnEnd)status;
+            onTurnEnd -= end.OnTurnEnd;
+        }
+        if (status is IOnTurnStart)
+        {
+            IOnTurnStart start = (IOnTurnStart)status;
+            onTurnStart -= start.OnTurnStart;
+        }
+        statusEffects.RemoveAt(index);
     }
 
     public void EquipItem(DraggableItem item)
@@ -334,40 +419,48 @@ public abstract class BaseCharacter : MonoBehaviour
         items.Add(item);
         if (item is IOnAttackItem)
         {
-            onAttack += item.OnAttack;
+            IOnAttackItem onAttackItem = (IOnAttackItem)item;
+            onAttack += onAttackItem.OnAttack;
         }
-        if (item.isOnDamageTaken)
+        if (item is IOnDamageTakenItem)
         {
-            onDamageTaken += item.OnDamageTaken;
+            IOnDamageTakenItem onDamageTakenItem = (IOnDamageTakenItem)item;
+            onDamageTaken += onDamageTakenItem.OnDamageTaken;
         }
-        if (item.isOnTurnEnd)
+        if (item is IOnTurnEnd)
         {
-            onTurnEnd += item.OnTurnEnd;
+            IOnTurnEnd onTurnEndItem = (IOnTurnEnd)item;
+            onTurnEnd += onTurnEndItem.OnTurnEnd;
         }
-        if (item.isOnTurnStart)
+        if (item is IOnTurnStart)
         {
-            onTurnStart += item.OnTurnStart;
+            IOnTurnStart onTurnStartItem = (IOnTurnStart)item;
+            onTurnStart += onTurnStartItem.OnTurnStart;
         }
     }
     public void UnequipItem(DraggableItem item)
     {
         items.Remove(item);
-        if (item.isOnAttack)
+        if (item is IOnAttackItem)
         {
-            onAttack -= item.OnAttack;
+            IOnAttackItem onAttackItem = (IOnAttackItem)item;
+            onAttack -= onAttackItem.OnAttack;
         }
-        if (item.isOnDamageTaken)
+        if (item is IOnDamageTakenItem)
         {
-            onDamageTaken -= item.OnDamageTaken;
+            IOnDamageTakenItem onDamageTakenItem = (IOnDamageTakenItem)item;
+            onDamageTaken -= onDamageTakenItem.OnDamageTaken;
         }
-        if (item.isOnTurnEnd)
+        if (item is IOnTurnEnd)
         {
-            onTurnEnd = item.OnTurnEnd;
+            IOnTurnEnd onTurnEndItem = (IOnTurnEnd)item;
+            onTurnEnd -= onTurnEndItem.OnTurnEnd;
         }
-        if (item.isOnTurnStart)
+        if (item is IOnTurnStart)
         {
-            onTurnStart -= item.OnTurnStart;
+            IOnTurnStart onTurnStartItem = (IOnTurnStart)item;
+            onTurnStart -= onTurnStartItem.OnTurnStart;
         }
     }
-    
+
 }

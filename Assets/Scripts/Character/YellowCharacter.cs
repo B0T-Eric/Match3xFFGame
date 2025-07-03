@@ -8,9 +8,11 @@ namespace Assets.Scripts.Character
 {
     class YellowCharacter : BaseCharacter
     {
-        public void Start()
+        public override void Init()
         {
             manaType = ManaType.Yellow;
+            hexColour = "FFEA00";
+            base.Init();
         }
     }
 }

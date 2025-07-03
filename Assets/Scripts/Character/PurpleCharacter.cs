@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class PurpleCharacter : BaseCharacter
 {
-    public void Start()
+    public override void Init()
     {
         manaType = ManaType.Purple;
+        hexColour = "AD00FF";
+        base.Init();
     }
 }

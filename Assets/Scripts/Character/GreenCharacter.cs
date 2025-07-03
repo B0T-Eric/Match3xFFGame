@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class GreenCharacter : BaseCharacter
 {
-    public void Start()
+    public override void Init()
     {
         manaType = ManaType.Green;
+        hexColour = "1CFF00";
+        base.Init();
     }
 }

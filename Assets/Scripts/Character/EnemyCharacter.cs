@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Reflection;
+using TMPro;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class EnemyCharacter : BaseCharacter
@@ -23,13 +26,27 @@ public class EnemyCharacter : BaseCharacter
     }
     public override void Init()
     {
+        manaBar = GameObject.Find("EnemyHealthBar").GetComponent<ManaBar>();
+        statusEffects = new System.Collections.ObjectModel.ObservableCollection<BaseStatus>();
+        statusEffects.CollectionChanged += StatusEffectsChanged;
+        GameContainer.Instance.DisplayEnemy(this);
         EnemyStatsSO statsSO = base.statsSO as EnemyStatsSO;
         statsSO.DetermineHealth();
+        damageText = GameObject.Find("EnemyDmgText").GetComponent<TextMeshProUGUI>();
         maxMana = statsSO.maxMana;
         currentMana = maxMana;
         manaBar.Init(this);
         UpdateDisplays();
     }
+
+    private void StatusEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (display != null)
+        {
+            display.DisplayStatus(statusEffects);
+        }
+    }
+
     public void Die()
     {
         //disable game, remove enemy object, display rewards
@@ -78,18 +95,34 @@ public class EnemyCharacter : BaseCharacter
         minDamage += Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
         maxDamage += Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
         int damage = Random.Range(minDamage,maxDamage);
+        foreach(BaseStatus status in statusEffects)
+        {
+            if(status is Weakness)
+            {
+                Weakness weakness = (Weakness)status;
+                damage = Mathf.RoundToInt(damage * weakness.OutgoingDamageModifier);
+            }
+        }
         int targetCount = targets.Count;
-        return (damage / targetCount);
+        damage = damage / targetCount;
+        return damage;
     }
     public override void LoseMana(int amount)
     {
+        foreach(BaseStatus status in statusEffects)
+        {
+            if(status is Brittle)
+            {
+                Brittle brittle = (Brittle)status;
+                amount = Mathf.RoundToInt(amount * brittle.IncomingDamageMultiplier);
+            }
+        }
         currentMana -= amount;
         UpdateDisplays();
     }
     protected override void UpdateDisplays()
     {
-        manaBar.SetMana(currentMana);
-        manaBar.SetManaText();
+        manaBar.UpdateHealthBar(this);
         if (Party.Instance.HasKnowledgeOfEnemy)
         {
             //display damage and targets

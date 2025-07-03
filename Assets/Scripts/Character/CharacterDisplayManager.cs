@@ -10,7 +10,7 @@ public class CharacterDisplayManager : MonoBehaviour
     Vector2[] oneMember = { new Vector2(0, 0) };
     Vector2[] twoMembers = { new Vector2(0, 0), new Vector2(0, -150) }; 
     Vector2[] threeMembers = { new Vector2(0, 0), new Vector2(0, -150), new Vector2(0, -300) };
-    Vector2[] fourMembers = { new Vector2(0, 0), new Vector2(0, -150), new Vector2(0, -300), new Vector2(0, -450) }; 
+    Vector2[] fourMembers = { new Vector2(0, 400), new Vector2(0, 200), new Vector2(0, 0), new Vector2(0, -200) }; 
     Party party;
     
     // Start is called before the first frame update
@@ -45,15 +45,17 @@ public class CharacterDisplayManager : MonoBehaviour
         {
             GameObject characterObj = Instantiate(party.selectedCharacters[i]);
             BaseCharacter bc = characterObj.GetComponent<BaseCharacter>();
+            GameObject g = Instantiate(bc.partyUi);
+            RectTransform r = characterObj.GetComponent<RectTransform>();
+            g.transform.SetParent(r, false);
             bc.Init();
             party.members.Add(bc);
             if (bc.GetType() == typeof(YellowCharacter))
             {
                 Party.Instance.HasKnowledgeOfEnemy = true;
             }
-            RectTransform rect = characterObj.GetComponent<RectTransform>();
-            rect.anchoredPosition = positions[i];
-            rect.SetParent(this.gameObject.transform,false);
+            r.anchoredPosition = positions[i];
+            r.SetParent(this.gameObject.transform,false);
         }
     }
 }

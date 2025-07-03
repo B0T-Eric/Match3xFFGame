@@ -20,8 +20,10 @@ public class WhiteCharacter : BaseCharacter
         }
         UpdateDisplays();
     }
-    public void Start()
+    public override void Init()
     {
         manaType = ManaType.White;
+        hexColour = "FFFFFF";
+        base.Init();
     }
 }
