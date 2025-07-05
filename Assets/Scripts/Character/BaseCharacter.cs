@@ -25,6 +25,7 @@ public abstract class BaseCharacter : MonoBehaviour
     public int nextTurnPotential;
     public float retainMultiplier;
     public ManaType manaType;
+    [SerializeField]
     public ObservableCollection<BaseStatus> statusEffects;
     public int secPassiveThreshold = 20;
     public int thirdPassiveThreshold = 35;
@@ -79,7 +80,7 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         if (display != null)
         {
-            display.DisplayStatus(statusEffects);
+            display.DisplayStatus(statusEffects, sender, e);
         }
     }
 
@@ -156,13 +157,15 @@ public abstract class BaseCharacter : MonoBehaviour
         if(state == CharacterState.Alive)
         {
             int damage = GetDamage();
-            c.LoseMana(damage);
-            //delegate for apply on hit effects/extra damage
-            if(onAttack != null)
+            if(damage > 0)
             {
-                onAttack.Invoke(c);
+                c.LoseMana(damage);
+                //delegate for apply on hit effects/extra damage
+                if (onAttack != null)
+                {
+                    onAttack.Invoke(c);
+                }
             }
-            
         }
         nextTurnPotential = 0;
 
@@ -321,34 +324,56 @@ public abstract class BaseCharacter : MonoBehaviour
                 onTurnEnd.Invoke();
             } 
         }
-        CheckStatusDurations();
-    }
-    //find an remove all status's with 0 or less duration/stacks since they're no longer effective
-    private void CheckStatusDurations()
-    {
-        List<int> indexs = new List<int>();
-        foreach (BaseStatus status in statusEffects)
+        if(statusEffects.Count > 0)
         {
-            if (status is IDurationStatus)
+            foreach(BaseStatus s in statusEffects)
             {
-                IDurationStatus s = (IDurationStatus)status;
-                if (s.Duration <= 0)
+                if(s is IDurationStatus ds)
                 {
-                    indexs.Add(statusEffects.IndexOf(status));
-                }
-            }
-            if (status is IStackableStatus)
-            {
-                IStackableStatus s = (IStackableStatus)status;
-                if(s.StackCount <= 0)
-                {
-                    indexs.Add(statusEffects.IndexOf(status));
+                    ds.DecreaseDuration();
                 }
             }
         }
-        for (int i = 0; i < indexs.Count; i++)
+        CheckStatusDurations();
+    }
+    //find an remove all status's with 0 or less duration/stacks since they're no longer effective
+    protected void CheckStatusDurations()
+    {
+        List<int> indexs = new List<int>();
+        if (statusEffects.Count > 0)
         {
-            statusEffects.RemoveAt(indexs[i]);
+            foreach (BaseStatus status in statusEffects)
+            {
+                if (status is IDurationStatus d)
+                {
+
+                    if (d.Duration <= 0)
+                    {
+                        indexs.Add(statusEffects.IndexOf(status));
+                    }
+                }
+                if (status is IStackableStatus s)
+                {
+                    if (s.StackCount <= 0)
+                    {
+                        indexs.Add(statusEffects.IndexOf(status));
+                    }
+                }
+                if(status is IUseStatus u)
+                {
+                    if(u.UseCount <= 0)
+                    {
+                        indexs.Add(statusEffects.IndexOf(status));
+                    }
+                }
+            }
+        }
+        if(indexs.Count > 0)
+        {
+            for (int i = 0; i < indexs.Count; i++)
+            {
+                statusEffects.RemoveAt(indexs[i]);
+            }
         }
     }
     //calculate retain amount after items / other effects
@@ -385,15 +410,40 @@ public abstract class BaseCharacter : MonoBehaviour
     //first check if it exists to then either increase stack coun (if possible) and increase duration
     public virtual void AddStatusEffect(BaseStatus status)
     {
-        statusEffects.Add(status);
-        if(status is IOnTurnEnd)
+        for (int i = 0; i < statusEffects.Count; i++)
         {
-            IOnTurnEnd end = (IOnTurnEnd)status;
+            BaseStatus existing = statusEffects[i];
+            if (status is Burn)
+            {
+                statusEffects.Add(status);
+                return;
+            }
+            if (existing.GetType() == status.GetType())
+            {
+                if (existing is IStackableStatus existingStack && status is IStackableStatus newStack)
+                {
+                    existingStack.IncreaseStack(newStack.StackCount);
+                }
+
+                if (existing is IDurationStatus existingDur && status is IDurationStatus newDur)
+                {
+                    existingDur.IncreaseDuration(newDur.Duration);
+                }
+
+                if (existing is IUseStatus existingUse && status is IUseStatus newUse)
+                {
+                    existingUse.IncreaseUseCount(newUse.UseCount);
+                }
+                return;
+            }
+        }
+        statusEffects.Add(status);
+        if(status is IOnTurnEnd end)
+        {
             onTurnEnd += end.OnTurnEnd;
         }
-        if(status is IOnTurnStart)
+        if(status is IOnTurnStart start)
         {
-            IOnTurnStart start = (IOnTurnStart)status;
             onTurnStart += start.OnTurnStart;
         }
     }
@@ -401,14 +451,12 @@ public abstract class BaseCharacter : MonoBehaviour
     public virtual void RemoveStatusEffect(int index)
     {
         BaseStatus status = statusEffects[index];
-        if (status is IOnTurnEnd)
+        if (status is IOnTurnEnd end)
         {
-            IOnTurnEnd end = (IOnTurnEnd)status;
             onTurnEnd -= end.OnTurnEnd;
         }
-        if (status is IOnTurnStart)
+        if (status is IOnTurnStart start)
         {
-            IOnTurnStart start = (IOnTurnStart)status;
             onTurnStart -= start.OnTurnStart;
         }
         statusEffects.RemoveAt(index);
@@ -417,48 +465,41 @@ public abstract class BaseCharacter : MonoBehaviour
     public void EquipItem(DraggableItem item)
     {
         items.Add(item);
-        if (item is IOnAttackItem)
+        if (item is IOnAttackItem onAttackItem)
         {
-            IOnAttackItem onAttackItem = (IOnAttackItem)item;
+            
             onAttack += onAttackItem.OnAttack;
         }
-        if (item is IOnDamageTakenItem)
+        if (item is IOnDamageTakenItem onDamageTakenItem)
         {
-            IOnDamageTakenItem onDamageTakenItem = (IOnDamageTakenItem)item;
             onDamageTaken += onDamageTakenItem.OnDamageTaken;
         }
-        if (item is IOnTurnEnd)
+        if (item is IOnTurnEnd onTurnEndItem)
         {
-            IOnTurnEnd onTurnEndItem = (IOnTurnEnd)item;
             onTurnEnd += onTurnEndItem.OnTurnEnd;
         }
-        if (item is IOnTurnStart)
+        if (item is IOnTurnStart onTurnStartItem)
         {
-            IOnTurnStart onTurnStartItem = (IOnTurnStart)item;
             onTurnStart += onTurnStartItem.OnTurnStart;
         }
     }
     public void UnequipItem(DraggableItem item)
     {
         items.Remove(item);
-        if (item is IOnAttackItem)
-        {
-            IOnAttackItem onAttackItem = (IOnAttackItem)item;
+        if (item is IOnAttackItem onAttackItem)
+        { 
             onAttack -= onAttackItem.OnAttack;
         }
-        if (item is IOnDamageTakenItem)
+        if (item is IOnDamageTakenItem onDamageTakenItem)
         {
-            IOnDamageTakenItem onDamageTakenItem = (IOnDamageTakenItem)item;
             onDamageTaken -= onDamageTakenItem.OnDamageTaken;
         }
-        if (item is IOnTurnEnd)
+        if (item is IOnTurnEnd onTurnEndItem)
         {
-            IOnTurnEnd onTurnEndItem = (IOnTurnEnd)item;
             onTurnEnd -= onTurnEndItem.OnTurnEnd;
         }
-        if (item is IOnTurnStart)
+        if (item is IOnTurnStart onTurnStartItem)
         {
-            IOnTurnStart onTurnStartItem = (IOnTurnStart)item;
             onTurnStart -= onTurnStartItem.OnTurnStart;
         }
     }

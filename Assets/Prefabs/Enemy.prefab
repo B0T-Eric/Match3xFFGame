@@ -78,5 +78,5 @@ MonoBehaviour:
   inventorySlots: []
   items: []
   targets: []
-  maxDamage: 5
-  minDamage: 15
+  maxDamage: 15
+  minDamage: 5

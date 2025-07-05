@@ -7,21 +7,31 @@ public class StatusDisplayManager : MonoBehaviour
     [SerializeField]
     GameObject statusDisplay;
     Transform statusContainer;
+    private Dictionary<BaseStatus, GameObject> statusDisplays = new();
     public void DisplayStatus(BaseStatus status)
     {
-        statusContainer = this.transform;
-        GameObject display = Instantiate(statusDisplay,statusContainer);
+        if (statusDisplays.ContainsKey(status))
+            return;
+
+        GameObject display = Instantiate(statusDisplay, transform);
         StatusDisplay s = display.GetComponent<StatusDisplay>();
         s.Init(status);
+        statusDisplays[status] = display;
     }
-    public void RemoveDisplayedStatus()
+    public void RemoveDisplayedStatus(BaseStatus status)
     {
-        if (statusDisplay != null && statusContainer != null)
+        if (statusDisplays.TryGetValue(status, out var display))
         {
-            foreach (Transform child in statusContainer)
-            {
-                Destroy(child);
-            }
+            Destroy(display);
+            statusDisplays.Remove(status);
         }
+    }
+    public void RemoveAllDisplays()
+    {
+        foreach (var kvp in statusDisplays)
+        {
+            Destroy(kvp.Value);
+        }
+        statusDisplays.Clear();
     }
 }

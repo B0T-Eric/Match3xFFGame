@@ -36,6 +36,8 @@ public class EnemyCharacter : BaseCharacter
         maxMana = statsSO.maxMana;
         currentMana = maxMana;
         manaBar.Init(this);
+        minDamage = Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
+        maxDamage = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
         UpdateDisplays();
     }
 
@@ -43,7 +45,7 @@ public class EnemyCharacter : BaseCharacter
     {
         if (display != null)
         {
-            display.DisplayStatus(statusEffects);
+            display.DisplayStatus(statusEffects, sender, e);
         }
     }
 
@@ -73,6 +75,15 @@ public class EnemyCharacter : BaseCharacter
     }
     public override void TurnStart()
     {
+        if (onTurnStart != null)
+        {
+            foreach (OnTurnStartDelegate onTurnStart in onTurnStart.GetInvocationList())
+            {
+                onTurnStart.Invoke();
+            }
+        }
+
+        CheckStatusDurations();
         SelectTargets();
         currentTurnDamage = GetDamage();
         UpdateDisplays();
@@ -92,29 +103,36 @@ public class EnemyCharacter : BaseCharacter
     //if the damage is to 1 target make sure it's not over 60.
     protected override int GetDamage()
     {
-        minDamage += Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
-        maxDamage += Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
         int damage = Random.Range(minDamage,maxDamage);
-        foreach(BaseStatus status in statusEffects)
+        if(statusEffects.Count > 0)
         {
-            if(status is Weakness)
+            foreach (BaseStatus status in statusEffects)
             {
-                Weakness weakness = (Weakness)status;
-                damage = Mathf.RoundToInt(damage * weakness.OutgoingDamageModifier);
+                if (status is Weakness)
+                {
+                    Weakness weakness = (Weakness)status;
+                    damage = Mathf.RoundToInt(damage * weakness.ApplyWeakness());
+                }
             }
+
         }
+        
         int targetCount = targets.Count;
         damage = damage / targetCount;
         return damage;
     }
     public override void LoseMana(int amount)
     {
-        foreach(BaseStatus status in statusEffects)
+        if (statusEffects.Count > 0)
         {
-            if(status is Brittle)
+            foreach (BaseStatus status in statusEffects)
             {
-                Brittle brittle = (Brittle)status;
-                amount = Mathf.RoundToInt(amount * brittle.IncomingDamageMultiplier);
+                if (status is Brittle)
+                {
+                    Brittle brittle = (Brittle)status;
+                    amount = Mathf.RoundToInt(amount * brittle.ApplyBrittle());
+
+                }
             }
         }
         currentMana -= amount;

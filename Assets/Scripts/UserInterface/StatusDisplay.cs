@@ -12,6 +12,22 @@ public class StatusDisplay : MonoBehaviour
         {
             index = 0;
         }
+        else if (status.GetType() == typeof(Weakness))
+        {
+            index = 1;
+        }
+        else if (status.GetType() == typeof(Rage))
+        {
+            index = 2;
+        }
+        else if (status.GetType() == typeof(Passion))
+        {
+            index = 3;
+        }
+        else if (status.GetType() == typeof(Brittle))
+        {
+            index = 4;
+        }
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = game.statusSprites[index];
     }

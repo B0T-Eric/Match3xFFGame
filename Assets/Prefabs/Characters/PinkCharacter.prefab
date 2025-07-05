@@ -55,7 +55,6 @@ MonoBehaviour:
   nextTurnPotential: 0
   retainMultiplier: 0
   manaType: 0
-  statusEffects: []
   secPassiveThreshold: 20
   thirdPassiveThreshold: 35
   state: 0
@@ -69,3 +68,5 @@ MonoBehaviour:
   damageText: {fileID: 0}
   inventorySlots: []
   items: []
+  rageSprite: {fileID: 21300000, guid: 90edb282f30f58344a5135ca30f606f7, type: 3}
+  passionSprite: {fileID: 21300000, guid: 21d17d86233e6d74b92500a5fdbd6ed0, type: 3}

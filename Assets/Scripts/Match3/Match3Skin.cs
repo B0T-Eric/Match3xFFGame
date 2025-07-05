@@ -223,6 +223,11 @@ public class Match3Skin : MonoBehaviour
             EnemyCharacter.Instance.PreformTurn();
             if (AllPartyMembersAlive())
             {
+                foreach(BaseCharacter character in party.members)
+                {
+                    character.TurnEnd();
+                }
+                EnemyCharacter.Instance.TurnEnd();
                 NewTurn();
             }
             else

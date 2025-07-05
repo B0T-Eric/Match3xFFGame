@@ -55,7 +55,6 @@ MonoBehaviour:
   nextTurnPotential: 0
   retainMultiplier: 0
   manaType: 0
-  statusEffects: []
   secPassiveThreshold: 20
   thirdPassiveThreshold: 35
   state: 0
@@ -69,3 +68,4 @@ MonoBehaviour:
   damageText: {fileID: 0}
   inventorySlots: []
   items: []
+  weaknessIcon: {fileID: 21300000, guid: 586e402383520dc48a781e46df3cb2f9, type: 3}

@@ -28,7 +28,6 @@ public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd
     public override void PreformEffect()
     {
         DealDamage();
-        DecreaseDuration();
     }
     public void DecreaseDuration()
     {
@@ -65,6 +64,10 @@ public class Weakness : BaseStatus, IDurationStatus
         Duration = duration;
         OutgoingDamageModifier = modifier;
     }
+    public float ApplyWeakness()
+    {
+        return OutgoingDamageModifier;
+    }
 }
 public class Brittle : BaseStatus, IUseStatus
 {
@@ -86,6 +89,11 @@ public class Brittle : BaseStatus, IUseStatus
         UseCount = useCount;
         IncomingDamageMultiplier = mult;
     }
+    public float ApplyBrittle()
+    {
+        DecreaseUseCount();
+        return IncomingDamageMultiplier;
+    }
 }
 public class Rage : BaseStatus, IDurationStatus
 {
@@ -106,6 +114,10 @@ public class Rage : BaseStatus, IDurationStatus
         Icon=sprite;
         Duration = 1;
         OutgoingDamageMultiplier = 1.5f;
+    }   
+    public float ApplyRage()
+    {
+        return OutgoingDamageMultiplier;
     }
 }
 public class Passion : BaseStatus, IDurationStatus

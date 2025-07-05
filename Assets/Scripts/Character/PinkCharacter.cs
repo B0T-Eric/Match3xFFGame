@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 /// <summary>
 /// Pink character classes purpose is to facilitate the unique buffs and attacks of the pink character.
@@ -12,11 +10,10 @@ using UnityEngine;
 public class PinkCharacter : BaseCharacter
 {
     public Sprite rageSprite, passionSprite;
-    private BaseStatus[] statuses;
+    [SerializeField]
     private float[] modifiers = { 0.5f, 1.5f, 2f, 2.5f };
     public override void Init()
     {
-        statuses = new BaseStatus[] { new Rage(rageSprite), new Passion(passionSprite) };
         manaType = ManaType.Pink;
         hexColour = "FF00BE";
         base.Init();
@@ -33,23 +30,25 @@ public class PinkCharacter : BaseCharacter
             if (state == CharacterState.Alive)
             {
                 int damage = GetDamage();
-                damage /= 2;
-                int firstHit = GetDamageSpecial(damage);
-                int secondHit = GetDamageSpecial(damage);
-
-                c.LoseMana(firstHit);
-                //delegate for apply on hit effects/extra damage
-                if (onAttack != null)
+                if(damage > 0)
                 {
-                    onAttack.Invoke(c);
-                }
-                c.LoseMana(secondHit);
-                //delegate for apply on hit effects/extra damage
-                if (onAttack != null)
-                {
-                    onAttack.Invoke(c);
-                }
+                    damage /= 2;
+                    int firstHit = GetDamageSpecial(damage);
+                    int secondHit = GetDamageSpecial(damage);
 
+                    c.LoseMana(firstHit);
+                    //delegate for apply on hit effects/extra damage
+                    if (onAttack != null)
+                    {
+                        onAttack.Invoke(c);
+                    }
+                    c.LoseMana(secondHit);
+                    //delegate for apply on hit effects/extra damage
+                    if (onAttack != null)
+                    {
+                        onAttack.Invoke(c);
+                    }
+                }
             }
             nextTurnPotential = 0;
         }
@@ -93,10 +92,10 @@ public class PinkCharacter : BaseCharacter
                 damage = (int)(damage * item.itemSO.damageMult);
             }
         }
-        if (statusEffects.Contains(statuses[0]))
+        if (statusEffects.Any(rage => rage is Rage))
         {
-            Rage r = (Rage)statuses[0];
-            damage = Mathf.RoundToInt(damage * r.OutgoingDamageMultiplier);
+            Rage r = statusEffects.FirstOrDefault(s => s is Rage) as Rage;
+            damage = Mathf.RoundToInt(damage * r.ApplyRage());
         }
         if(damage > 10 && currentMana > thirdPassiveThreshold)
         {
@@ -106,17 +105,21 @@ public class PinkCharacter : BaseCharacter
     }
     public override void GainPotential(int amount)
     {
-        if (statusEffects.Contains(statuses[1]))
+        if (statusEffects.Any(p => p is Passion))
         {
-            Passion passion = (Passion)statuses[1];
+            Passion passion = statusEffects.FirstOrDefault(p => p is Passion) as Passion;
             amount = Mathf.RoundToInt(amount * passion.PotentialGainMult);
         }
         base.GainPotential(amount);
     }
     public override void TurnStart()
     {
-        int rng = Random.Range(0,statuses.Length);
-        AddStatusEffect(statuses[rng]);
+        int rng = Random.Range(0,2);
+        switch (rng)
+        {
+            case 0: AddStatusEffect(new Rage(rageSprite)); break;
+            case 1: AddStatusEffect(new Passion(passionSprite)); break;
+        }
         base.TurnStart();
     }
 }

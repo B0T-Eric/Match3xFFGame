@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using UnityEngine;
 
 public class InGameCharacterDisplay : MonoBehaviour
@@ -20,12 +21,25 @@ public class InGameCharacterDisplay : MonoBehaviour
         IsDisplaying = true;
     }
 
-    internal void DisplayStatus(ObservableCollection<BaseStatus> statusEffects)
+    internal void DisplayStatus(ObservableCollection<BaseStatus> statusEffects, object sender, NotifyCollectionChangedEventArgs e)
     {
-        statusManager.RemoveDisplayedStatus();
-        foreach (BaseStatus status in statusEffects)
+        if (e.Action == NotifyCollectionChangedAction.Add)
         {
-            statusManager.DisplayStatus(status);
+            foreach (BaseStatus newStatus in e.NewItems)
+            {
+                statusManager.DisplayStatus(newStatus);
+            }
+        }
+        else if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            foreach (BaseStatus oldStatus in e.OldItems)
+            {
+                statusManager.RemoveDisplayedStatus(oldStatus);
+            }
+        }
+        else if (e.Action == NotifyCollectionChangedAction.Reset)
+        {
+            statusManager.RemoveAllDisplays();
         }
     }
 }

@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Orange character class facilitates the unique ablities and evolutions of the orange character type.
+/// The primary unique effect of Orange Character is to apply burn status effects to amplify their damage output.
+/// Burn is not unique to Orange character - can be applied bye Items or Enemies.
+/// Passive level 1: apply half damage burn for 2 turns (total 100% damage of hit).
+/// Passive level 2: apply half + 5 damage burn for 2 turns (total 100% + 10 damage of hit).
+/// Passive level 3: tbd
+/// </summary>
 public class OrangeCharacter : BaseCharacter
 {
     public Sprite Icon;
@@ -29,9 +37,16 @@ public class OrangeCharacter : BaseCharacter
             {
                 burnDamage = damage / 2;
             }
-            Burn b = new Burn(2, burnDamage, c, Icon);
-            c.AddStatusEffect(b);
-            c.LoseMana(damage);
+            if(burnDamage > 0 && damage > 0)
+            {
+                Burn b = new Burn(2, burnDamage, c, Icon);
+                c.AddStatusEffect(b);
+                if (onAttack != null)
+                {
+                    onAttack.Invoke(c);
+                }
+                c.LoseMana(damage);
+            }
         }
         nextTurnPotential = 0;
     }

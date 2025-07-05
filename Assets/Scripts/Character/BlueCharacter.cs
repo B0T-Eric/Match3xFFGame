@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 /// <summary>
 /// Blue character class facilitates the unique passive effects and features of the blue character.
@@ -31,6 +32,13 @@ public class BlueCharacter : BaseCharacter
             else
             {
                 damage += 5;
+            }
+        }
+        if (currentMana > thirdPassiveThreshold)
+        {
+            foreach(BaseStatus status in EnemyCharacter.Instance.statusEffects)
+            {
+                damage += 3;
             }
         }
         return damage; 

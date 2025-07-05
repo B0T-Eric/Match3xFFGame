@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Assets.Scripts.Character;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
+
 
 public class CharacterDisplayManager : MonoBehaviour
 {
