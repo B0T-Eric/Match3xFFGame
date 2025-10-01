@@ -38,26 +38,21 @@ public class Reward : MonoBehaviour
 
     private void EquipItem()
     {
-        BaseCharacter character = null;
         foreach(BaseCharacter c in Party.Instance.members)
         {
-            if(c.items.Count < 3)
+            foreach (CharacterInventorySlot slot in c.inventorySlots)
             {
-                character = c;
-                break;
-            }
+                bool isSlotFree = !slot.isOccupied && slot.transform.childCount == 0;
+                if(isSlotFree)
+                {
+                    slot.DisplayEquipedItem(selectedItem);
+                    gameObject.SetActive(false);
+                    continueButton.enabled = true;
+                    return;
+                }       
+            } 
         }
-        if(character != null)
-        {
-            foreach (CharacterInventorySlot slot in character.inventorySlots)
-            {
-                if (slot.isOccupied) continue;
-                else slot.DisplayEquipedItem(selectedItem); break;
-            }
-        }
-        
-        gameObject.SetActive(false);
-        continueButton.enabled =true;
+        Debug.Log("Didn't Find Empty Slot");
     }
 
     private GameObject GetItem()

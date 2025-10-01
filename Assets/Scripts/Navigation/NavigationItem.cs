@@ -22,18 +22,7 @@ public class NavigationItem : MonoBehaviour
     /// </summary>
     public void LoadRandomScene()
     {
-        int scenePicker = Random.Range(0, 3);
-        switch (scenePicker)
-        {
-            case 0:
-                LoadEnemyScene();
-                break;
-            case 1:
-                LoadRestScene();
-                break;
-            case 2:
-                SceneManager.LoadSceneAsync("BonusScene");
-                break;
-        }
+        SceneManager.LoadSceneAsync("BonusScene");
+        
     }
 }

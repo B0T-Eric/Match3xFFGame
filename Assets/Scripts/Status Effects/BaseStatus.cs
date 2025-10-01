@@ -1,7 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[Serializable]
 public abstract class BaseStatus
 {
     protected BaseCharacter character;
@@ -10,6 +11,10 @@ public abstract class BaseStatus
     {
 
     }
+}
+public interface IPartyStatus
+{
+    
 }
 public interface IStackableStatus
 {

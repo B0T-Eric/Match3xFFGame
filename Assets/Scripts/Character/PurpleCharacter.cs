@@ -16,11 +16,11 @@ public class PurpleCharacter : BaseCharacter
     public override void LoseMana(int amount)
     {
         base.LoseMana(amount);
-        if(currentMana > secPassiveThreshold)
+        if(currentMana > passiveValues.secPassiveThreshold)
         {
             HealMana(RegenHealth);
         }
-        if(currentMana > thirdPassiveThreshold)
+        if(currentMana > passiveValues.thirdPassiveThreshold)
         {
             EnemyCharacter.Instance.LoseMana(ReturnDamage);
         }

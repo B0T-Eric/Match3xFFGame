@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 /// <summary>
 /// 
 /// </summary>
@@ -14,13 +15,14 @@ public class YellowCharacter : BaseCharacter
         base.Init();
     }
 
-    public override void Attack(BaseCharacter c)
+    public override IEnumerator Attack(BaseCharacter c)
     {
-        if (currentMana > secPassiveThreshold)
+        
+        if (currentMana > passiveValues.secPassiveThreshold)
         {
             ApplyWeakness(c);
         }
-        base.Attack(c);
+        return base.Attack(c);
 
     }
     private void ApplyWeakness(BaseCharacter c) 
@@ -31,7 +33,7 @@ public class YellowCharacter : BaseCharacter
     }
     public override void TurnStart()
     {
-        if (currentMana > thirdPassiveThreshold)
+        if (currentMana > passiveValues.thirdPassiveThreshold)
         {
             foreach (BaseCharacter c in Party.Instance.members)
             {

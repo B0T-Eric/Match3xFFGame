@@ -142,3 +142,60 @@ public class Passion : BaseStatus, IDurationStatus
     }
 }
 
+public class ExchangeEffect : BaseStatus, IPartyStatus
+{
+    ManaType type;
+
+    public ExchangeEffect(Sprite sprite, List<BaseCharacter> party, ManaType type)
+    {
+        Icon = sprite;
+        this.type = type;
+    }
+
+    public override void PreformEffect()
+    {
+        foreach (BaseCharacter c in Party.Instance.members)
+        {
+            c.maxMana -= 10;
+            if (c.currentMana > c.maxMana)
+            {
+                c.currentMana = c.maxMana;
+            }
+        }
+        RemoveMana();
+    }
+
+    private void RemoveMana()
+    {
+        TileState state = TileState.A;
+        switch (type)
+        {
+            case ManaType.Yellow:
+                state = TileState.A;
+                break;
+            case ManaType.Green:
+                state = TileState.B;
+                break;
+            case ManaType.Orange:
+                state = TileState.C;
+                break;
+            case ManaType.White:
+                state = TileState.D;
+                break;
+            case ManaType.Blue:
+                state = TileState.E;
+                break;
+            case ManaType.Purple:
+                state = TileState.F;
+                break;
+            case ManaType.Pink:
+                state = TileState.G;
+                break;
+            default:
+                Debug.LogError("Invalid ManaType provided.");
+                break;
+        }
+        Party.Instance.RemoveTileType(state);
+    }
+}
+

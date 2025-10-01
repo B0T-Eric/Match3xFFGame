@@ -123,7 +123,7 @@ MonoBehaviour:
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 3
-  m_FillAmount: 0
+  m_FillAmount: 1
   m_FillClockwise: 0
   m_FillOrigin: 1
   m_UseSpriteMesh: 0
@@ -332,7 +332,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 37aac61f26f627948bbbdfe9182e0550, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 70794cb858c41cc49b6e03785715c85e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -405,7 +405,7 @@ PrefabInstance:
     - target: {fileID: 2371337493981741495, guid: a9f26f0a42146f34196a2d2d6cddd5cf, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: dd5f3a840bcce99409ef6d62990f85c1, type: 3}
+      objectReference: {fileID: 21300000, guid: 44ce06e857eceab4c87850a792c5d06b, type: 3}
     - target: {fileID: 2480470523351023822, guid: a9f26f0a42146f34196a2d2d6cddd5cf, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -441,7 +441,7 @@ PrefabInstance:
     - target: {fileID: 3615310144386695766, guid: a9f26f0a42146f34196a2d2d6cddd5cf, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: dd5f3a840bcce99409ef6d62990f85c1, type: 3}
+      objectReference: {fileID: 21300000, guid: 44ce06e857eceab4c87850a792c5d06b, type: 3}
     - target: {fileID: 6269862452644181141, guid: a9f26f0a42146f34196a2d2d6cddd5cf, type: 3}
       propertyPath: m_Name
       value: InventoryContainer
@@ -449,7 +449,7 @@ PrefabInstance:
     - target: {fileID: 6660069206224315643, guid: a9f26f0a42146f34196a2d2d6cddd5cf, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: dd5f3a840bcce99409ef6d62990f85c1, type: 3}
+      objectReference: {fileID: 21300000, guid: 44ce06e857eceab4c87850a792c5d06b, type: 3}
     - target: {fileID: 7440850872090008804, guid: a9f26f0a42146f34196a2d2d6cddd5cf, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

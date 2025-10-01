@@ -23,13 +23,13 @@ public class OrangeCharacter : BaseCharacter
 
     //on attack from orange character, take half the damage delt, and the enemy and apply a burn effect.
     //each burn is independant
-    public override void Attack(BaseCharacter c)
+    public override IEnumerator Attack(BaseCharacter c)
     {
         if (state == CharacterState.Alive)
         {
             int damage = GetDamage();
             int burnDamage = 0;
-            if(currentMana > secPassiveThreshold)
+            if(currentMana > passiveValues.secPassiveThreshold)
             {
                 burnDamage = (damage / 2) + 5;
             }
@@ -39,6 +39,7 @@ public class OrangeCharacter : BaseCharacter
             }
             if(burnDamage > 0 && damage > 0)
             {
+                yield return new WaitForSeconds(0.5f);
                 Burn b = new Burn(2, burnDamage, c, Icon);
                 c.AddStatusEffect(b);
                 if (onAttack != null)

@@ -5,15 +5,22 @@ using UnityEngine;
 public class StatusDisplayManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject statusDisplay;
-    Transform statusContainer;
+    GameObject statusDisplay, statusDisplayUI;
     private Dictionary<BaseStatus, GameObject> statusDisplays = new();
     public void DisplayStatus(BaseStatus status)
     {
         if (statusDisplays.ContainsKey(status))
             return;
-
-        GameObject display = Instantiate(statusDisplay, transform);
+        GameObject display;
+        if(status.GetType() == typeof(ExchangeEffect))
+        {
+            display = Instantiate(statusDisplayUI, transform);
+        }
+        else
+        {
+            display = Instantiate(statusDisplay, transform);
+        }
+            
         StatusDisplay s = display.GetComponent<StatusDisplay>();
         s.Init(status);
         statusDisplays[status] = display;

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,15 +8,17 @@ public class Party : MonoBehaviour
 {
     private static Party _instance;
     public static Party Instance { get { return _instance; } }
-
+    public List<TileState> AllowedTileTypes { get; private set; } = new();
     public List<GameObject> selectedCharacters = new List<GameObject>();
     public List<BaseCharacter> members = new List<BaseCharacter>();
+    public ObservableCollection<BaseStatus> statuses = new ObservableCollection<BaseStatus>();
     public int maxPartySize = 4;
     public int inventorySize = 7;
     public CharacterDisplayManager partyDisplayManager;
     public InventoryDisplayManager inventoryDisplayManager;
     public GameObject inventoryDisplay;
     public Button confirmButton;
+    public StatusDisplayManager statusManager;
     public InventoryPopup inventoryPopup;
     public bool HasKnowledgeOfEnemy;
     public int RestCount;
@@ -34,11 +38,50 @@ public class Party : MonoBehaviour
     }
     private void Start()
     {
-        if(confirmButton != null)
+        AllowedTileTypes = new List<TileState>
+        {
+            TileState.A,
+            TileState.B,
+            TileState.C,
+            TileState.D,
+            TileState.E,
+            TileState.F,
+            TileState.G
+        };
+        if (confirmButton != null)
         {
             ChangeConfirmButtonState();
         }
+        statuses.CollectionChanged += Statuses_CollectionChanged;
     }
+    public void RemoveTileType(TileState type)
+    {
+        AllowedTileTypes.Remove(type);
+    }
+
+    private void Statuses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Add)
+        {
+            foreach (BaseStatus newStatus in e.NewItems)
+            {
+                statusManager.DisplayStatus(newStatus);
+                newStatus.PreformEffect();
+            }
+        }
+        else if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            foreach (BaseStatus oldStatus in e.OldItems)
+            {
+                statusManager.RemoveDisplayedStatus(oldStatus);
+            }
+        }
+        else if (e.Action == NotifyCollectionChangedAction.Reset)
+        {
+            statusManager.RemoveAllDisplays();
+        }
+    }
+
     private void FixedUpdate()
     {
         if (confirmButton != null)

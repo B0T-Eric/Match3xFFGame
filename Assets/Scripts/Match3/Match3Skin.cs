@@ -65,6 +65,7 @@ public class Match3Skin : MonoBehaviour
 
     public void StartNewGame()
     {
+        
         party = FindAnyObjectByType<Party>();
         party.DisplayCharactersOnGameStart();
         container.gameObject.SetActive(true);
@@ -173,7 +174,7 @@ public class Match3Skin : MonoBehaviour
             tiles[drop.coordinates] = tile;
             busyDuration = Mathf.Max(tile.Fall(drop.coordinates.y + tileOffset.y, dropSpeed), busyDuration);
         }
-        DecreaseMovesRemaining();
+        
     }
 
     private void ProcessMatches()
@@ -196,7 +197,7 @@ public class Match3Skin : MonoBehaviour
         {
             tiles[move.From] = b;
             tiles[move.To] = a;
-            
+            DecreaseMovesRemaining();
         }
     }
     private void DecreaseMovesRemaining()

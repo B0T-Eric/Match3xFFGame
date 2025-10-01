@@ -55,9 +55,6 @@ MonoBehaviour:
   nextTurnPotential: 0
   retainMultiplier: 0
   manaType: 0
-  statusEffects: []
-  secPassiveThreshold: 20
-  thirdPassiveThreshold: 35
   state: 0
   turnState: 0
   abilityButton: {fileID: 0}

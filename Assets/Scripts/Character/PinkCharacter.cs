@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 /// <summary>
@@ -18,9 +19,9 @@ public class PinkCharacter : BaseCharacter
         hexColour = "FF00BE";
         base.Init();
     }
-    public override void Attack(BaseCharacter c)
+    public override IEnumerator Attack(BaseCharacter c)
     {
-        if (currentMana < secPassiveThreshold)
+        if (currentMana < passiveValues.secPassiveThreshold)
         {
             base.Attack(c);
         }
@@ -36,23 +37,30 @@ public class PinkCharacter : BaseCharacter
                     int firstHit = GetDamageSpecial(damage);
                     int secondHit = GetDamageSpecial(damage);
 
-                    c.LoseMana(firstHit);
-                    //delegate for apply on hit effects/extra damage
-                    if (onAttack != null)
-                    {
-                        onAttack.Invoke(c);
-                    }
-                    c.LoseMana(secondHit);
-                    //delegate for apply on hit effects/extra damage
-                    if (onAttack != null)
-                    {
-                        onAttack.Invoke(c);
-                    }
+                    yield return new WaitForSeconds(0.5f);
+                    Hit(c, firstHit);
+                    yield return new WaitForSeconds(0.5f);
+                    Hit(c, secondHit);
                 }
             }
             nextTurnPotential = 0;
         }
     }
+
+    private void Hit(BaseCharacter c, int firstHit)
+    {
+        c.LoseMana(firstHit);
+        if (firstHit > 10 && currentMana > passiveValues.thirdPassiveThreshold)
+        {
+            base.HealMana(Mathf.RoundToInt(firstHit * 0.25f));
+        }
+        //delegate for apply on hit effects/extra damage
+        if (onAttack != null)
+        {
+            onAttack.Invoke(c);
+        }
+    }
+
     private int GetDamageSpecial(int damage)
     {
         int rng = Random.Range(0, 101);
@@ -97,10 +105,7 @@ public class PinkCharacter : BaseCharacter
             Rage r = statusEffects.FirstOrDefault(s => s is Rage) as Rage;
             damage = Mathf.RoundToInt(damage * r.ApplyRage());
         }
-        if(damage > 10 && currentMana > thirdPassiveThreshold)
-        {
-            base.HealMana(Mathf.RoundToInt(damage * 0.25f));
-        }
+
         return damage;
     }
     public override void GainPotential(int amount)

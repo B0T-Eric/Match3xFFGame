@@ -12,11 +12,11 @@ public class GreenCharacter : BaseCharacter
     }
     public override void GainPotential(int amount)
     {
-        if (currentMana > secPassiveThreshold)
+        if (currentMana > passiveValues.secPassiveThreshold)
         {
             amount = Mathf.RoundToInt(amount * 0.66f);
         }
-        else if (currentMana < thirdPassiveThreshold)
+        else if (currentMana < passiveValues.thirdPassiveThreshold)
         {
             amount = Mathf.RoundToInt(amount * 1.33f);
         }

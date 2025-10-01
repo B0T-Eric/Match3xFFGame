@@ -25,7 +25,7 @@ public class BlueCharacter : BaseCharacter
         int damage = base.GetDamage();
         if (EnemyCharacter.Instance.statusEffects.Count > 0) 
         {
-            if(currentMana > secPassiveThreshold)
+            if(currentMana > passiveValues.secPassiveThreshold)
             {
                 damage += 10;
             }
@@ -34,7 +34,7 @@ public class BlueCharacter : BaseCharacter
                 damage += 5;
             }
         }
-        if (currentMana > thirdPassiveThreshold)
+        if (currentMana > passiveValues.thirdPassiveThreshold)
         {
             foreach(BaseStatus status in EnemyCharacter.Instance.statusEffects)
             {

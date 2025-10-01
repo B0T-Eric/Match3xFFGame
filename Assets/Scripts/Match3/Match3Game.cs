@@ -13,8 +13,6 @@ public class Match3Game : MonoBehaviour
     //remove a tile state from enum to limit amount of tiles dropped?
     Grid2D<TileState> grid;
     List<Match> matches;
-    
-
     public List<TileDrop> DroppedTiles {  get; private set; }
     public List<int2> ClearedTileCoordinates { get; private set; }
     public bool NeedsFilling { get; private set; }
@@ -28,7 +26,7 @@ public class Match3Game : MonoBehaviour
     {
         party = FindAnyObjectByType<Party>();
     }
-
+    
     public bool TryMove(Move move)
     {
         grid.Swap(move.From, move.To);
@@ -73,7 +71,7 @@ public class Match3Game : MonoBehaviour
             }
             for(int h = 1; h <= holeCount; h++)
             {
-                grid[x, size.y - h] = (TileState)Random.Range(1, 8);
+                grid[x, size.y - h] = Party.Instance.AllowedTileTypes[Random.Range(0, Party.Instance.AllowedTileTypes.Count)];
                 DroppedTiles.Add(new TileDrop(x, size.y - h, holeCount));
             }
         }
@@ -135,7 +133,7 @@ public class Match3Game : MonoBehaviour
             case TileState.G:
                 party.IncreasePotential(ManaType.Pink, amount);
                 break;
-            default: break;
+            default: break; 
 
         }
     }
@@ -227,8 +225,8 @@ public class Match3Game : MonoBehaviour
                         }
                     }
                 }
-                TileState t = (TileState)Random.Range(1,8 - potentialMatchCount);
-                if(potentialMatchCount > 0 && t >= a)
+                TileState t = Party.Instance.AllowedTileTypes[Random.Range(0, Party.Instance.AllowedTileTypes.Count - potentialMatchCount)];
+                if (potentialMatchCount > 0 && t >= a)
                 {
                     t++;
                 }

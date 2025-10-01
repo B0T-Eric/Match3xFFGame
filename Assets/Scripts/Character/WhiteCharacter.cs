@@ -12,14 +12,11 @@ public class WhiteCharacter : BaseCharacter
         {
             amount += 3;
         }
-        else if(amount > 4)
+        if(amount > 4)
         {
             amount += 6;
         }
-        else
-        {
-            potential += amount;
-        }
+        potential += amount;
         UpdateDisplays();
     }
     public override void Init()
@@ -28,21 +25,23 @@ public class WhiteCharacter : BaseCharacter
         hexColour = "FFFFFF";
         base.Init();
     }
-    public override void Attack(BaseCharacter c)
+    public override IEnumerator Attack(BaseCharacter c)
     {
         if (state == CharacterState.Alive)
         {
             int damage = GetDamage();
             if (damage > 0)
             {
+                yield return new WaitForSeconds(0.5f);
                 c.LoseMana(damage);
                 //delegate for apply on hit effects/extra damage
                 if (onAttack != null)
                 {
                     onAttack.Invoke(c);
                 }
-                if (currentMana > secPassiveThreshold)
+                if (currentMana > passiveValues.secPassiveThreshold)
                 {
+                    yield return new WaitForSeconds(0.5f);
                     c.LoseMana(damage);
                     //delegate for apply on hit effects/extra damage
                     if (onAttack != null)

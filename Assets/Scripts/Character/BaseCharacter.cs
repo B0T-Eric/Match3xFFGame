@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,9 +15,20 @@ public delegate void OnDamageTakenDelegate(BaseCharacter baseCharacter);
 public delegate void OnTurnEndDelegate();
 public delegate void OnTurnStartDelegate();
 
+public struct PassiveValues
+{
+    public int secPassiveThreshold;
+    public int thirdPassiveThreshold;
+    public PassiveValues(int s, int t)
+    {
+        secPassiveThreshold = s;
+        thirdPassiveThreshold = t;
+    }
+}
 [Serializable]
 public abstract class BaseCharacter : MonoBehaviour
 {
+    int num = 0;
     #region Character Stat Values
     public CharacterStatsSO statsSO;
     public int currentMana;
@@ -27,9 +39,9 @@ public abstract class BaseCharacter : MonoBehaviour
     public ManaType manaType;
     [SerializeField]
     public ObservableCollection<BaseStatus> statusEffects;
-    public int secPassiveThreshold = 20;
-    public int thirdPassiveThreshold = 35;
-    int num = 0;
+    [SerializeField]
+    public PassiveValues passiveValues;
+    
     #endregion
     #region Character States
     public CharacterState state;
@@ -55,6 +67,7 @@ public abstract class BaseCharacter : MonoBehaviour
     #endregion
     public virtual void Init()
     {
+        PassiveValues passiveValues = new PassiveValues(20,35);
         statusEffects = new ObservableCollection<BaseStatus>();
         currentMana = statsSO.initialMana;
         maxMana = statsSO.maxMana;
@@ -146,14 +159,16 @@ public abstract class BaseCharacter : MonoBehaviour
         }
         switch (turnState)
         {
-            case TurnState.Attack: Attack(target); break;
+            case TurnState.Attack: StartCoroutine(Attack(target)); break;
             case TurnState.Heal: HealMana(potential); break;
             case TurnState.Retain: RetainPotential(); break;
         }
         UpdateDisplays();
     }
-    public virtual void Attack(BaseCharacter c)
+    public virtual IEnumerator Attack(BaseCharacter c)
     {
+        //play animation here...
+        yield return new WaitForSeconds(0.5f);
         if(state == CharacterState.Alive)
         {
             int damage = GetDamage();
@@ -228,8 +243,13 @@ public abstract class BaseCharacter : MonoBehaviour
         if(state != CharacterState.Dead)
         {
             currentMana += GetHealingAmount();
+            if(currentMana > maxMana)
+            {
+                currentMana = maxMana;
+            }
         }
         nextTurnPotential = 0;
+        UpdateDisplays();
     }
     //method for taking damage on character, is given positive amount which is then removed from mana pool.
     public virtual void LoseMana(int amount)
@@ -339,41 +359,21 @@ public abstract class BaseCharacter : MonoBehaviour
     //find an remove all status's with 0 or less duration/stacks since they're no longer effective
     protected void CheckStatusDurations()
     {
-        List<int> indexs = new List<int>();
-        if (statusEffects.Count > 0)
-        {
-            foreach (BaseStatus status in statusEffects)
-            {
-                if (status is IDurationStatus d)
-                {
+        List<BaseStatus> toRemove = new List<BaseStatus>();
 
-                    if (d.Duration <= 0)
-                    {
-                        indexs.Add(statusEffects.IndexOf(status));
-                    }
-                }
-                if (status is IStackableStatus s)
-                {
-                    if (s.StackCount <= 0)
-                    {
-                        indexs.Add(statusEffects.IndexOf(status));
-                    }
-                }
-                if(status is IUseStatus u)
-                {
-                    if(u.UseCount <= 0)
-                    {
-                        indexs.Add(statusEffects.IndexOf(status));
-                    }
-                }
+        foreach (BaseStatus status in statusEffects)
+        {
+            if ((status is IDurationStatus d && d.Duration <= 0) ||
+                (status is IStackableStatus s && s.StackCount <= 0) ||
+                (status is IUseStatus u && u.UseCount <= 0))
+            {
+                toRemove.Add(status);
             }
         }
-        if(indexs.Count > 0)
+
+        foreach (BaseStatus status in toRemove)
         {
-            for (int i = 0; i < indexs.Count; i++)
-            {
-                statusEffects.RemoveAt(indexs[i]);
-            }
+            statusEffects.Remove(status);
         }
     }
     //calculate retain amount after items / other effects

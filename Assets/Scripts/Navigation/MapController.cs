@@ -90,12 +90,13 @@ public class MapController : MonoBehaviour
                     for (int j = 0; j < rowObjects.Count(); j++)
                     {
                         int rng = UnityEngine.Random.Range(1, 101);
-                        if(rng > 0 && rng < 45)
+                        if(rng > 0 && rng < 60)
                         {
                             //enemy
                             rowObjects[j] = mapItems[0];
+                            
                         }
-                        else if(rng >45 && rng < 75)
+                        else if(rng >60 && rng < 85)
                         {
                             //bonus
                             rowObjects[j] = mapItems[1];
@@ -104,6 +105,7 @@ public class MapController : MonoBehaviour
                         {
                             //rest
                             rowObjects[j] = mapItems[2];
+                            
                         }
                             
                     }

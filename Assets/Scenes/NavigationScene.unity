@@ -527,6 +527,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1826078964}
   - component: {fileID: 1826078963}
+  - component: {fileID: 1826078965}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -550,9 +551,11 @@ MonoBehaviour:
   CurrentStage: 0
   EnemyArray:
   - {fileID: 5237478499908310623, guid: 430f8b016c08e1042b433d67043112d7, type: 3}
+  EnemyList: []
   stageCount: 0
   EnemyHealthModifier: 1
   EnemyDamageModifier: 1
+  LevelMapCount: 0
   mapItems:
   - {fileID: 8964468360260794018, guid: 0cbb4c88e22ccd24e90411d15868824a, type: 3}
   - {fileID: 8498971211051752283, guid: 4ec47f29440a4044b83759f1c6f36bc9, type: 3}
@@ -575,6 +578,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1826078965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826078962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc5c5c394e25a49418e362aebc997773, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventPool:
+  - {fileID: 11400000, guid: d9f49879d869ee747b6f787135060d8f, type: 2}
+  ItemPool:
+  - {fileID: 9187195536599491579, guid: fef925611772cca4d80aac19c074673b, type: 3}
 --- !u!1 &2092776599
 GameObject:
   m_ObjectHideFlags: 0

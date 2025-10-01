@@ -20,6 +20,8 @@ public class EnemyCharacter : BaseCharacter
     [SerializeField]
     int minDamage;
     int currentTurnDamage;
+
+    TextMeshProUGUI damageTakenText;
     private void Awake()
     {
         instance = this;
@@ -29,6 +31,7 @@ public class EnemyCharacter : BaseCharacter
         manaBar = GameObject.Find("EnemyHealthBar").GetComponent<ManaBar>();
         statusEffects = new System.Collections.ObjectModel.ObservableCollection<BaseStatus>();
         statusEffects.CollectionChanged += StatusEffectsChanged;
+        damageTakenText = GameObject.Find("DamageTaken").GetComponent<TextMeshProUGUI>();
         GameContainer.Instance.DisplayEnemy(this);
         EnemyStatsSO statsSO = base.statsSO as EnemyStatsSO;
         statsSO.DetermineHealth();
@@ -82,7 +85,7 @@ public class EnemyCharacter : BaseCharacter
                 onTurnStart.Invoke();
             }
         }
-
+        damageTakenText.text = "";
         CheckStatusDurations();
         SelectTargets();
         currentTurnDamage = GetDamage();
@@ -92,11 +95,12 @@ public class EnemyCharacter : BaseCharacter
     {
         foreach (BaseCharacter target in targets)
         {
-            Attack(target);
+            StartCoroutine(Attack(target));
         }
     }
-    public override void Attack(BaseCharacter c)
+    public override IEnumerator Attack(BaseCharacter c)
     {
+        yield return new WaitForSeconds(0.5f);
         c.LoseMana(currentTurnDamage);
     }
     //get damage from a range based on a min and max value, then distribute the damage evenly between targets
@@ -131,11 +135,11 @@ public class EnemyCharacter : BaseCharacter
                 {
                     Brittle brittle = (Brittle)status;
                     amount = Mathf.RoundToInt(amount * brittle.ApplyBrittle());
-
                 }
             }
         }
         currentMana -= amount;
+        damageTakenText.text += $"{amount} ";
         UpdateDisplays();
     }
     protected override void UpdateDisplays()
