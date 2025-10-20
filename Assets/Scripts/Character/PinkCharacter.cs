@@ -19,7 +19,7 @@ public class PinkCharacter : BaseCharacter
         hexColour = "FF00BE";
         base.Init();
     }
-    public override IEnumerator Attack(BaseCharacter c)
+    public override void Attack(BaseCharacter c)
     {
         if (currentMana < passiveValues.secPassiveThreshold)
         {
@@ -36,10 +36,9 @@ public class PinkCharacter : BaseCharacter
                     damage /= 2;
                     int firstHit = GetDamageSpecial(damage);
                     int secondHit = GetDamageSpecial(damage);
-
-                    yield return new WaitForSeconds(0.5f);
+                    //animate
                     Hit(c, firstHit);
-                    yield return new WaitForSeconds(0.5f);
+                    //animate
                     Hit(c, secondHit);
                 }
             }
@@ -49,7 +48,7 @@ public class PinkCharacter : BaseCharacter
 
     private void Hit(BaseCharacter c, int firstHit)
     {
-        c.LoseMana(firstHit);
+        c.LoseMana(firstHit, this.GetType().Name);
         if (firstHit > 10 && currentMana > passiveValues.thirdPassiveThreshold)
         {
             base.HealMana(Mathf.RoundToInt(firstHit * 0.25f));

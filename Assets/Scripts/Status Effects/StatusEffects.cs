@@ -22,7 +22,7 @@ public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd
     {
         if (Duration > 0)
         {
-            base.character.currentMana -= Damage;
+            character.LoseMana(Damage, this.GetType().Name);
         }
     }
     public override void PreformEffect()

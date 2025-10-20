@@ -13,6 +13,12 @@ public class ContinueClick : MonoBehaviour
     /// </summary>
     public void ContinueClicked()
     {
+        // Mark the just-played room cleared so it shows differently on the map
+        if (MapController.Instance != null)
+        {
+            MapController.Instance.MarkRoomCleared(MapController.Instance.SelectedRow, MapController.Instance.SelectedColumn);
+        }
+
         MapController.Instance.IncrementStage();
         //Match3Skin.Instance.StartNewGame();
         if(RewardCanvas != null)

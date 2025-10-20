@@ -16,14 +16,14 @@ public class Match3Skin : MonoBehaviour
     float dragThreshold = 0.5f;
 
     [SerializeField]
-    TextMeshProUGUI gameOverText, movesText, turnText;
+    TextMeshProUGUI gameOverText;
 
     [SerializeField]
     GameObject container;
     [SerializeField]
     int movesPerTurn;
     int movesRemaining;
-    int turnCount;
+    public int turnCount;
     Party party;
 
     [SerializeField]
@@ -50,7 +50,7 @@ public class Match3Skin : MonoBehaviour
     float newDropOffset = 2f;
     public bool IsPlaying => IsBusy || game.PossibleMove.IsValid;
     public bool IsBusy => busyDuration > 0f;
-
+    private bool resolvingMove = false;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -118,8 +118,8 @@ public class Match3Skin : MonoBehaviour
         }
         EnemyCharacter.Instance.TurnStart();
         movesRemaining = movesPerTurn;
-        turnText.text = $"Turn {turnCount}";
-        movesText.text = $"Moves Remaining: {movesRemaining} / {movesPerTurn}";
+        Party.Instance.TurnText.text = $"Turn {turnCount}.";
+        Party.Instance.MovesText.text = $"Moves: {movesRemaining} / {movesPerTurn}";
     }
 
     Tile SpawnTile(TileState t, float x, float y) => tilePrefabs[(int)t - 1].Spawn(new Vector3(x + tileOffset.x, y + tileOffset.y));
@@ -141,6 +141,11 @@ public class Match3Skin : MonoBehaviour
         else if (game.NeedsFilling)
         {
             DropTiles();
+        }
+        else if (resolvingMove)
+        {
+            resolvingMove = false;
+            DecreaseMovesRemaining();
         }
         else if(!IsPlaying)
         {
@@ -197,13 +202,13 @@ public class Match3Skin : MonoBehaviour
         {
             tiles[move.From] = b;
             tiles[move.To] = a;
-            DecreaseMovesRemaining();
+            resolvingMove = true;
         }
     }
-    private void DecreaseMovesRemaining()
+    public void DecreaseMovesRemaining()
     {
         movesRemaining--;
-        movesText.text = $"Moves Remaining: {movesRemaining} / {movesPerTurn}";
+        Party.Instance.MovesText.text = $"Moves: {movesRemaining} / {movesPerTurn}";
         if (movesRemaining == 0)
         {
             //end turn
@@ -218,7 +223,6 @@ public class Match3Skin : MonoBehaviour
         {
             character.PreformTurn();
         }
-
         if(EnemyCharacter.Instance.currentMana > 0)
         {
             EnemyCharacter.Instance.PreformTurn();
@@ -229,6 +233,7 @@ public class Match3Skin : MonoBehaviour
                     character.TurnEnd();
                 }
                 EnemyCharacter.Instance.TurnEnd();
+                EnemyCharacter.Instance.LogTurnDamage();
                 NewTurn();
             }
             else

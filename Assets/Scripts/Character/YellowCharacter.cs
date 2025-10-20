@@ -15,14 +15,14 @@ public class YellowCharacter : BaseCharacter
         base.Init();
     }
 
-    public override IEnumerator Attack(BaseCharacter c)
+    public override void Attack(BaseCharacter c)
     {
         
         if (currentMana > passiveValues.secPassiveThreshold)
         {
             ApplyWeakness(c);
         }
-        return base.Attack(c);
+        base.Attack(c);
 
     }
     private void ApplyWeakness(BaseCharacter c) 

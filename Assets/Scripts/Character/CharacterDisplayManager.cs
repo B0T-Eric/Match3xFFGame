@@ -1,14 +1,11 @@
 using UnityEngine;
-
+using System.Collections;
+using System.Collections.Generic;
 
 public class CharacterDisplayManager : MonoBehaviour
-{
-    Vector2[] oneMember = { new Vector2(0, 0) };
-    Vector2[] twoMembers = { new Vector2(0, 0), new Vector2(0, -150) }; 
-    Vector2[] threeMembers = { new Vector2(0, 0), new Vector2(0, -150), new Vector2(0, -300) };
-    Vector2[] fourMembers = { new Vector2(0, 400), new Vector2(0, 200), new Vector2(0, 0), new Vector2(0, -200) }; 
+{ 
     Party party;
-    
+    public List<Transform> memberLocations = new List<Transform>();
     // Start is called before the first frame update
     void Start()
     {
@@ -16,26 +13,9 @@ public class CharacterDisplayManager : MonoBehaviour
     }
     public void DisplayParty()
     {
-        switch (party.selectedCharacters.Count) 
-        {
-            case 1:
-                DisplayCharacters(oneMember);
-                break;
-            case 2:
-                DisplayCharacters(twoMembers);
-                break;
-            case 3:
-                DisplayCharacters(threeMembers);
-                break;
-            case 4:
-                DisplayCharacters(fourMembers);
-                break;
-            default:
-                Debug.Log("Not Enough Boys to be real");
-                break;
-        }
+        DisplayCharacters();
     }
-    private void DisplayCharacters(Vector2[] positions)
+    private void DisplayCharacters()
     {
         for (int i = 0; i < party.selectedCharacters.Count; i++)
         {
@@ -50,8 +30,8 @@ public class CharacterDisplayManager : MonoBehaviour
             {
                 Party.Instance.HasKnowledgeOfEnemy = true;
             }
-            r.anchoredPosition = positions[i];
-            r.SetParent(this.gameObject.transform,false);
+            //r.anchoredPosition = positions[i];
+            r.SetParent(memberLocations[i],false);
         }
     }
 }

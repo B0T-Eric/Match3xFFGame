@@ -13,7 +13,7 @@ public class PurpleCharacter : BaseCharacter
         hexColour = "AD00FF";
         base.Init();
     }
-    public override void LoseMana(int amount)
+    public override void LoseMana(int amount, string source = "Unknown")
     {
         base.LoseMana(amount);
         if(currentMana > passiveValues.secPassiveThreshold)

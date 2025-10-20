@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyCharacter : BaseCharacter
 {
@@ -20,8 +21,11 @@ public class EnemyCharacter : BaseCharacter
     [SerializeField]
     int minDamage;
     int currentTurnDamage;
-
-    TextMeshProUGUI damageTakenText;
+    private List<string> damageLog = new List<string>();
+    int currentLogIndex = 0;
+    string damageTakenString;
+    TextMeshProUGUI damageTakenText, logTitleText;
+    Button nextButton, lastButton, previousButton, firstButton;
     private void Awake()
     {
         instance = this;
@@ -32,15 +36,17 @@ public class EnemyCharacter : BaseCharacter
         statusEffects = new System.Collections.ObjectModel.ObservableCollection<BaseStatus>();
         statusEffects.CollectionChanged += StatusEffectsChanged;
         damageTakenText = GameObject.Find("DamageTaken").GetComponent<TextMeshProUGUI>();
+        logTitleText = GameObject.Find("LogText").GetComponent<TextMeshProUGUI>();
         GameContainer.Instance.DisplayEnemy(this);
         EnemyStatsSO statsSO = base.statsSO as EnemyStatsSO;
         statsSO.DetermineHealth();
-        damageText = GameObject.Find("EnemyDmgText").GetComponent<TextMeshProUGUI>();
+        potentialText = GameObject.Find("EnemyDmgText").GetComponent<TextMeshProUGUI>();
         maxMana = statsSO.maxMana;
         currentMana = maxMana;
         manaBar.Init(this);
         minDamage = Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
         maxDamage = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
+        InitializeButtons();
         UpdateDisplays();
     }
 
@@ -85,8 +91,10 @@ public class EnemyCharacter : BaseCharacter
                 onTurnStart.Invoke();
             }
         }
-        damageTakenText.text = "";
+        damageTakenString = $"Damage Taken: ";
+        logTitleText.text = $"Turn {currentLogIndex + 1}";
         CheckStatusDurations();
+        UpdateButtons();
         SelectTargets();
         currentTurnDamage = GetDamage();
         UpdateDisplays();
@@ -95,13 +103,13 @@ public class EnemyCharacter : BaseCharacter
     {
         foreach (BaseCharacter target in targets)
         {
-            StartCoroutine(Attack(target));
+            Attack(target);
         }
     }
-    public override IEnumerator Attack(BaseCharacter c)
+    public override void Attack(BaseCharacter c)
     {
-        yield return new WaitForSeconds(0.5f);
-        c.LoseMana(currentTurnDamage);
+        //animate
+        c.LoseMana(currentTurnDamage, this.GetType().Name);
     }
     //get damage from a range based on a min and max value, then distribute the damage evenly between targets
     //if the damage is to 1 target make sure it's not over 60.
@@ -125,7 +133,7 @@ public class EnemyCharacter : BaseCharacter
         damage = damage / targetCount;
         return damage;
     }
-    public override void LoseMana(int amount)
+    public override void LoseMana(int amount, string source = "Unknown")
     {
         if (statusEffects.Count > 0)
         {
@@ -139,8 +147,95 @@ public class EnemyCharacter : BaseCharacter
             }
         }
         currentMana -= amount;
-        damageTakenText.text += $"{amount} ";
+        damageTakenString += $" \n {amount} from {source} ";
+        Debug.Log(damageTakenString);
         UpdateDisplays();
+    }
+
+    public void LogTurnDamage()
+    {
+        damageLog.Add(damageTakenString);
+        DisplayDamageTaken();
+    }
+    public void DisplayDamageTaken()
+    {
+        damageTakenText.text = damageLog[currentLogIndex];
+        logTitleText.text = $"Turn {currentLogIndex+1}";
+    }
+    private void InitializeButtons()
+    {
+        firstButton = GameObject.Find("First").GetComponent<Button>();
+        previousButton = GameObject.Find("Previous").GetComponent<Button>();
+        lastButton = GameObject.Find("Last").GetComponent<Button>();
+        nextButton = GameObject.Find("Next").GetComponent<Button>();
+        firstButton.onClick.AddListener(FirstClick);
+        previousButton.onClick.AddListener(PreviosClick);
+        lastButton.onClick.AddListener(LastClick);
+        nextButton.onClick.AddListener(NextClick);
+    }
+    public void UpdateButtons()
+    {
+        if (damageLog.Count == 0)
+        {
+            previousButton.interactable = false;
+            firstButton.interactable = false;
+            lastButton.interactable = false;
+            nextButton.interactable = false;
+        }
+        else if (currentLogIndex == 0 && damageLog.Count == 1)
+        {
+            previousButton.interactable = false;
+            firstButton.interactable = false;
+            lastButton.interactable = false;
+            nextButton.interactable = false;
+        }
+        else if (currentLogIndex == 0)
+        {
+            previousButton.interactable = false;
+            firstButton.interactable = false;
+            lastButton.interactable = true;
+            nextButton.interactable = true;
+        }
+        else if (currentLogIndex == damageLog.Count - 1)
+        {
+            previousButton.interactable = true;
+            firstButton.interactable = true;
+            lastButton.interactable = false;
+            nextButton.interactable = false;
+        }
+        else
+        {
+            previousButton.interactable = true;
+            firstButton.interactable = true;
+            lastButton.interactable = true;
+            nextButton.interactable = true;
+           }
+   }
+    public void LastClick()
+    {
+        currentLogIndex = damageLog.Count - 1;
+        DisplayDamageTaken();
+        UpdateButtons();
+    }
+    public void PreviosClick()
+    {
+        if(currentLogIndex > 0)
+            currentLogIndex--;
+        DisplayDamageTaken();
+        UpdateButtons();
+   }
+    public void NextClick()
+    {
+        if(currentLogIndex < damageLog.Count - 1)
+            currentLogIndex++;
+        DisplayDamageTaken();
+        UpdateButtons();
+    }
+    public void FirstClick()
+    {
+        currentLogIndex = 0;
+        DisplayDamageTaken();
+        UpdateButtons();
     }
     protected override void UpdateDisplays()
     {
@@ -148,12 +243,12 @@ public class EnemyCharacter : BaseCharacter
         if (Party.Instance.HasKnowledgeOfEnemy)
         {
             //display damage and targets
-            damageText.gameObject.SetActive(true);
-            damageText.text = $"{currentTurnDamage}";
+            potentialText.gameObject.SetActive(true);
+            potentialText.text = $"{currentTurnDamage}";
         }
         else
         {
-            damageText.gameObject.SetActive(false);
+            potentialText.gameObject.SetActive(false);
         }
     }
 }

@@ -9,5 +9,6 @@ public class StartAdventure : MonoBehaviour
     public void LoadGameScene()
     {
         SceneManager.LoadScene(scene);
+        Party.Instance.ToggleText();
     }
 }

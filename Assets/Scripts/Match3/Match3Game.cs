@@ -109,7 +109,6 @@ public class Match3Game : MonoBehaviour
     }
     void AddPotentialBasedOnTileState(TileState state,int amount)
     {
-        Debug.Log("Attempting to add mana and damage");
         switch (state)
         {
             case TileState.A:

@@ -55,7 +55,7 @@ public abstract class BaseCharacter : MonoBehaviour
     public Sprite sprite;
     internal InGameCharacterDisplay display;
     public ManaBar manaBar;
-    public TextMeshProUGUI damageText;
+    public TextMeshProUGUI potentialText, healthText;
     public CharacterInventorySlot[] inventorySlots;
     #endregion
     #region Character Inventory
@@ -79,11 +79,19 @@ public abstract class BaseCharacter : MonoBehaviour
         statusEffects.CollectionChanged += StatusEffectsChanged;
         GameObject g = transform.GetChild(0).gameObject;  
         manaBar = g.GetComponent<ManaBar>();
-        damageText = g.GetComponentInChildren<TextMeshProUGUI>();
+        var tmps = g.GetComponentsInChildren<TextMeshProUGUI>(true);
+        foreach (var tmp in tmps)
+        {
+            if (tmp.gameObject.name.Contains("Potential"))
+                potentialText = tmp;
+            else if (tmp.gameObject.name.Contains("Health"))
+                healthText = tmp;
+        }
         turnStateButton = g.GetComponentInChildren<Button>();
-        inventorySlots[0] = GameObject.Find("ItemSlotOne").GetComponent<CharacterInventorySlot>();
-        inventorySlots[1] = GameObject.Find("ItemSlotTwo").GetComponent<CharacterInventorySlot>();
-        inventorySlots[2] = GameObject.Find("ItemSlotThree").GetComponent<CharacterInventorySlot>();
+        //inventorySlots[0] = GameObject.Find("ItemSlotOne").GetComponent<CharacterInventorySlot>();
+        //inventorySlots[1] = GameObject.Find("ItemSlotTwo").GetComponent<CharacterInventorySlot>();
+        //inventorySlots[2] = GameObject.Find("ItemSlotThree").GetComponent<CharacterInventorySlot>();
+        inventorySlots = GetComponentsInChildren<CharacterInventorySlot>(true);
         turnStateButton.onClick.AddListener(ChangeTurnState);
         manaBar.Init(this);
         UpdateDisplays();
@@ -101,6 +109,7 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         ChangeStateDisplay();
         DisplayPotential();
+        healthText.text = $"{currentMana}";
         manaBar.UpdateHealthBar(this);
     }
     //update sprite between alive, down and dead.
@@ -125,16 +134,16 @@ public abstract class BaseCharacter : MonoBehaviour
         switch (turnState)
         {
             case TurnState.Attack:
-                damageText.color = Color.red;
-                damageText.text = potential.ToString();
+                potentialText.color = Color.red;
+                potentialText.text = potential.ToString();
                 break;
             case TurnState.Retain:
-                damageText.color = Color.yellow;
-                damageText.text = potential.ToString();
+                potentialText.color = Color.yellow;
+                potentialText.text = potential.ToString();
                 break;
             case TurnState.Heal:
-                damageText.color = Color.green;
-                damageText.text = potential.ToString();
+                potentialText.color = Color.green;
+                potentialText.text = potential.ToString();
                 break;
         }
     }
@@ -159,22 +168,21 @@ public abstract class BaseCharacter : MonoBehaviour
         }
         switch (turnState)
         {
-            case TurnState.Attack: StartCoroutine(Attack(target)); break;
+            case TurnState.Attack: Attack(target); break;
             case TurnState.Heal: HealMana(potential); break;
             case TurnState.Retain: RetainPotential(); break;
         }
         UpdateDisplays();
     }
-    public virtual IEnumerator Attack(BaseCharacter c)
+    public virtual void Attack(BaseCharacter c)
     {
         //play animation here...
-        yield return new WaitForSeconds(0.5f);
         if(state == CharacterState.Alive)
         {
             int damage = GetDamage();
             if(damage > 0)
             {
-                c.LoseMana(damage);
+                c.LoseMana(damage, this.GetType().Name);
                 //delegate for apply on hit effects/extra damage
                 if (onAttack != null)
                 {
@@ -252,13 +260,14 @@ public abstract class BaseCharacter : MonoBehaviour
         UpdateDisplays();
     }
     //method for taking damage on character, is given positive amount which is then removed from mana pool.
-    public virtual void LoseMana(int amount)
+    public virtual void LoseMana(int amount, string source = "Unknown")
     {
         if(state != CharacterState.Dead && currentMana > 0)
         {
             amount -= GetDamageReduction();
+            amount = Mathf.Max(amount,0);
             currentMana -= amount;
-            if(onDamageTaken != null)
+            if (onDamageTaken != null)
             {
                 foreach (OnDamageTakenDelegate onDamageTaken in onDamageTaken.GetInvocationList())
                 {

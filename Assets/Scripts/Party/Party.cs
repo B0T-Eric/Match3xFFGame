@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,7 +23,7 @@ public class Party : MonoBehaviour
     public InventoryPopup inventoryPopup;
     public bool HasKnowledgeOfEnemy;
     public int RestCount;
-
+    public TextMeshProUGUI StageText, TurnText, MovesText, StageNameText;
     private void Awake()
     {
         
@@ -38,6 +39,7 @@ public class Party : MonoBehaviour
     }
     private void Start()
     {
+        ToggleText();
         AllowedTileTypes = new List<TileState>
         {
             TileState.A,
@@ -57,6 +59,13 @@ public class Party : MonoBehaviour
     public void RemoveTileType(TileState type)
     {
         AllowedTileTypes.Remove(type);
+    }
+    public void ToggleText()
+    {
+        StageText.gameObject.SetActive(!StageText.gameObject.activeSelf);
+        TurnText.gameObject.SetActive(!TurnText.gameObject.activeSelf);
+        MovesText.gameObject.SetActive(!MovesText.gameObject.activeSelf);
+        StageNameText.gameObject.SetActive(!StageNameText.gameObject.activeSelf);
     }
 
     private void Statuses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

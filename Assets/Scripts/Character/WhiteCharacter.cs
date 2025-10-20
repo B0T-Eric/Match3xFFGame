@@ -25,15 +25,16 @@ public class WhiteCharacter : BaseCharacter
         hexColour = "FFFFFF";
         base.Init();
     }
-    public override IEnumerator Attack(BaseCharacter c)
+    public override void Attack(BaseCharacter c)
     {
         if (state == CharacterState.Alive)
         {
+            //animate
             int damage = GetDamage();
             if (damage > 0)
             {
-                yield return new WaitForSeconds(0.5f);
-                c.LoseMana(damage);
+                
+                c.LoseMana(damage, this.GetType().Name);
                 //delegate for apply on hit effects/extra damage
                 if (onAttack != null)
                 {
@@ -41,8 +42,8 @@ public class WhiteCharacter : BaseCharacter
                 }
                 if (currentMana > passiveValues.secPassiveThreshold)
                 {
-                    yield return new WaitForSeconds(0.5f);
-                    c.LoseMana(damage);
+                    
+                    c.LoseMana(damage, this.GetType().Name);
                     //delegate for apply on hit effects/extra damage
                     if (onAttack != null)
                     {
