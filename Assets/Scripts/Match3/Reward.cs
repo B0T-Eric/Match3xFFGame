@@ -11,8 +11,6 @@ public class Reward : MonoBehaviour
     TextMeshProUGUI rewardText;
     [SerializeField]
     RawImage rewardSprite;
-    [SerializeField]
-    List<GameObject> items; 
 
     GameObject selectedItem;
     private Button button;
@@ -57,8 +55,9 @@ public class Reward : MonoBehaviour
 
     private GameObject GetItem()
     {
-        int itemIndex = Random.Range(0, items.Count);
-        return items[itemIndex];
+        
+        int itemIndex = Random.Range(0, GameResources.Instance.ItemPool.Count);
+        return GameResources.Instance.ItemPool[itemIndex];
     }
 
 }

@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class CharacterInventorySlot : MonoBehaviour, IDropHandler
 {
     [SerializeField]
-    private BaseCharacter character;
+    public BaseCharacter character;
     public bool isOccupied = false;
     DraggableItem draggableItem;
     public void DisplayEquipedItem(GameObject itemObject)

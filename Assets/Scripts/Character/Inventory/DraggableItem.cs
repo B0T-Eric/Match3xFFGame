@@ -13,9 +13,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Transform parentAfterDrag;
 
     private CharacterInventorySlot startSlot;
-
+    protected BaseCharacter itemHolder;
     private void Start()
     {
+        itemHolder = transform.parent.parent.parent.parent.GetComponent<BaseCharacter>();
+        image = GetComponent<Image>();
         image.sprite = itemSO.itemImage;
     }
     public void OnBeginDrag(PointerEventData eventData)
@@ -61,18 +63,22 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         return itemSO.status;
     }
 }
+// item effects to trigger on attack (triggered on the hit)
 public interface IOnAttackItem
 {
     void OnAttack(BaseCharacter character);
 }
+// item effects to trigger on damage taken
 public interface IOnDamageTakenItem
 {
     void OnDamageTaken(BaseCharacter character);
 }
+// item effects to trigger on turn end
 public interface IOnTurnEnd
 {
     void OnTurnEnd();
 }
+// item effects to trigger on turn start
 public interface IOnTurnStart
 {
     void OnTurnStart();
