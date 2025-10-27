@@ -13,6 +13,7 @@ public class ItemScriptableObject : ScriptableObject
     public int damageReduction;
     public BaseStatus status;
     public Sprite itemImage;
+    [TextArea]
     public string description;
     public string itemName;
 }

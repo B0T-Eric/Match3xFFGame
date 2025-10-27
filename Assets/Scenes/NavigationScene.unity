@@ -457,8 +457,8 @@ MonoBehaviour:
   EventPool:
   - {fileID: 11400000, guid: d9f49879d869ee747b6f787135060d8f, type: 2}
   ItemPool:
-  - {fileID: 9187195536599491579, guid: fef925611772cca4d80aac19c074673b, type: 3}
   - {fileID: 9187195536599491579, guid: 688fca842023dc34cb33fa99e77fdf2f, type: 3}
+  - {fileID: 9187195536599491579, guid: af44ea1cbb54ab147986156455a717de, type: 3}
 --- !u!1 &2092776599
 GameObject:
   m_ObjectHideFlags: 0

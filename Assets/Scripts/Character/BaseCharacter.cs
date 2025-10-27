@@ -10,9 +10,13 @@ using UnityEngine;
 using UnityEngine.UI;
 public enum TurnState { Attack, Heal, Retain}
 
+//on attack params: BaseCharacter character = the targetted character by the attack (either enemy or party member)
 public delegate void OnAttackDelegate(BaseCharacter character);
+//on damage taken params: BaseCharacter baseCharacter = the character which has just recieved damage.
 public delegate void OnDamageTakenDelegate(BaseCharacter baseCharacter);
+//
 public delegate void OnTurnEndDelegate();
+//
 public delegate void OnTurnStartDelegate();
 
 public struct PassiveValues
@@ -37,10 +41,8 @@ public abstract class BaseCharacter : MonoBehaviour
     public int nextTurnPotential;
     public float retainMultiplier;
     public ManaType manaType;
-    [SerializeField]
     public ObservableCollection<BaseStatus> statusEffects;
-    [SerializeField]
-    public PassiveValues passiveValues;
+    protected PassiveValues passiveValues;
     
     #endregion
     #region Character States
@@ -67,7 +69,7 @@ public abstract class BaseCharacter : MonoBehaviour
     #endregion
     public virtual void Init()
     {
-        PassiveValues passiveValues = new PassiveValues(20,35);
+        passiveValues = new PassiveValues(20,35);
         statusEffects = new ObservableCollection<BaseStatus>();
         currentMana = statsSO.initialMana;
         maxMana = statsSO.maxMana;

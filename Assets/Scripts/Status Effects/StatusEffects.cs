@@ -32,11 +32,13 @@ public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd
     public void DecreaseDuration()
     {
         Duration--;
+        NotifyChanged();
     }
 
     public void IncreaseDuration(int duration)
     {
         Duration += duration;
+        NotifyChanged();
     }
 
     public void OnTurnEnd()
@@ -51,11 +53,13 @@ public class Weakness : BaseStatus, IDurationStatus
     public void DecreaseDuration()
     {
         Duration--;
+        NotifyChanged();
     }
 
     public void IncreaseDuration(int duration)
     {
         Duration += duration;
+        NotifyChanged();
     }
     public float OutgoingDamageModifier;
     public Weakness(int duration, float modifier, Sprite sprite)
@@ -76,11 +80,13 @@ public class Brittle : BaseStatus, IUseStatus
     public void DecreaseUseCount()
     {
         UseCount--;
+        NotifyChanged();
     }
 
     public void IncreaseUseCount(int count)
     {
         UseCount += count;
+        NotifyChanged();
     }
     public float IncomingDamageMultiplier;
     public Brittle(int useCount, float mult, Sprite sprite)
@@ -102,11 +108,13 @@ public class Rage : BaseStatus, IDurationStatus
     public void DecreaseDuration()
     {
         Duration--;
+        NotifyChanged();
     }
 
     public void IncreaseDuration(int duration)
     {
-        Duration++;
+        Duration += duration;
+        NotifyChanged();
     }
     public float OutgoingDamageMultiplier;
     public Rage(Sprite sprite)
@@ -127,11 +135,13 @@ public class Passion : BaseStatus, IDurationStatus
     public void DecreaseDuration()
     {
         Duration--;
+        NotifyChanged();
     }
 
     public void IncreaseDuration(int duration)
     {
-        Duration++;
+        Duration += duration;
+        NotifyChanged();
     }
     public float PotentialGainMult;
     public Passion(Sprite sprite)
@@ -139,6 +149,32 @@ public class Passion : BaseStatus, IDurationStatus
         Icon = sprite;
         Duration = 1;
         PotentialGainMult = 2f;
+    }
+}
+public class Poison : BaseStatus, IStackableStatus
+{
+    public int StackCount { get; set; }
+
+    public void DecreaseStack()
+    {
+        StackCount--;
+        NotifyChanged();
+    }
+
+    public void IncreaseStack(int count)
+    {
+        StackCount += count;    
+        NotifyChanged();
+    }
+    public void RemoveAllStacks()
+    {
+        StackCount = 0;
+        NotifyChanged();
+    }
+    public Poison(Sprite sprite)
+    {
+        Icon = sprite;
+        StackCount = 1;
     }
 }
 

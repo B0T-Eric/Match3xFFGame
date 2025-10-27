@@ -7731,6 +7731,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 90edb282f30f58344a5135ca30f606f7, type: 3}
   - {fileID: 21300000, guid: 21d17d86233e6d74b92500a5fdbd6ed0, type: 3}
   - {fileID: 21300000, guid: 537bf23c37718484884daf1b7946330d, type: 3}
+  - {fileID: 21300000, guid: a9546f4ad5a4f1f428a3f975449fe239, type: 3}
   match3: {fileID: 1186531123}
 --- !u!4 &1236835769
 Transform:

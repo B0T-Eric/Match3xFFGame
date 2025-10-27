@@ -9,7 +9,7 @@ public class ManaBar : MonoBehaviour
 {
     public Image manaFillImage;
     public BaseCharacter character;
-    public TextMeshProUGUI? enemyHealth;
+    public TextMeshProUGUI enemyHealth;
     public void Init(BaseCharacter c)
     {
         character = c;

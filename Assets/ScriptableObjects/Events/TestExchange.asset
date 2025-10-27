@@ -9,29 +9,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: c0932b113707cd244820aacce1cdc880, type: 3}
   m_Name: TestExchange
   m_EditorClassIdentifier: Assembly-CSharp::SpiritExchangeEvent
   options:
   - optionIndex: 0
-    optionText: Exchange Yellow Tiles
+    optionText: Yellow
   - optionIndex: 1
-    optionText: Exchange Green Tiles
+    optionText: Green
   - optionIndex: 2
-    optionText: Exchange Blue Tiles
+    optionText: Blue
   - optionIndex: 3
-    optionText: Exchange Orange Tiles
+    optionText: 
   - optionIndex: 4
-    optionText: Exchange White Tiles
+    optionText: Orange
   - optionIndex: 5
-    optionText: Exchange Pink Tiles
+    optionText: White
   - optionIndex: 6
-    optionText: Exchange Purple Tiles
+    optionText: Pink
   - optionIndex: 7
-    optionText: Decline Deal
-  eventName: A deal with the spirits!
-  description: Exchange a portion (10) of Maximum Mana on each party member for the
-    removal of 1 tile from the tile pool.
+    optionText: Purple
+  - optionIndex: 0
+    optionText: Skip
+  eventName: Test
+  description: Remove 1 tile from grid
   effectSprites:
   - {fileID: 21300000, guid: b1c449006f851454c930c1155aca0f58, type: 3}
   - {fileID: 21300000, guid: 3616653005badb04db500cc70dd78f60, type: 3}

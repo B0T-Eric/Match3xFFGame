@@ -28,7 +28,10 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
         if (transform.childCount == 0 && !isOccupied)
         {
             GameObject dropped = eventData.pointerDrag;
-            draggableItem = dropped.GetComponent<DraggableItem>();
+            if (dropped == null) return;
+            var item = dropped.GetComponent<DraggableItem>();
+            if (item == null) return;
+            draggableItem = item;
             draggableItem.parentAfterDrag = this.transform;
             character.EquipItem(draggableItem);
             isOccupied = true;
@@ -39,8 +42,13 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
         if (isOccupied)
         {
             isOccupied = false;
+            var itemToRemove = draggableItem;
             draggableItem = null;
-            character.UnequipItem(draggableItem);
+            if (itemToRemove != null && character != null)
+            {
+                character.UnequipItem(itemToRemove);
+            }
+            
         }
     }
     public void EquipItem(DraggableItem item)

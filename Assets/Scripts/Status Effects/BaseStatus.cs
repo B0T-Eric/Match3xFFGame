@@ -7,6 +7,15 @@ public abstract class BaseStatus
 {
     protected BaseCharacter character;
     public Sprite Icon;
+
+    // Notify UI or other listeners when this status changes (duration/stack/usecount etc.)
+    public event Action Changed;
+
+    protected void NotifyChanged()
+    {
+        Changed?.Invoke();
+    }
+
     public virtual void PreformEffect()
     {
 
@@ -21,6 +30,7 @@ public interface IStackableStatus
     int StackCount { get; set; }
     void DecreaseStack();
     void IncreaseStack(int count);
+    void RemoveAllStacks();
 }
 public interface IDurationStatus
 {
