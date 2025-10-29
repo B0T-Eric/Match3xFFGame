@@ -459,6 +459,11 @@ MonoBehaviour:
   ItemPool:
   - {fileID: 9187195536599491579, guid: 688fca842023dc34cb33fa99e77fdf2f, type: 3}
   - {fileID: 9187195536599491579, guid: af44ea1cbb54ab147986156455a717de, type: 3}
+  - {fileID: 9187195536599491579, guid: 286352ca573d90b4db25965ee0dfac1d, type: 3}
+  - {fileID: 9187195536599491579, guid: 515390679271e114e8a6ac1332b3c50d, type: 3}
+  - {fileID: 9187195536599491579, guid: 1ecd1be2d63795e42aebf40ef3f085c1, type: 3}
+  - {fileID: 9187195536599491579, guid: 1f80eee2cf299064285157723c2b734b, type: 3}
+  - {fileID: 9187195536599491579, guid: 2b86bdce24232db49989dddbe45d1d4c, type: 3}
 --- !u!1 &2092776599
 GameObject:
   m_ObjectHideFlags: 0

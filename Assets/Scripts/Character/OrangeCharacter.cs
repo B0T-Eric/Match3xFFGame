@@ -44,7 +44,7 @@ public class OrangeCharacter : BaseCharacter
                 c.AddStatusEffect(b);
                 if (onAttack != null)
                 {
-                    onAttack.Invoke(c);
+                    onAttack.Invoke(c, damage);
                 }
                 c.LoseMana(damage, this.GetType().Name);
             }

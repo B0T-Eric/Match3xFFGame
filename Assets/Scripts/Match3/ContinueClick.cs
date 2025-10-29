@@ -13,14 +13,27 @@ public class ContinueClick : MonoBehaviour
     /// </summary>
     public void ContinueClicked()
     {
-        // Mark the just-played room cleared so it shows differently on the map
+        
+        foreach (BaseCharacter character in Party.Instance.members)
+        {
+            //gold digger item logic.
+            foreach (DraggableItem item in character.items)
+            {
+                if (item is GoldDigger gd)
+                {
+                    gd.GainGold();
+                    gd.TryUpgradeGoldDigger();
+                }
+            }
+            //gotta reset potential since it breaks healing rooms, I found out (29/10/25)
+            character.potential = 0;
+        }
+        
         if (MapController.Instance != null)
         {
             MapController.Instance.MarkRoomCleared(MapController.Instance.SelectedRow, MapController.Instance.SelectedColumn);
         }
-
         MapController.Instance.IncrementStage();
-        //Match3Skin.Instance.StartNewGame();
         if(RewardCanvas != null)
         {
             Destroy(RewardCanvas);

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class RestManager : MonoBehaviour
@@ -29,16 +30,31 @@ public class RestManager : MonoBehaviour
     {
         foreach(BaseCharacter character in Party.Instance.members)
         {
-            character.HealMana( partyHealAmount);
+            character.HealMana(partyHealAmount);
+            EmberOfGraceUpgrade(character);
+
         }
         DisableOptions();
     }
+
+    private static void EmberOfGraceUpgrade(BaseCharacter character)
+    {
+        foreach (DraggableItem item in character.items)
+        {
+            if (item is EmberOfGrace e)
+            {
+                e.IncreaseRestCount();
+            }
+        }
+    }
+
     public void HealMember()
     {
         if (selectedCharacter == null) return;
         else
         {
             selectedCharacter.HealMana(soloHealAmount);
+            EmberOfGraceUpgrade(selectedCharacter);
             DisableOptions();
         }
     }

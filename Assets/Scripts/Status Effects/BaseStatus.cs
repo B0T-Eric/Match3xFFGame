@@ -49,3 +49,11 @@ public interface IUseStatus
     void DecreaseUseCount();
     void IncreaseUseCount(int count);
 }
+public interface IStatItem 
+{
+    void DecreaseStats(int num);
+    void IncreaseStats(int num);
+    void OnEquip();
+    void OnUnequip();
+}
+

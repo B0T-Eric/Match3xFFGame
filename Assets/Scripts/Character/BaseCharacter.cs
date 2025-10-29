@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public enum TurnState { Attack, Heal, Retain}
 
 //on attack params: BaseCharacter character = the targetted character by the attack (either enemy or party member)
-public delegate void OnAttackDelegate(BaseCharacter character);
+public delegate void OnAttackDelegate(BaseCharacter character, int damage);
 //on damage taken params: BaseCharacter baseCharacter = the character which has just recieved damage.
 public delegate void OnDamageTakenDelegate(BaseCharacter baseCharacter);
 //
@@ -188,7 +188,7 @@ public abstract class BaseCharacter : MonoBehaviour
                 //delegate for apply on hit effects/extra damage
                 if (onAttack != null)
                 {
-                    onAttack.Invoke(c);
+                    onAttack.Invoke(c, damage);
                 }
             }
         }
@@ -235,29 +235,30 @@ public abstract class BaseCharacter : MonoBehaviour
         }
         return dmgReduction;
     }
-    protected int GetHealingAmount()
+    protected int GetHealingAmount(int healAmount)
     {
-        int heal = potential;
         foreach(DraggableItem item in items)
         {
             if(item.itemSO.healingMult > 0)
             {
-                heal = (int)(heal * item.itemSO.healingMult);
+                healAmount = Mathf.RoundToInt(1 * item.itemSO.healingMult);
             }
         }
-        return heal;
+        return healAmount;
     }
     //character heal action (not ability related)
     public virtual void HealMana(int amount)
     {
-        if(state != CharacterState.Dead)
+        if (state == CharacterState.Dead)
+            return;
+        int healAmount = GetHealingAmount(amount);
+        currentMana += healAmount;
+        if(currentMana > maxMana)
         {
-            currentMana += GetHealingAmount();
-            if(currentMana > maxMana)
-            {
-                currentMana = maxMana;
-            }
-        }
+            currentMana = maxMana;
+        } 
+        if (state == CharacterState.Down && currentMana > 0)
+            state = CharacterState.Alive;
         nextTurnPotential = 0;
         UpdateDisplays();
     }
@@ -493,6 +494,10 @@ public abstract class BaseCharacter : MonoBehaviour
         {
             onTurnStart += onTurnStartItem.OnTurnStart;
         }
+        if (item is IStatItem statItem)
+        {
+            statItem.OnEquip();
+        }
     }
     public void UnequipItem(DraggableItem item)
     {
@@ -512,6 +517,10 @@ public abstract class BaseCharacter : MonoBehaviour
         if (item is IOnTurnStart onTurnStartItem)
         {
             onTurnStart -= onTurnStartItem.OnTurnStart;
+        }
+        if(item is IStatItem statItem)
+        {
+            statItem.OnUnequip();
         }
     }
 

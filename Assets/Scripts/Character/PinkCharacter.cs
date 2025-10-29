@@ -56,7 +56,7 @@ public class PinkCharacter : BaseCharacter
         //delegate for apply on hit effects/extra damage
         if (onAttack != null)
         {
-            onAttack.Invoke(c);
+            onAttack.Invoke(c, firstHit);
         }
     }
 

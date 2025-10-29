@@ -66,7 +66,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 // item effects to trigger on attack (triggered on the hit)
 public interface IOnAttackItem
 {
-    void OnAttack(BaseCharacter character);
+    void OnAttack(BaseCharacter character, int damage);
 }
 // item effects to trigger on damage taken
 public interface IOnDamageTakenItem
@@ -83,5 +83,6 @@ public interface IOnTurnStart
 {
     void OnTurnStart();
 }
+
 
 

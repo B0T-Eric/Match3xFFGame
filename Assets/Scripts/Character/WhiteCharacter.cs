@@ -38,7 +38,7 @@ public class WhiteCharacter : BaseCharacter
                 //delegate for apply on hit effects/extra damage
                 if (onAttack != null)
                 {
-                    onAttack.Invoke(c);
+                    onAttack.Invoke(c, damage);
                 }
                 if (currentMana > passiveValues.secPassiveThreshold)
                 {
@@ -47,7 +47,7 @@ public class WhiteCharacter : BaseCharacter
                     //delegate for apply on hit effects/extra damage
                     if (onAttack != null)
                     {
-                        onAttack.Invoke(c);
+                        onAttack.Invoke(c, damage);
                     }
 
                 }

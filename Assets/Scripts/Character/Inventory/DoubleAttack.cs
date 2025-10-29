@@ -12,7 +12,7 @@ public class DoubleAttack : DraggableItem, IOnAttackItem
     int characterIndex;
     [SerializeField]
     int useCount;
-    public void OnAttack(BaseCharacter character)
+    public void OnAttack(BaseCharacter character, int damage)
     {
         BaseCharacter targetCharacter = Party.Instance.members[characterIndex];
         BaseCharacter originCharacter = itemHolder;

@@ -42,13 +42,8 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
         if (isOccupied)
         {
             isOccupied = false;
-            var itemToRemove = draggableItem;
+            character.UnequipItem(draggableItem);
             draggableItem = null;
-            if (itemToRemove != null && character != null)
-            {
-                character.UnequipItem(itemToRemove);
-            }
-            
         }
     }
     public void EquipItem(DraggableItem item)

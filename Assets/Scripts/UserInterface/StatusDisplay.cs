@@ -64,7 +64,7 @@ public class StatusDisplay : MonoBehaviour
         }
         else
         {
-            stackText.gameObject.SetActive(false);
+            durationText.gameObject.SetActive(false);
         }
         if (status is IStackableStatus stackableStatus)
         {
