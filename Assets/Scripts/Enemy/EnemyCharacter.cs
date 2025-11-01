@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
 using TMPro;
 using Unity.VisualScripting;
@@ -17,13 +18,13 @@ public class EnemyCharacter : BaseCharacter
     public List<BaseCharacter> targets;
     //enemy stats
     [SerializeField]
-    int maxDamage;
+    protected int maxDamage;
     [SerializeField]
-    int minDamage;
-    int currentTurnDamage;
+    protected int minDamage;
+    protected int currentTurnDamage;
     private List<string> damageLog = new List<string>();
     int currentLogIndex = 0;
-    string damageTakenString;
+    protected string damageTakenString;
     TextMeshProUGUI damageTakenText, logTitleText;
     Button nextButton, lastButton, previousButton, firstButton;
     private void Awake()
@@ -32,22 +33,31 @@ public class EnemyCharacter : BaseCharacter
     }
     public override void Init()
     {
+        InitializeStats();
+        InitializeDisplays();
+        InitializeButtons();
+        UpdateDisplays();
+    }
+    protected void InitializeDisplays()
+    {
         manaBar = GameObject.Find("EnemyHealthBar").GetComponent<ManaBar>();
         statusEffects = new System.Collections.ObjectModel.ObservableCollection<BaseStatus>();
         statusEffects.CollectionChanged += StatusEffectsChanged;
+        potentialText = GameObject.Find("EnemyDmgText").GetComponent<TextMeshProUGUI>();
         damageTakenText = GameObject.Find("DamageTaken").GetComponent<TextMeshProUGUI>();
         logTitleText = GameObject.Find("LogText").GetComponent<TextMeshProUGUI>();
         GameContainer.Instance.DisplayEnemy(this);
+        manaBar.Init(this);
+    }
+    protected void InitializeStats()
+    {
         EnemyStatsSO statsSO = base.statsSO as EnemyStatsSO;
         statsSO.DetermineHealth();
-        potentialText = GameObject.Find("EnemyDmgText").GetComponent<TextMeshProUGUI>();
         maxMana = statsSO.maxMana;
         currentMana = maxMana;
-        manaBar.Init(this);
         minDamage = Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
         maxDamage = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
-        InitializeButtons();
-        UpdateDisplays();
+
     }
 
     private void StatusEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -64,13 +74,13 @@ public class EnemyCharacter : BaseCharacter
         Destroy(gameObject);
     }
 
-    public void SelectTargets() 
+    protected virtual void SelectTargets() 
     {
         int targetCount = Random.Range(1, Party.Instance.members.Count);
         targets = GetTargets(targetCount);
         Debug.Log($"{targets.Count} target count");
     }
-    private List<BaseCharacter> GetTargets(int targetCount)
+    protected virtual List<BaseCharacter> GetTargets(int targetCount)
     {
         List<BaseCharacter> randTargets = new List<BaseCharacter>();
         List<BaseCharacter> availableTargets = new List<BaseCharacter>(Party.Instance.members);
@@ -86,7 +96,7 @@ public class EnemyCharacter : BaseCharacter
     {
         if (onTurnStart != null)
         {
-            foreach (OnTurnStartDelegate onTurnStart in onTurnStart.GetInvocationList())
+            foreach (OnTurnStartDelegate onTurnStart in onTurnStart.GetInvocationList().Cast<OnTurnStartDelegate>())
             {
                 onTurnStart.Invoke();
             }
@@ -162,7 +172,7 @@ public class EnemyCharacter : BaseCharacter
         damageTakenText.text = damageLog[currentLogIndex];
         logTitleText.text = $"Turn {currentLogIndex+1}";
     }
-    private void InitializeButtons()
+    protected void InitializeButtons()
     {
         firstButton = GameObject.Find("First").GetComponent<Button>();
         previousButton = GameObject.Find("Previous").GetComponent<Button>();

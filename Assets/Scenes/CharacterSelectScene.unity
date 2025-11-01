@@ -3185,6 +3185,7 @@ GameObject:
   - component: {fileID: 685867413}
   - component: {fileID: 685867415}
   - component: {fileID: 685867414}
+  - component: {fileID: 685867416}
   m_Layer: 0
   m_Name: StageDisplay
   m_TagString: Untagged
@@ -3250,6 +3251,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 685867412}
   m_CullTransparentMesh: 1
+--- !u!114 &685867416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 685867412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee3bdb8a816f3134caab393d937c0108, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StageText: {fileID: 709207064}
 --- !u!1 &709207062
 GameObject:
   m_ObjectHideFlags: 0

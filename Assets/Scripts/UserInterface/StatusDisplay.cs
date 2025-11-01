@@ -40,6 +40,10 @@ public class StatusDisplay : MonoBehaviour
             {
                 index = 5;
             }
+            else if (status.GetType() == typeof(Wound))
+            {
+                index = 6;
+            }
             ToggleText(status);
             this.status.Changed += Status_Changed;
             spriteRenderer.sprite = game.statusSprites[index];

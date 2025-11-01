@@ -458,6 +458,14 @@ public abstract class BaseCharacter : MonoBehaviour
         {
             onTurnStart += start.OnTurnStart;
         }
+        if(status is IOnDamageTakenItem dmg)
+        {
+            onDamageTaken += dmg.OnDamageTaken;
+        }
+        if(status is IOnAttackItem attack)
+        {
+            onAttack += attack.OnAttack;
+        }
     }
     //remove a status effected from list on character
     public virtual void RemoveStatusEffect(int index)

@@ -221,7 +221,14 @@ public class Match3Skin : MonoBehaviour
         
         foreach (BaseCharacter character in party.members)
         {
-            character.PreformTurn();
+            if (EnemyCharacter.Instance.currentMana > 0)
+            {
+                character.PreformTurn();
+            }
+            else
+            {
+                break;
+            }
         }
         if(EnemyCharacter.Instance.currentMana > 0)
         {
@@ -241,7 +248,7 @@ public class Match3Skin : MonoBehaviour
                 GameOver();
             }
         }
-        else if(EnemyCharacter.Instance.currentMana <= 0)
+        else
         {
             Victory();
         }
@@ -249,6 +256,10 @@ public class Match3Skin : MonoBehaviour
     private void Victory()
     {
         //turn off game, display reward screen
+        foreach(BaseCharacter bc in Party.Instance.members)
+        {
+            bc.statusEffects.Clear();
+        }
         enemyCanvas.gameObject.SetActive(false);
         gameObject.SetActive(false);
         EnemyCharacter.Instance.Die();

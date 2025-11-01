@@ -177,7 +177,52 @@ public class Poison : BaseStatus, IStackableStatus
         StackCount = 1;
     }
 }
+public class Wound : BaseStatus, IStackableStatus, IDurationStatus,  IOnDamageTakenItem
+{
+    public int StackCount { get; set; }
+    public int Duration { get; set; }
 
+    public Wound(Sprite sprite, int duration)
+    {
+        Icon = sprite;
+        StackCount = 1;
+        Duration = duration;
+    }
+    public void DecreaseDuration()
+    {
+        Duration--;
+        NotifyChanged();
+    }
+
+    public void DecreaseStack()
+    {
+        StackCount--;
+        NotifyChanged();
+    }
+
+    public void IncreaseDuration(int duration)
+    {
+        Duration += duration;
+        NotifyChanged();
+    }
+
+    public void IncreaseStack(int count)
+    {
+        StackCount += count;
+        NotifyChanged();
+    }
+
+    public void RemoveAllStacks()
+    {
+        StackCount = 0;
+        NotifyChanged();
+    }
+
+    public void OnDamageTaken(BaseCharacter character)
+    {
+        character.LoseMana(1 * StackCount, this.GetType().Name);
+    }
+}
 public class ExchangeEffect : BaseStatus, IPartyStatus
 {
     ManaType type;

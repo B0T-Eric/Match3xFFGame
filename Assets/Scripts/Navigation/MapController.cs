@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.Search;
@@ -30,7 +31,7 @@ public class MapController : MonoBehaviour
     public float EnemyHealthModifier = 1f;
     public float EnemyDamageModifier = 1f;
 
-    // Selection tracking (if used elsewhere)
+    // Selection tracking
     public int SelectedRow { get; private set; } = -1;
     public int SelectedColumn { get; private set; } = -1;
     public GameObject SelectedMapPrefab { get; private set; }
@@ -66,7 +67,7 @@ public class MapController : MonoBehaviour
         
     }
     private void Start()
-    {
+    { 
         if (!hasInitialized)
         {
             LevelMap = new List<List<GameObject>>();
