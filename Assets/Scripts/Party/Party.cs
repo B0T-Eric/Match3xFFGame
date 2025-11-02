@@ -16,11 +16,9 @@ public class Party : MonoBehaviour
     public int maxPartySize = 4;
     public int inventorySize = 7;
     public CharacterDisplayManager partyDisplayManager;
-    public InventoryDisplayManager inventoryDisplayManager;
     public GameObject inventoryDisplay;
     public Button confirmButton;
     public StatusDisplayManager statusManager;
-    public InventoryPopup inventoryPopup;
     public bool HasKnowledgeOfEnemy;
     public int RestCount;
     public TextMeshProUGUI StageText, TurnText, MovesText, StageNameText;

@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
-using static UnityEditor.Progress;
 
 public interface IReward
 {

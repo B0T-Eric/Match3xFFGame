@@ -1,19 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Xml.Serialization;
-using TMPro;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEditor.Search;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
-using static UnityEditor.Progress;
 
 public class MapController : MonoBehaviour
 {
