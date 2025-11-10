@@ -9,6 +9,11 @@ public class GreenCharacter : BaseCharacter
         manaType = ManaType.Green;
         hexColour = "1CFF00";
         base.Init();
+        description = $"<b><color=#{hexColour}> {manaType} Character </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
+            $"\n <b>Passives: \n</b> Passive 1 (0 mana): Potential gained from matches is decreased by 67% (33% of default) but when healing heal all party members." +
+            $"\n Passive 2 ({passiveValues.secPassiveThreshold} mana): Potential gain increases by 100% (66% of default)." +
+            $"\n Passive 3 ({passiveValues.thirdPassiveThreshold} mana): Potential gain increases by another 100% (133% of default).";
+
     }
     public override void GainPotential(int amount)
     {

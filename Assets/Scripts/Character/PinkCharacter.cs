@@ -18,6 +18,13 @@ public class PinkCharacter : BaseCharacter
         manaType = ManaType.Pink;
         hexColour = "FF00BE";
         base.Init();
+        description = $"<b><color=#{hexColour}> {manaType} Character </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
+            $"\n <b>Passives: \n</b> Passive 1 (0 mana): At the beginning of each turn this character gains one of two status effects: " +
+            $"\n <color=red>Rage:</color> Increases outgoing attack damage by 50%." +
+            $"\n <color=#{hexColour}>Passion:</color> Double potential gained." +
+            $"\n Passive 2 ({passiveValues.secPassiveThreshold} mana): Attacks now trigger twice but become unpredictable dealing either {modifiers[0] * 100}%, {modifiers[1] * 100}%, {modifiers[2] * 100}%, {modifiers[3] * 100}% of potential as damage." +
+            $"\n Passive 3 ({passiveValues.thirdPassiveThreshold} mana): When an attack deals 10 or more damage, heal for 25% of the damage dealt.";
+
     }
     public override void Attack(BaseCharacter c)
     {

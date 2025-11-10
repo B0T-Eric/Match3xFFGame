@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4550008529339170555}
   - component: {fileID: 2174053049322829634}
   - component: {fileID: 8471593132140984376}
+  - component: {fileID: 3819879605928976846}
   m_Layer: 0
   m_Name: PoisonChalice
   m_TagString: Untagged
@@ -92,3 +93,16 @@ MonoBehaviour:
   image: {fileID: 2174053049322829634}
   parentAfterDrag: {fileID: 0}
   poisonSprite: {fileID: 21300000, guid: a9546f4ad5a4f1f428a3f975449fe239, type: 3}
+--- !u!114 &3819879605928976846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9187195536599491579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 058bcfff53d9fd646805e3e0adf8ce94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tooltip: 

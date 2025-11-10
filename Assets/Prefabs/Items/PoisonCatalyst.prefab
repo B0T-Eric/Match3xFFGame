@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4550008529339170555}
   - component: {fileID: 2174053049322829634}
   - component: {fileID: -6298553456489079688}
+  - component: {fileID: 7240603892213769302}
   m_Layer: 0
   m_Name: PoisonCatalyst
   m_TagString: Untagged
@@ -91,3 +92,16 @@ MonoBehaviour:
   itemSO: {fileID: 11400000, guid: a46f462e9b6c8eb42b2a127e3b95059e, type: 2}
   image: {fileID: 2174053049322829634}
   parentAfterDrag: {fileID: 0}
+--- !u!114 &7240603892213769302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9187195536599491579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 058bcfff53d9fd646805e3e0adf8ce94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tooltip: 

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd
 {
-    public Burn(int duration, int damage, BaseCharacter character, Sprite icon)
+    public Burn(int duration, int damage, BaseCharacter target, Sprite icon)
     {
         Duration = duration;
         Damage = damage;
         base.Icon = icon;
-        base.character = character;
+        base.character = target;
     }
     public override string ToString()
     {
@@ -227,7 +227,7 @@ public class ExchangeEffect : BaseStatus, IPartyStatus
 {
     ManaType type;
 
-    public ExchangeEffect(Sprite sprite, List<BaseCharacter> party, ManaType type)
+    public ExchangeEffect(Sprite sprite, ManaType type)
     {
         Icon = sprite;
         this.type = type;

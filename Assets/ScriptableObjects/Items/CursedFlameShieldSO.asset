@@ -19,6 +19,6 @@ MonoBehaviour:
   healingMult: 0
   damageReduction: 0
   itemImage: {fileID: 21300000, guid: b1d4fd6c337602b479ea098a14d1415f, type: 3}
-  description: On damage taken by the holder of the item, apply a burn to the attacker
-    for 2 turns dealing 3 damage each turn.
+  description: On damage taken, apply a burn to the attacker for 2 turns dealing
+    3 damage each turn.
   itemName: Shield of Cursed Flames

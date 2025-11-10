@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using UnityEngine;
-
-namespace Assets.Scripts.UserInterface
+﻿public class CharacterToolTip : ToolTip
 {
-    public class CharacterToolTip : ToolTip
+    BaseCharacter character;
+    private void Start()
     {
-        BaseCharacter character;
+        character = transform.parent.parent.parent.GetComponent<BaseCharacter>();
+        Tooltip = character.description;
     }
 }

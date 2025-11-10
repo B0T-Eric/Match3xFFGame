@@ -136,4 +136,19 @@ public class Party : MonoBehaviour
     {
         GameContainer.Instance.DisplayParty(members);
     }
+    public void EquipItemOnCharacter(DraggableItem item)
+    {
+        foreach(BaseCharacter character in members)
+        {
+            if(character.items.Count < 3)
+            {
+                character.EquipItem(item);
+                break;
+            }
+        }
+    }
+    public void AddStatus(BaseStatus status)
+    {
+        statuses.Add(status);
+    }
 }

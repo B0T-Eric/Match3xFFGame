@@ -55,17 +55,18 @@ MonoBehaviour:
   nextTurnPotential: 0
   retainMultiplier: 0
   manaType: 0
-  statusEffects: []
-  secPassiveThreshold: 20
-  thirdPassiveThreshold: 35
   state: 0
   turnState: 0
   abilityButton: {fileID: 0}
   turnStateButton: {fileID: 0}
   hexColour: 
+  description: 
   partyUi: {fileID: 4643811802386169538, guid: 40aca299d7956cc4da4357ab62de74c9, type: 3}
   sprite: {fileID: 21300000, guid: 54285d26d569a66448e92ea8dcbbbbb9, type: 3}
   manaBar: {fileID: 0}
-  damageText: {fileID: 0}
+  potentialText: {fileID: 0}
+  healthText: {fileID: 0}
   inventorySlots: []
   items: []
+  ReturnDamage: 15
+  RegenHealth: 5

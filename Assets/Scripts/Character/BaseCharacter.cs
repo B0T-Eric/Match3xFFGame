@@ -53,6 +53,7 @@ public abstract class BaseCharacter : MonoBehaviour
     #endregion
     #region Display
     public string hexColour;
+    public string description;
     public GameObject partyUi;
     public Sprite sprite;
     internal InGameCharacterDisplay display;
@@ -69,6 +70,7 @@ public abstract class BaseCharacter : MonoBehaviour
     #endregion
     public virtual void Init()
     {
+        description = "base description";
         passiveValues = new PassiveValues(20,35);
         statusEffects = new ObservableCollection<BaseStatus>();
         currentMana = statsSO.initialMana;
@@ -212,6 +214,7 @@ public abstract class BaseCharacter : MonoBehaviour
         }
         return damage;
     }
+
     protected int GetDamageReduction()
     {
         int dmgReduction = 0;
@@ -235,13 +238,14 @@ public abstract class BaseCharacter : MonoBehaviour
         }
         return dmgReduction;
     }
-    protected int GetHealingAmount(int healAmount)
+    protected float GetHealingMult()
     {
+        float healAmount = 1;
         foreach(DraggableItem item in items)
         {
             if(item.itemSO.healingMult > 0)
             {
-                healAmount = Mathf.RoundToInt(1 * item.itemSO.healingMult);
+                healAmount += item.itemSO.healingMult;
             }
         }
         return healAmount;
@@ -251,7 +255,7 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         if (state == CharacterState.Dead)
             return;
-        int healAmount = GetHealingAmount(amount);
+        int healAmount = Mathf.RoundToInt(amount * GetHealingMult());
         currentMana += healAmount;
         if(currentMana > maxMana)
         {
@@ -531,5 +535,68 @@ public abstract class BaseCharacter : MonoBehaviour
             statItem.OnUnequip();
         }
     }
-
+    #region public facing getters
+    public virtual int GetDamage_Public()
+    {
+        int damage = potential;
+        //status based damage amp / conditional damage from abilities or other party members
+        foreach (DraggableItem item in items)
+        {
+            if (item.itemSO.flatDamageIncrease > 0)
+            {
+                damage += item.itemSO.flatDamageIncrease;
+            }
+            if (item.itemSO.damageMult > 0)
+            {
+                damage = (int)(damage * item.itemSO.damageMult);
+            }
+        }
+        return damage;
+    }
+    public virtual int GetFlatDamage_Public()
+    {
+        int damage = 0;
+        foreach (DraggableItem item in items)
+        {
+            if (item.itemSO.flatDamageIncrease > 0)
+            {
+                damage += item.itemSO.flatDamageIncrease;
+            }
+        }
+        return damage;
+    }
+    public virtual float GetDamageMult_Public()
+    {
+        float mult = 1f;
+        foreach (DraggableItem item in items)
+        {
+            if (item.itemSO.damageMult > 0)
+            {
+                mult += item.itemSO.damageMult;
+            }
+        }
+        return mult;
+    }
+    public virtual int GetDamageReduction_Public()
+    {
+        return GetDamageReduction();
+    }
+    public virtual int GetPotentialIncrease_Public()
+    {
+        return GetPotentialIncrease();
+    }
+    
+    public virtual float GetPotentialMult_Public()
+    {
+        return GetPotentialMult();
+    }
+    public virtual float GetHealMult_Public()
+    {
+        return GetHealingMult();
+    }
+    public virtual float GetRetainMult_Public()
+    {
+        return GetRetainMult();
+    }
+    #endregion
 }

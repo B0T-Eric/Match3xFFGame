@@ -7,7 +7,7 @@ public class GameResources : MonoBehaviour
     private static GameResources instance;
     public static GameResources Instance {  get { return instance; } }
     [SerializeField]
-    public List<EventScriptableObject> EventPool;
+    public List<BaseEvent> EventPool;
     [SerializeField]
     public List<GameObject> ItemPool;
     [SerializeField]
@@ -24,10 +24,10 @@ public class GameResources : MonoBehaviour
         ItemPool.RemoveAt(rng);
         return item;
     }
-    public EventScriptableObject GetRandomEvent()
+    public BaseEvent GetRandomEvent()
     {
         int rng = Random.Range(0, EventPool.Count);
-        EventScriptableObject e = EventPool[rng];
+        BaseEvent e = EventPool[rng];
         EventPool.RemoveAt(rng); 
         return e;
     }

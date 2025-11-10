@@ -19,5 +19,5 @@ MonoBehaviour:
   healingMult: 0
   damageReduction: 0
   itemImage: {fileID: 21300000, guid: 51b5a554977e479458dc5e5ff0baefe6, type: 3}
-  description: Apply a stack of poison at the end of each turn
+  description: Apply a stack of poison to the enemy at the end of each turn.
   itemName: Poison Vial

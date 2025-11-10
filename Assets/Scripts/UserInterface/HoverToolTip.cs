@@ -55,7 +55,7 @@ public class HoverToolTip : MonoBehaviour
 
     private void Update()
     {
-        SetText(getTooltipTextFunc());
+        //SetText(getTooltipTextFunc());
         Vector2 anchoredPosition = Input.mousePosition / canvas.localScale.x;
         if(anchoredPosition.x + backgroundRectTransform.rect.width > canvas.rect.width)
         {

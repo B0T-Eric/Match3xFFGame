@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8979614062909827967
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 128349320184978213}
+  - component: {fileID: 5132986995324936114}
+  m_Layer: 0
+  m_Name: ExchangeEventObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &128349320184978213
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8979614062909827967}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5132986995324936114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8979614062909827967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ba89747b63bf194b866086b27e495d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OptionOutcomes:
+  - {fileID: 11400000, guid: 31bb43b6495cd904da80cd2ecc19a811, type: 2}
+  - {fileID: 11400000, guid: 5e9290cb284664349a8fdcb88b67f909, type: 2}
+  - {fileID: 11400000, guid: 5e5d18c722c2d52448eeea420ece58b2, type: 2}
+  - {fileID: 11400000, guid: 3c2a9e1f0b2460e4fb9f1eb2467887fc, type: 2}
+  - {fileID: 11400000, guid: 2c9434bdc1f77144fa346353e6392228, type: 2}
+  - {fileID: 11400000, guid: f96fa1ce328e2324fad1797f580a8a85, type: 2}
+  - {fileID: 11400000, guid: 22f2f6c739c89f84b81e8ecbfc21bb23, type: 2}
+  - {fileID: 11400000, guid: b495c68687f42e74bb9a029806be83e0, type: 2}
+  description: Remove a single spirit token permanently for -10 Max Mana on all party
+    members.
+  eventName: Spiritual Exchange
+  buttonPrefab: {fileID: 4475252590323969463, guid: 9582e7b4bca7cfd46844cd04d777580a, type: 3}
+  buttonParentTransform: {fileID: 0}
+  titleText: {fileID: 0}
+  descriptionText: {fileID: 0}

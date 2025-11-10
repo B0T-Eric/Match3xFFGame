@@ -19,6 +19,8 @@ MonoBehaviour:
   healingMult: 0
   damageReduction: 0
   itemImage: {fileID: 21300000, guid: be074625b9e821a4e9c5e1268cfd4503, type: 3}
-  description: When attacking an enemy, this character calls forth another ally to
-    attack alongside them attacking for free.
-  itemName: Double Attack
+  description: 'When attacking an enemy, this character calls forth another ally
+    to attack alongside them attacking for free.
+
+    (Party member in position 3)'
+  itemName: Advanced Tactics
