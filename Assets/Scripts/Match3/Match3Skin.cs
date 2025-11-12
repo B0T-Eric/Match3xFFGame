@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Unity.Mathematics.math;
 
@@ -103,7 +104,16 @@ public class Match3Skin : MonoBehaviour
     private void SpawnEnemy()
     {
         enemyCanvas.gameObject.SetActive(true);
-        GameObject enemy = Instantiate(MapController.Instance.EnemyList[MapController.Instance.CurrentStage]);
+        GameObject enemy;
+        if (SceneManager.GetActiveScene().name.Equals("BossScene"))
+        {
+            enemy = Instantiate(MapController.Instance.GetRandomBoss());
+        }
+        else
+        {
+            enemy = Instantiate(MapController.Instance.EnemyList[MapController.Instance.CurrentStage]);
+        }
+        
         RectTransform rect = enemy.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(-200, 0);
         rect.SetParent(enemyCanvas.transform, false);

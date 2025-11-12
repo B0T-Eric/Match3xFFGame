@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxMana: 0
   initialMana: 0
+  EnemyName: Goblin
   Lower: 60
   Higher: 150

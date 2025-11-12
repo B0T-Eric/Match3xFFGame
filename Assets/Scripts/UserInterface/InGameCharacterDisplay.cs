@@ -42,4 +42,12 @@ public class InGameCharacterDisplay : MonoBehaviour
             statusManager.RemoveAllDisplays();
         }
     }
+    public void DamageTakenVisual()
+    {
+
+    }
+    public void ManaHealedVisual()
+    {
+
+    }
 }

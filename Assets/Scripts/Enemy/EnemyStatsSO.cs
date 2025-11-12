@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "EnemyCharStatsObject", menuName = "ScriptableObjects/CharacterStatsObjects/Enemy")]
 public class EnemyStatsSO : CharacterStatsSO
 {
+    public string EnemyName;
     public int Lower;
     public int Higher;
     public void DetermineHealth()

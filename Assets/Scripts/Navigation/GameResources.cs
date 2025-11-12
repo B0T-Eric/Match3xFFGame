@@ -12,6 +12,7 @@ public class GameResources : MonoBehaviour
     public List<GameObject> ItemPool;
     [SerializeField]
     public List<BaseStatus> PartyStatusPool;
+    
     private void Awake()
     {
         DontDestroyOnLoad(this);

@@ -14,6 +14,7 @@ public class MapController : MonoBehaviour
     public int CurrentStage = 0;
     //all possible enemy prefabs to include in scenes.
     public GameObject[] EnemyArray;
+    public GameObject[] BossArray;
     //a set of enemies, 1 per row for the game to pull from if required
     public GameObject[] EnemyList;
     //increment stage count at end of stage.
@@ -29,7 +30,6 @@ public class MapController : MonoBehaviour
 
     // Cleared rooms tracking (persisting across scene loads)
     private HashSet<string> clearedRooms = new HashSet<string>();
-
     //2D list to hold each rows items.
     [SerializeField]
     private int LevelMapCount;
@@ -55,6 +55,10 @@ public class MapController : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
         
+    }
+    public GameObject GetRandomBoss()
+    {
+        return BossArray[Random.Range(0, BossArray.Length - 1)];
     }
     private void Start()
     { 

@@ -21,7 +21,7 @@ public class EnemyCharacter : BaseCharacter
     private List<string> damageLog = new List<string>();
     int currentLogIndex = 0;
     protected string damageTakenString;
-    TextMeshProUGUI damageTakenText, logTitleText;
+    TextMeshProUGUI damageTakenText, logTitleText, nameText;
     Button nextButton, lastButton, previousButton, firstButton;
     private void Awake()
     {
@@ -34,8 +34,9 @@ public class EnemyCharacter : BaseCharacter
         InitializeButtons();
         UpdateDisplays();
     }
-    protected void InitializeDisplays()
+    protected virtual void InitializeDisplays()
     {
+        nameText = GameObject.Find("EnemyNameText").GetComponent<TextMeshProUGUI>();
         manaBar = GameObject.Find("EnemyHealthBar").GetComponent<ManaBar>();
         statusEffects = new System.Collections.ObjectModel.ObservableCollection<BaseStatus>();
         statusEffects.CollectionChanged += StatusEffectsChanged;
@@ -44,6 +45,7 @@ public class EnemyCharacter : BaseCharacter
         logTitleText = GameObject.Find("LogText").GetComponent<TextMeshProUGUI>();
         GameContainer.Instance.DisplayEnemy(this);
         manaBar.Init(this);
+        
     }
     protected void InitializeStats()
     {
@@ -53,7 +55,7 @@ public class EnemyCharacter : BaseCharacter
         currentMana = maxMana;
         minDamage = Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
         maxDamage = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
-
+        nameText.text = statsSO.EnemyName;
     }
 
     private void StatusEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)

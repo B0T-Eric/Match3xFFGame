@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxMana: 0
   initialMana: 0
+  EnemyName: Wolf Pack
   Lower: 120
   Higher: 160
