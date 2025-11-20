@@ -6,12 +6,10 @@ public class GameResources : MonoBehaviour
 {
     private static GameResources instance;
     public static GameResources Instance {  get { return instance; } }
-    [SerializeField]
-    public List<BaseEvent> EventPool;
-    [SerializeField]
+    public List<BaseEvent> EventPool = new List<BaseEvent>();
     public List<GameObject> ItemPool;
-    [SerializeField]
     public List<BaseStatus> PartyStatusPool;
+    public List<ExchangeReward> ExchangeRewardPool;
     
     private void Awake()
     {
@@ -27,9 +25,17 @@ public class GameResources : MonoBehaviour
     }
     public BaseEvent GetRandomEvent()
     {
-        int rng = Random.Range(0, EventPool.Count);
-        BaseEvent e = EventPool[rng];
-        EventPool.RemoveAt(rng); 
-        return e;
+        if(EventPool == null || EventPool.Count == 0)
+        {
+            Debug.Log("EVENT POOL NULL OR EMPTY");
+            return null;
+        }
+        else
+        {
+            int rng = Random.Range(0, EventPool.Count);
+            BaseEvent e = EventPool[rng];
+            EventPool.RemoveAt(rng);
+            return e;
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,7 +9,8 @@ using UnityEngine.UI;
 /// Events should contain a set of options with rewards paired up to them,
 /// 
 /// </summary>
-public class BaseEvent : MonoBehaviour
+[Serializable]
+public abstract class BaseEvent : MonoBehaviour
 {
     public List<BaseEventReward> OptionOutcomes;
     [SerializeField]
@@ -24,6 +26,7 @@ public class BaseEvent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        InitializeRewards();
         continueButton = GameObject.Find("ContinueButton").GetComponent<Button>();
         titleText = GameObject.Find("Title").GetComponent<TextMeshProUGUI>();
         descriptionText = GameObject.Find("Description").GetComponent<TextMeshProUGUI>();
@@ -44,11 +47,18 @@ public class BaseEvent : MonoBehaviour
         descriptionText.text = description;
         continueButton.interactable = false;
     }
-    protected BaseEventReward GetReward(int index)
+    protected virtual  void InitializeRewards()
+    {
+
+    }
+    protected virtual BaseEventReward GetReward(int index)
     {
         BaseEventReward reward = OptionOutcomes[index];
-        if (reward != null)
+        if (reward != null) 
+        {
+            OptionOutcomes.RemoveAt(index); //i think this doesn't get rid of cancel?
             return reward;
+        }  
         else
             Debug.Log(index + " is missing");
             return null;
@@ -65,5 +75,9 @@ public class BaseEvent : MonoBehaviour
             Party.Instance.AddStatus(statusReward.GetReward());
         }
         continueButton.interactable = true;
+        foreach(Button b in eventButtons)
+        {
+            b.gameObject.SetActive(false);
+        }
     }
 }

@@ -31,7 +31,7 @@ public class ContinueClick : MonoBehaviour
         
         if (MapController.Instance != null)
         {
-            MapController.Instance.MarkRoomCleared(MapController.Instance.SelectedRow, MapController.Instance.SelectedColumn);
+            //MapController.Instance.MarkRoomCleared(MapController.Instance.SelectedRow, MapController.Instance.SelectedColumn);
         }
         MapController.Instance.IncrementStage();
         if(RewardCanvas != null)

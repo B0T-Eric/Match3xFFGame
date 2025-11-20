@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Reward : MonoBehaviour
@@ -36,6 +37,10 @@ public class Reward : MonoBehaviour
 
     private void EquipItem()
     {
+        if (SceneManager.GetActiveScene().name.Equals("BossScene"))
+        {
+            MapController.Instance.BossRoomClear();
+        }
         foreach(BaseCharacter c in Party.Instance.members)
         {
             foreach (CharacterInventorySlot slot in c.inventorySlots)

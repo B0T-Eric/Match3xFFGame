@@ -25,7 +25,6 @@ public class Match3Skin : MonoBehaviour
     int movesPerTurn;
     int movesRemaining;
     public int turnCount;
-    Party party;
 
     [SerializeField]
     Match3Game game;
@@ -66,10 +65,9 @@ public class Match3Skin : MonoBehaviour
 
     public void StartNewGame()
     {
-        
-        party = FindAnyObjectByType<Party>();
-        party.DisplayCharactersOnGameStart();
+        Party.Instance.DisplayCharactersOnGameStart();
         container.gameObject.SetActive(true);
+        
         busyDuration = 0f;
         SpawnEnemy();
         turnCount = 1;
@@ -122,7 +120,7 @@ public class Match3Skin : MonoBehaviour
 
     private void NewTurn()
     {
-        foreach(BaseCharacter character in party.members)
+        foreach(BaseCharacter character in Party.Instance.members)
         {
             character.TurnStart();
         }
@@ -229,7 +227,7 @@ public class Match3Skin : MonoBehaviour
     private void EndTurn()
     {
         
-        foreach (BaseCharacter character in party.members)
+        foreach (BaseCharacter character in Party.Instance.members)
         {
             if (EnemyCharacter.Instance.currentMana > 0)
             {
@@ -245,7 +243,7 @@ public class Match3Skin : MonoBehaviour
             EnemyCharacter.Instance.PreformTurn();
             if (AllPartyMembersAlive())
             {
-                foreach(BaseCharacter character in party.members)
+                foreach(BaseCharacter character in Party.Instance.members)
                 {
                     character.TurnEnd();
                 }
@@ -279,14 +277,14 @@ public class Match3Skin : MonoBehaviour
     private bool AllPartyMembersAlive()
     {
         int deadCount = 0;
-        foreach (BaseCharacter character in party.members)
+        foreach (BaseCharacter character in Party.Instance.members)
         {
             if(character.state == CharacterState.Dead)
             {
                 deadCount++;
             }
         }
-        if(deadCount == party.members.Count)
+        if(deadCount == Party.Instance.members.Count)
         {
             return false;
         }

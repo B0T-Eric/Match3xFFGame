@@ -1,50 +1,44 @@
+﻿using NUnit.Framework.Constraints;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+public enum MapItem { Normal, Mystery, Rest, Boss }
 public class MapController : MonoBehaviour
 {
     private static MapController instance;
     public static MapController Instance { get { return instance; } }
-
+    [SerializeField]
+    private Sprite pathSpirte;
+    public int stageCount = 0;
+    public float EnemyHealthModifier = 1f;
+    public float EnemyDamageModifier = 1f;
     public Canvas MapCanvas;
-    public int CurrentStage = 0;
     //all possible enemy prefabs to include in scenes.
     public GameObject[] EnemyArray;
     public GameObject[] BossArray;
     //a set of enemies, 1 per row for the game to pull from if required
     public GameObject[] EnemyList;
-    //increment stage count at end of stage.
-    public int stageCount = 0;
-    public float EnemyHealthModifier = 1f;
-    public float EnemyDamageModifier = 1f;
-
-    // Selection tracking
-    public int SelectedRow { get; private set; } = -1;
-    public int SelectedColumn { get; private set; } = -1;
-    public GameObject SelectedMapPrefab { get; private set; }
-    public NavigationItem.MapItemType SelectedType { get; private set; } = NavigationItem.MapItemType.Unknown;
-
-    // Cleared rooms tracking (persisting across scene loads)
-    private HashSet<string> clearedRooms = new HashSet<string>();
-    //2D list to hold each rows items.
     [SerializeField]
     private int LevelMapCount;
     bool hasInitialized = false;
-    private List<List<GameObject>> LevelMap;
     //Items to place on map screen (buttons which contain either normal encounter, boss ecounter (at end), random encounters, or resting scene
-    //index 0 = normal, 1 = random, 2 = rest, 3 = boss.
+    //index 0 = normal, 1 = mystery, 2 = rest, 3 = boss.
     [SerializeField]
     private GameObject[] mapItems;
-    //placement offset to x vector 2 value
+    public int CurrentStage = 0;
+    #region grid
     [SerializeField]
-    int xOffset;
-    //amount of rows in the map.
-    [SerializeField]
-    int rowCount;
+    int rows, cols, roomsPerRow;
+    const int height = 64;
+    const int width = 64;
+    GameObject[][] navGrid;
+    List<int> currentValid = new List<int>();
+    #endregion
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -56,202 +50,186 @@ public class MapController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         
     }
+    private async void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            await SceneManager.LoadSceneAsync("BossScene");
+        }
+    }
     public GameObject GetRandomBoss()
     {
         return BossArray[Random.Range(0, BossArray.Length - 1)];
     }
+
     private void Start()
     { 
         if (!hasInitialized)
         {
-            LevelMap = new List<List<GameObject>>();
-            EnemyList = new GameObject[rowCount];
-            GenerateMap();
+            EnemyList = new GameObject[rows];
+            MakeGrid(rows,cols);
             hasInitialized = true;
-            LevelMapCount = LevelMap.Count();
         }
     }
-
+    #region MapGeneration
     /// <summary>
-    /// Record the room the player selected. This persists across scene loads (MapController is DontDestroyOnLoad).
+    /// Create a grid of a set height and width that contains navigation items.
+    /// Populate 2D array of navigation items within the grid, setting empty spaces as null.
+    /// First item connects to all.
+    /// Last item connects to all.
     /// </summary>
-    public void SelectRoom(int row, int col, GameObject mapPrefab, NavigationItem.MapItemType type)
+    /// <param name="rows"></param>
+    /// <param name="cols"></param>
+    private void MakeGrid(int rows, int cols)
     {
-        SelectedRow = row;
-        SelectedColumn = col;
-        SelectedMapPrefab = mapPrefab;
-        SelectedType = type;
-        Debug.Log($"MapController.SelectRoom row={row} col={col} type={type} prefab={(mapPrefab != null ? mapPrefab.name : "null")}");
+        GenerateGrid(rows, cols);
+        StartCoroutine(DelayedUI());
     }
 
-    /// <summary>
-    /// Mark a room as cleared so it can be displayed differently in the UI.
-    /// </summary>
-    public void MarkRoomCleared(int row, int col)
+    private void GenerateGrid(int rows, int cols)
     {
-        if (row < 0 || col < 0) return;
-        clearedRooms.Add(RoomKey(row, col));
-    }
-
-    public bool IsRoomCleared(int row, int col)
-    {
-        if (row < 0 || col < 0) return false;
-        return clearedRooms.Contains(RoomKey(row, col));
-    }
-
-    private string RoomKey(int row, int col) => $"{row}_{col}";
-
-    /// <summary>
-    /// Populate ui canvas with the buttons for navigation to specific 
-    /// encounters.
-    /// Rows will contain 2-4 different items, each item can be either a enemy, unknown or rest encounter.
-    /// 
-    /// </summary>
-    public void GenerateMap()
-    {
-        for (int i = 0; i < rowCount; i++)
+        navGrid = new GameObject[rows][];
+        //current valid placements for a node
+        
+        for (int i = 0; i < rows; i++)
         {
-            EnemyList[i] = EnemyArray[UnityEngine.Random.Range(0, EnemyArray.Length)];
-            GameObject[] rowObjects = null;
-            if (i > 0 && i < rowCount-1)
+            EnemyList[i] = EnemyArray[Random.Range(0, EnemyArray.Length)];
+            GameObject[] navItems = new GameObject[cols];
+            if (i > 1 && i < rows - 2)
             {
-                //In each row randomise items, having 1-5 different rooms in each
-                int rowItems = UnityEngine.Random.Range(2, 5);
-                rowObjects = new GameObject[rowItems];
-                if (rowObjects != null)
+                int roomsToPlace = Random.Range(2, 5);
+                navItems = PopulateRow(cols, roomsToPlace,i); 
+            }
+            else if (i == 0) //start in center at bottom row
+            {
+                navItems[cols / 2] = GetMapItem(MapItem.Normal, i, cols / 2);
+            }
+            else if (i == rows - 1) //boss in center at top row
+            {
+                int c = cols / 2;
+                navItems[c] = GetMapItem(MapItem.Boss, i, c);
+            }
+            else //row after start and before boss must spawn 2
+            {
+                int col1 = (cols / 2) + 1;
+                int col2 = (cols / 2) - 1;
+                navItems[col1] = GetRandomMapItem(i, col1);
+                navItems[col2] = GetRandomMapItem(i, col2);
+            }
+            navGrid[i] = navItems;
+        }
+    }
+    private GameObject GetMapItem(MapItem map, int row, int col)
+    {
+        GameObject g = Instantiate(mapItems[(int)map]);
+        InitializeMapItem(ref g, row, col);
+        return g;
+    }
+
+    private GameObject[] PopulateRow(int cols, int roomsToPlace,int row)
+    {
+        return GetLayouts(roomsToPlace,row,cols);
+    }
+    private GameObject[] GetLayouts(int rooms, int row,int cols)
+    {
+        GameObject[] layouts = new GameObject[cols];
+
+        if (rooms <= 0)
+            return layouts;
+
+        int gap = Mathf.FloorToInt((cols - rooms) / (float)rooms);
+
+        int span = rooms + gap * (rooms - 1);
+        int offset = (cols - span) / 2;
+
+        for (int i = 0; i < rooms; i++)
+        {
+            int col = offset + i * (gap + 1);
+            layouts[col] = GetRandomMapItem(row, col);
+        }
+
+        return layouts;
+    }
+    private GameObject GetRandomMapItem(int row, int col)
+    {
+        int rng = Random.Range(1, 101);
+        GameObject g = null;
+        if (rng > 0 && rng < 60)
+        {
+            //enemy
+            g = GetMapItem(MapItem.Normal,row,col);
+
+        }
+        else if (rng > 60 && rng < 85)
+        {
+            //bonus
+            g = GetMapItem(MapItem.Mystery,row,col);
+        }
+        else
+        {
+            //rest
+            g = GetMapItem(MapItem.Rest,row,col);
+        }
+        InitializeMapItem(ref g,row,col);
+        return g;
+    }
+    private void InitializeMapItem(ref GameObject g, int row, int col) 
+    {
+        g.transform.SetParent(MapCanvas.transform, false);
+        NavigationItem navItem = g.GetComponent<NavigationItem>();
+        navItem.RowNumber = row;
+        navItem.ColumnIndex = col;
+        if (row != 0)
+        {
+            navItem.MakeConnections(ref navGrid);
+        }
+        if (navItem != null)
+        {
+            Button b = g.GetComponent<Button>();
+            if (b != null)
+            {
+                b.onClick.RemoveAllListeners();
+                b.onClick.AddListener(navItem.OnClicked);
+            }
+        }
+        
+    }
+    #endregion
+    private void PopulateUI()
+    {
+        float screenPadding = 100f;
+        RectTransform mapCanvasRect = MapCanvas.GetComponent<RectTransform>();
+        float canvasHeight = mapCanvasRect.rect.height;
+        float canvasWidth = mapCanvasRect.rect.width;
+        float actualHeight = canvasHeight - (2 * screenPadding);
+        float startY = canvasHeight / 2f - screenPadding;
+        for (int y = 0; y < rows; y++)
+        {
+            GameObject[] rowItems = navGrid[y];
+            float yPos = -startY + (y * height) + 20;
+            float xStart = -((rowItems.Length - 1) * width) /2f;
+            for (int x = 0; x < rowItems.Length; x++)
+            {
+                float xPos = xStart + (x * width) + 20;
+                Vector2 anchoredPos = new Vector2(xPos, yPos);
+                GameObject cellObject = rowItems[x];
+                if (cellObject != null)
                 {
-                    //initialize each rowObject item
-                    for (int j = 0; j < rowObjects.Count(); j++)
-                    {
-                        int rng = UnityEngine.Random.Range(1, 101);
-                        if(rng > 0 && rng < 60)
-                        {
-                            //enemy
-                            rowObjects[j] = mapItems[0];
-                            
-                        }
-                        else if(rng >60 && rng < 85)
-                        {
-                            //bonus
-                            rowObjects[j] = mapItems[1];
-                        }
-                        else
-                        {
-                            //rest
-                            rowObjects[j] = mapItems[2];
-                            
-                        }
-                            
-                    }
-                }
-            }
-            else if(i == 0)
-            {
-                rowObjects = new GameObject[1];
-                rowObjects[0] = mapItems[0];
-            }
-            else if(i == rowCount - 1)
-            {
-                rowObjects = new GameObject[1];
-                rowObjects[0] = mapItems[3];
-            }
-            
-            List<GameObject> completeRow = rowObjects.ToList();
-            LevelMap.Add(completeRow);
-        }
-        PopulateUI(rowCount);
-    }
-    /// <summary>
-    /// Chat GPT schizophrenia - used it to help style.
-    /// </summary>
-    /// <param name="rowCount"></param>
-    private void PopulateUI(int rowCount)
-    {
-        float padding = 100f;
-        RectTransform canvasRect = MapCanvas.GetComponent<RectTransform>();
-        float canvasHeight = canvasRect.rect.height;
-        float canvasWidth = canvasRect.rect.width;
-        float usableHeight = canvasHeight - (2 * padding);
-        float yOffset = rowCount > 1 ? usableHeight / (rowCount - 1) : 0;
-        float startY = canvasHeight / 2f - padding;
-        for (int yCount = 0; yCount < rowCount; yCount++)
-        {
-            List<GameObject> row = LevelMap[yCount];
-            
-            float y = - startY + (yCount * yOffset);
-            
-            float xStart = -((row.Count - 1) * xOffset) / 2f;
-            for (int xCount = 0; xCount < row.Count; xCount++)
-            {
-                float x = xStart + (xCount * xOffset);
-                Vector2 anchoredPos = new Vector2(x, y);
-
-                // NOTE: row[xCount] is the prefab; g is the instantiated visual object.
-                GameObject prefabForCell = row[xCount];
-                GameObject g = Instantiate(prefabForCell, MapCanvas.transform);
-                NavigationItem navItem = g.GetComponent<NavigationItem>();
-                if (navItem != null)
-                {
-                    UnityEngine.UI.Button b = g.GetComponent<UnityEngine.UI.Button>();
-                    navItem.StageNumber = yCount;
-                    // column index and prefab + type for the nav item
-                    navItem.ColumnIndex = xCount;
-                    navItem.MapPrefab = prefabForCell;
-                    navItem.ItemType = GetItemTypeFromPrefab(prefabForCell);
-
-                    // set cleared state on the nav item
-                    navItem.SetCleared(IsRoomCleared(yCount, xCount));
-
-                    // ensure clicking the button records the selection and loads at once
-                    if (b != null)
-                    {
-                        b.onClick.RemoveAllListeners();
-                        b.onClick.AddListener(navItem.OnClicked);
-                        b.interactable = (navItem.StageNumber == CurrentStage);
-                        ColorBlock cb = b.colors;
-                        cb.normalColor = (navItem.StageNumber == CurrentStage) ? Color.white : Color.gray;
-                        b.colors = cb;
-                    }
-                }
-                RectTransform rt = g.GetComponent<RectTransform>();
-                rt.anchoredPosition = anchoredPos;
-            }
-        }
-    }
-
-    // small helper to map the prefab reference to a friendly enum
-    private NavigationItem.MapItemType GetItemTypeFromPrefab(GameObject prefab)
-    {
-        if (prefab == null) return NavigationItem.MapItemType.Unknown;
-        if (mapItems != null && mapItems.Length > 0)
-        {
-            if (prefab == mapItems[0]) return NavigationItem.MapItemType.Enemy;
-            if (mapItems.Length > 1 && prefab == mapItems[1]) return NavigationItem.MapItemType.Bonus;
-            if (mapItems.Length > 2 && prefab == mapItems[2]) return NavigationItem.MapItemType.Rest;
-            if (mapItems.Length > 3 && prefab == mapItems[3]) return NavigationItem.MapItemType.Boss;
-        }
-        return NavigationItem.MapItemType.Unknown;
-    }
-
-    public void ChangeEnable()
-    {
-        int stageAfter = CurrentStage;
-        foreach (List<GameObject> gameObjects in LevelMap)
-        {
-            foreach (GameObject g in gameObjects)
-            {
-                NavigationItem item = g.GetComponent<NavigationItem>();
-                UnityEngine.UI.Button b = g.GetComponent<UnityEngine.UI.Button>();
-                if (item != null && b != null)
-                {
-                    // Only enable the buttons for the next stage
-                    b.interactable = (item.StageNumber == stageAfter);
-                    ColorBlock cb = b.colors;
-                    cb.normalColor = (item.StageNumber == stageAfter) ? Color.white : Color.gray;
-                    b.colors = cb;
+                    
+                    RectTransform rt = cellObject.GetComponent<RectTransform>();
+                    rt.anchoredPosition = anchoredPos;
                 }
             }
         }
+    }
+    public void BossRoomClear()
+    {
+
+    }
+    private IEnumerator DelayedUI()
+    {
+        yield return new WaitForEndOfFrame();
+        PopulateUI();
     }
     public void IncrementStage()
     {
@@ -268,10 +246,8 @@ public class MapController : MonoBehaviour
     private IEnumerator LoadAndPopulate()
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("NavigationScene");
-
         while (!asyncLoad.isDone)
             yield return null;
-
         yield return null;
 
         if (MapCanvas == null)
@@ -281,8 +257,7 @@ public class MapController : MonoBehaviour
 
         if (MapCanvas != null)
         {
-            PopulateUI(rowCount);
+            StartCoroutine(DelayedUI());
         }
     }
-
 }

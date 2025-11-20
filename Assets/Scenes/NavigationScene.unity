@@ -1062,23 +1062,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c70fc712a9482d749946f0e9b3506648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MapCanvas: {fileID: 1401766316}
-  CurrentStage: 0
-  EnemyArray:
-  - {fileID: 5237478499908310623, guid: 430f8b016c08e1042b433d67043112d7, type: 3}
-  - {fileID: 5237478499908310623, guid: e704babbdbfb4aa4cb8dd14722530fc0, type: 3}
-  EnemyList: []
+  pathSpirte: {fileID: 21300000, guid: 310f410decc90424883b284202e9f838, type: 3}
   stageCount: 0
   EnemyHealthModifier: 1
   EnemyDamageModifier: 1
+  MapCanvas: {fileID: 1401766316}
+  EnemyArray:
+  - {fileID: 5237478499908310623, guid: 430f8b016c08e1042b433d67043112d7, type: 3}
+  - {fileID: 5237478499908310623, guid: e704babbdbfb4aa4cb8dd14722530fc0, type: 3}
+  BossArray:
+  - {fileID: 5237478499908310623, guid: 8b9f13e09fd488f4e8a2ee6d7ee485cc, type: 3}
+  EnemyList: []
   LevelMapCount: 0
   mapItems:
   - {fileID: 8964468360260794018, guid: 0cbb4c88e22ccd24e90411d15868824a, type: 3}
   - {fileID: 8498971211051752283, guid: 4ec47f29440a4044b83759f1c6f36bc9, type: 3}
   - {fileID: 948417887240996118, guid: 19b53084d802cc541aaf6793204a59fc, type: 3}
   - {fileID: 5969348920148989191, guid: 05a95d2aabe278048829a2d1c746f08b, type: 3}
-  xOffset: 150
-  rowCount: 15
+  CurrentStage: 0
+  rows: 15
+  cols: 7
 --- !u!4 &1826078964
 Transform:
   m_ObjectHideFlags: 0
@@ -1107,7 +1110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EventPool:
-  - {fileID: 5132986995324936114, guid: f3a693f43564f2e48b20b8eabe0a8b08, type: 3}
+  - {fileID: 2205362881785441686, guid: f3a693f43564f2e48b20b8eabe0a8b08, type: 3}
   ItemPool:
   - {fileID: 9187195536599491579, guid: 688fca842023dc34cb33fa99e77fdf2f, type: 3}
   - {fileID: 9187195536599491579, guid: af44ea1cbb54ab147986156455a717de, type: 3}
@@ -1119,6 +1122,15 @@ MonoBehaviour:
   - {fileID: 9187195536599491579, guid: c99ba3b3801919e43b78be4b3afed69c, type: 3}
   - {fileID: 9187195536599491579, guid: cb1b23189e0c98c4196477444d0209a7, type: 3}
   - {fileID: 9187195536599491579, guid: ce9ed4644e7539742bc11a02dc44ee63, type: 3}
+  ExchangeRewardPool:
+  - {fileID: 11400000, guid: 31bb43b6495cd904da80cd2ecc19a811, type: 2}
+  - {fileID: 11400000, guid: 5e9290cb284664349a8fdcb88b67f909, type: 2}
+  - {fileID: 11400000, guid: 5e5d18c722c2d52448eeea420ece58b2, type: 2}
+  - {fileID: 11400000, guid: 3c2a9e1f0b2460e4fb9f1eb2467887fc, type: 2}
+  - {fileID: 11400000, guid: 2c9434bdc1f77144fa346353e6392228, type: 2}
+  - {fileID: 11400000, guid: f96fa1ce328e2324fad1797f580a8a85, type: 2}
+  - {fileID: 11400000, guid: 22f2f6c739c89f84b81e8ecbfc21bb23, type: 2}
+  - {fileID: 11400000, guid: b495c68687f42e74bb9a029806be83e0, type: 2}
 --- !u!1 &1963569271
 GameObject:
   m_ObjectHideFlags: 0

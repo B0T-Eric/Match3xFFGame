@@ -7,7 +7,7 @@ public class Game : MonoBehaviour
     bool isDragging;
     [SerializeField]
     Match3Skin match3;
-    private void Awake() => match3.StartNewGame();
+    private void Start() => match3.StartNewGame();
 
     private void Update()
     {

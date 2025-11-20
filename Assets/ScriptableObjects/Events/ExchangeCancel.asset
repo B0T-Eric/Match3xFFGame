@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ExchangeCancel
   m_EditorClassIdentifier: 
   rewardSprite: {fileID: 0}
-  OptionSelectText: Cancel
+  OptionSelectText: Cancel (skips event)
   type: 0

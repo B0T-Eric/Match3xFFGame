@@ -23,6 +23,7 @@ public class EnemyCharacter : BaseCharacter
     protected string damageTakenString;
     TextMeshProUGUI damageTakenText, logTitleText, nameText;
     Button nextButton, lastButton, previousButton, firstButton;
+    string enemyName;
     private void Awake()
     {
         instance = this;
@@ -45,7 +46,7 @@ public class EnemyCharacter : BaseCharacter
         logTitleText = GameObject.Find("LogText").GetComponent<TextMeshProUGUI>();
         GameContainer.Instance.DisplayEnemy(this);
         manaBar.Init(this);
-        
+        nameText.text = enemyName;
     }
     protected void InitializeStats()
     {
@@ -55,7 +56,7 @@ public class EnemyCharacter : BaseCharacter
         currentMana = maxMana;
         minDamage = Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
         maxDamage = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
-        nameText.text = statsSO.EnemyName;
+        enemyName = statsSO.EnemyName;
     }
 
     private void StatusEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)

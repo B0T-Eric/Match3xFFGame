@@ -33,7 +33,15 @@ public class AbominationBoss : EnemyCharacter
     }
     protected override int GetDamage()
     {
-        return maxDamage;
+        int hungerDamageAmp = GetHungerAmp();
+        return maxDamage + hungerDamageAmp;
+    }
+    private int GetHungerAmp()
+    {
+        var hunger = System.Linq.Enumerable.FirstOrDefault(
+            System.Linq.Enumerable.OfType<Hunger>(statusEffects)
+        );
+        return hunger != null ? hunger.StackCount : 0;
     }
     protected override void SelectTargets()
     {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BossIndicator : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class BossIndicator : MonoBehaviour
     {
         for (int i = 0; i < Icons.Count; i++)
         {
-            SpriteRenderer s = Icons[i].GetComponent<SpriteRenderer>();
+            Image s = Icons[i].GetComponent<Image>();
             if (i < images.Count && images[i] != null)
             {
                 s.sprite = images[i];

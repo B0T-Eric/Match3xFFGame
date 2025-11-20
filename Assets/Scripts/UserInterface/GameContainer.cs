@@ -13,7 +13,11 @@ public class GameContainer : MonoBehaviour
     List<InGameCharacterDisplay> characterDisplays = new List<InGameCharacterDisplay>(4);
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+
         for (int i = 0; i < displays.Count; i++)
         {
             characterDisplays.Add(displays[i].GetComponent<InGameCharacterDisplay>());
@@ -56,5 +60,8 @@ public class GameContainer : MonoBehaviour
             enemyDisplay.DisplayCharacter(character);
         }
     }
-
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
 }
