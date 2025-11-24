@@ -1,32 +1,29 @@
 using NUnit.Framework.Constraints;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class NavigationItem : MonoBehaviour
 {
-    public enum MapItemType
-    {
-        Enemy,
-        Bonus,
-        Rest,
-        Boss,
-        Unknown
-    }
     public int RowNumber;
     public int ColumnIndex;
     public GameObject MapPrefab;
-    public MapItemType ItemType = MapItemType.Unknown;
+    public MapItem ItemType;
     [SerializeField]
     private List<NavigationItem> belowConnections;
     [SerializeField]
     private List<NavigationItem> aboveConnections;
+    public bool PlayerIsHere = false;
+    bool playerCanMoveTo = false;
     public bool IsCleared { get; private set; } = false;
-
+    private Button itemButton;
     Image backgroundImage;
     private void Start()
     {
+        itemButton = gameObject.GetComponent<Button>();   
         if(belowConnections == null && aboveConnections == null)
         {
             belowConnections = new();
@@ -72,7 +69,7 @@ public class NavigationItem : MonoBehaviour
                         {
                             nav.AddAboveConnection(this);
                         }
-                        if (!nav.belowConnections.Contains(nav))
+                        if (!belowConnections.Contains(nav))
                         {
                             AddBelowConnection(nav);
                         }
@@ -91,6 +88,15 @@ public class NavigationItem : MonoBehaviour
     {
         aboveConnections.Add(item);
     }
+    public void RemoveBelowConnection(NavigationItem item)
+    {
+        belowConnections.Remove(item);
+    }
+    public void RemoveAboveConnection(NavigationItem item)
+    {
+        aboveConnections.Remove(item);
+    }
+
     public void SetCleared(bool cleared)
     {
         IsCleared = cleared;
@@ -127,10 +133,6 @@ public class NavigationItem : MonoBehaviour
     {
         SceneManager.LoadSceneAsync("BossScene");
     }
-    public void AddConnection()
-    {
-
-    }
     /// <summary>
     /// Randomly determine whether to load an enemy, shop, bonus room or something else (tbd).
     /// </summary>
@@ -143,29 +145,56 @@ public class NavigationItem : MonoBehaviour
     {
         Destroy(gameObject);
     }
+    public void ToggleButton(bool b)
+    {
+        itemButton.interactable = b;
+        playerCanMoveTo = b;
+    }
+    public void ChangeEnable()
+    {
+        if (IsCleared && PlayerIsHere)
+        {
+            foreach (NavigationItem item in aboveConnections)
+            {
+                item.ToggleButton(true);
+            }
+            ToggleButton(false);
+            
+        }
+        else if (PlayerIsHere)
+        {
+            ToggleButton(true);
+        }
+        else if (playerCanMoveTo && !PlayerIsHere)
+        {
+            ToggleButton(true);
+        }
+        else
+        {
+            ToggleButton(false);
+        }
+    }
     public void OnClicked()
     {
-        if (MapController.Instance != null)
-        {
-            //MapController.Instance.SelectRoom(StageNumber, ColumnIndex, MapPrefab, ItemType);
-        }
         switch (ItemType)
         {
-            case MapItemType.Enemy:
+            case MapItem.Normal:
                 LoadEnemyScene();
                 break;
-            case MapItemType.Bonus:
+            case MapItem.Mystery:
                 LoadRandomScene();
                 break;
-            case MapItemType.Rest:
+            case MapItem.Rest:
                 LoadRestScene();
                 break;
-            case MapItemType.Boss:
+            case MapItem.Boss:
                 LoadBossScene();
                 break;
             default:
                 LoadRandomScene();
                 break;
         }
+        MapController.Instance.SetCurrentPosition(this);
+        PlayerIsHere = true;
     }
 }

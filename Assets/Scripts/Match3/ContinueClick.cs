@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ContinueClick : MonoBehaviour
 { 
@@ -34,10 +35,10 @@ public class ContinueClick : MonoBehaviour
             //MapController.Instance.MarkRoomCleared(MapController.Instance.SelectedRow, MapController.Instance.SelectedColumn);
         }
         MapController.Instance.IncrementStage();
-        if(RewardCanvas != null)
+        if (RewardCanvas != null)
         {
             Destroy(RewardCanvas);
         }
-        MapController.Instance.LoadMapScene();
+        SceneManager.LoadScene("NavigationScene");
     }
 }
