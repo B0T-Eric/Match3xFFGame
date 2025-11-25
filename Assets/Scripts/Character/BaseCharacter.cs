@@ -70,7 +70,7 @@ public abstract class BaseCharacter : MonoBehaviour
     #endregion
     public virtual void Init()
     {
-        description = "base description";
+        
         passiveValues = new PassiveValues(20,35);
         statusEffects = new ObservableCollection<BaseStatus>();
         currentMana = statsSO.initialMana;
@@ -98,7 +98,17 @@ public abstract class BaseCharacter : MonoBehaviour
         inventorySlots = GetComponentsInChildren<CharacterInventorySlot>(true);
         turnStateButton.onClick.AddListener(ChangeTurnState);
         manaBar.Init(this);
+        description = GetDescription();
         UpdateDisplays();
+    }
+
+    private string GetDescription()
+    {
+        return $"<b><color=#{hexColour}>{GetCharacterName()} </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
+            $"\n<b>Passives:</b>" +
+            $"\nPassive 1 ( > 0 mana): {GetPassiveOneDesc()}" +
+            $"\nPassive 2 ( >= {passiveValues.secPassiveThreshold} mana): {GetPassiveTwoDesc()}" +
+            $"\nPassive 3 ( >= {passiveValues.thirdPassiveThreshold} mana): {GetPassiveThreeDesc()}";
     }
 
     private void StatusEffectsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -598,5 +608,13 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         return GetRetainMult();
     }
+    public virtual string GetCharacterName()
+    {
+        return $"{manaType} Character";
+    }
+    public abstract string GetPassiveOneDesc();
+    public abstract string GetPassiveTwoDesc();
+    public abstract string GetPassiveThreeDesc();
+
     #endregion
 }

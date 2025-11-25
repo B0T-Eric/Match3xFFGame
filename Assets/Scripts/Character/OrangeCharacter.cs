@@ -23,13 +23,22 @@ public class OrangeCharacter : BaseCharacter
         manaType = ManaType.Orange;
         hexColour = "FF8000";
         base.Init();
-        description = $"<b><color=#{hexColour}> {manaType} Character </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
-        $"\n <b>Passives: \n</b> Passive 1 (0 mana): Attacks set enemies on fire, applying the burn status effect for {burnDamagePercent * 100}% damage." +
-        $"\n <color=#{hexColour}>Burn:</color> Deals damage at the end of turn for {burnDuration} turns." +
-        $"\n Passive 2 ({passiveValues.secPassiveThreshold} mana): Adds {burnBonusDamage} to new burn status effects." +
-        $"\n Passive 3 ({passiveValues.thirdPassiveThreshold} mana): Stores {storedDamagePercent * 100}% damage from the previous round to increase damage in the next";
 
     }
+    #region descriptions
+    public override string GetPassiveOneDesc()
+    {
+        return $"Attacks set enemies on fire, applying the burn status effect for {burnDamagePercent * 100}% damage.";
+    }
+    public override string GetPassiveTwoDesc()
+    {
+        return $"Adds {burnBonusDamage} to new burn status effects.";
+    }
+    public override string GetPassiveThreeDesc()
+    {
+        return $"Stores {storedDamagePercent * 100}% damage from the previous round to increase damage in the next turn.";
+    }
+    #endregion
 
     //on attack from orange character, take half the damage delt, and the enemy and apply a burn effect.
     //each burn is independant

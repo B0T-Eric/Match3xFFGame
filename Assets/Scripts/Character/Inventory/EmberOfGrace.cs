@@ -6,6 +6,7 @@ public class EmberOfGrace : DraggableItem, IStatItem
     [SerializeField]
     TextMeshProUGUI restText;
     public int RestCount = 0;
+    public float healModifier = 1.5f;
     private void Start()
     {
         restText.text = RestCount.ToString();
@@ -18,11 +19,11 @@ public class EmberOfGrace : DraggableItem, IStatItem
     }
     public void IncreaseStats(int num)
     {
-        itemSO.healingMult += (float)(num * 1.5f) / 10f;
+        itemSO.healingMult += (float)(num * healModifier) / 10f;
     }
     public void DecreaseStats(int num)
     {
-        itemSO.healingMult -= (float)(num * 1.5f) / 10f;
+        itemSO.healingMult -= (float)(num * healModifier) / 10f;
     }
     public void OnEquip()
     {
@@ -32,5 +33,9 @@ public class EmberOfGrace : DraggableItem, IStatItem
     public void OnUnequip()
     {
         DecreaseStats(RestCount);
+    }
+    public override string GetEffectDesc()
+    {
+        return $"<b>Current Stacks: {RestCount}</b>\nEvery time you rest this item gains stacking increases (+{healModifier / 10}%) to healing.";
     }
 }

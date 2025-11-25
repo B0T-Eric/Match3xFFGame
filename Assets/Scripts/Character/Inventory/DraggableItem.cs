@@ -20,6 +20,51 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         image = GetComponent<Image>();
         image.sprite = itemSO.itemImage;
     }
+    public string GetDescription()
+    {
+        return$"\n<b>Stats:</b>" +
+            $"\n{GetItemStatDesc()}" +
+            $"\n<b>Effects</b>" +
+            $"\n{GetEffectDesc()}" +
+            $"\n<b>Upgrades</b>" +
+            $"\n{GetUpgradeEffectDesc()}";
+    }
+    public virtual string GetEffectDesc()
+    {
+        return "No Special Effects.";
+    }
+    public virtual string GetUpgradeEffectDesc()
+    {
+        return "Not Upgradable.";
+    }
+    public string GetItemStatDesc()
+    {
+        List<string> parts = new List<string>();
+
+        if (itemSO.potentialGainIncrease > 0)
+            parts.Add($"+{itemSO.potentialGainIncrease} Potential Gain");
+
+        if (itemSO.potentialGainMult > 0)
+            parts.Add($"+{itemSO.potentialGainMult * 100f}% Potential Gain");
+
+        if (itemSO.damageMult > 0)
+            parts.Add($"+{itemSO.damageMult * 100f}% Damage");
+
+        if (itemSO.flatDamageIncrease > 0)
+            parts.Add($"+{itemSO.flatDamageIncrease} Flat Damage");
+
+        if (itemSO.healingMult > 0)
+            parts.Add($"+{itemSO.healingMult * 100f}% Healing");
+
+        if (itemSO.damageReduction > 0)
+            parts.Add($"{itemSO.damageReduction}% Damage Reduction");
+
+        // If no stats were added, give a fallback message
+        if (parts.Count == 0)
+            return "No stat bonuses.";
+
+        return string.Join("\n", parts);
+    }
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("Begin Drag");
@@ -83,6 +128,13 @@ public interface IOnTurnStart
 {
     void OnTurnStart();
 }
-
+//items which can be upgraded.
+public interface IUpgradableItem
+{
+    public int Tier { get; set; }
+    public int UpgradeAmount { get; set; }
+    public float UpgradeModifier { get; set; }
+    void Upgrade();
+}
 
 

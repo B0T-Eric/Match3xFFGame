@@ -10,7 +10,7 @@ namespace Assets.Scripts.UserInterface
         {
             item = GetComponent<DraggableItem>();
             Tooltip = $"<color=grey><b>{item.itemSO.itemName}</color></b>" +
-                $"\n{item.itemSO.description}";
+                $"\n{item.GetDescription()}";
         }
 
 

@@ -18,13 +18,15 @@ public class Reward : MonoBehaviour
 
     [SerializeField]
     Button continueButton;
-
+    [SerializeField]
+    Button skipButton;
 
     [SerializeField]
     Canvas canvas;
     private void Start()
     {
         continueButton.enabled = false;
+        continueButton.interactable = false;
         canvas = GetComponentInParent<Canvas>();
         button = GetComponent<Button>();
         GameObject.Find("GameContainer").SetActive(false);
@@ -36,11 +38,7 @@ public class Reward : MonoBehaviour
     }
 
     private void EquipItem()
-    {
-        if (SceneManager.GetActiveScene().name.Equals("BossScene"))
-        {
-            MapController.Instance.BossRoomClear();
-        }
+    { 
         foreach(BaseCharacter c in Party.Instance.members)
         {
             foreach (CharacterInventorySlot slot in c.inventorySlots)
@@ -51,13 +49,21 @@ public class Reward : MonoBehaviour
                     slot.DisplayEquipedItem(selectedItem);
                     gameObject.SetActive(false);
                     continueButton.enabled = true;
+                    continueButton.interactable = true;
+                    skipButton.gameObject.SetActive(false);
                     return;
                 }       
             } 
         }
         Debug.Log("Didn't Find Empty Slot");
     }
-
+    public void SkipItem()
+    {
+        gameObject.SetActive(false);
+        continueButton.enabled = true;
+        continueButton.interactable = true;
+        skipButton.gameObject.SetActive(false);
+    }
     private GameObject GetItem()
     {
         

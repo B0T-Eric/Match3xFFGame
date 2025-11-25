@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 /// <summary>
 /// Pink character classes purpose is to facilitate the unique buffs and attacks of the pink character.
 /// The unique effects of pink character are their unique statuses which change mana generation and damage delt.
@@ -18,14 +19,23 @@ public class PinkCharacter : BaseCharacter
         manaType = ManaType.Pink;
         hexColour = "FF00BE";
         base.Init();
-        description = $"<b><color=#{hexColour}> {manaType} Character </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
-            $"\n <b>Passives: \n</b> Passive 1 (0 mana): At the beginning of each turn this character gains one of two status effects: " +
-            $"\n <color=red>Rage:</color> Increases outgoing attack damage by 50%." +
-            $"\n <color=#{hexColour}>Passion:</color> Double potential gained." +
-            $"\n Passive 2 ({passiveValues.secPassiveThreshold} mana): Attacks now trigger twice but become unpredictable dealing either {modifiers[0] * 100}%, {modifiers[1] * 100}%, {modifiers[2] * 100}%, {modifiers[3] * 100}% of potential as damage." +
-            $"\n Passive 3 ({passiveValues.thirdPassiveThreshold} mana): When an attack deals 10 or more damage, heal for 25% of the damage dealt.";
-
     }
+    #region descriptions
+    public override string GetPassiveOneDesc()
+    {
+        return $"At the beginning of each turn this character gains one of two status effects: " +
+            $"\n <color=red>Rage:</color> Increases outgoing attack damage by 50%." +
+            $"\n <color=#{hexColour}>Passion:</color> Double potential gained.";
+    }
+    public override string GetPassiveTwoDesc()
+    {
+        return $"Attacks now trigger twice but become unpredictable dealing either {modifiers[0] * 100}%, {modifiers[1] * 100}%, {modifiers[2] * 100}%, {modifiers[3] * 100}% of potential as damage.";
+    }
+    public override string GetPassiveThreeDesc()
+    {
+        return $"When a single hit from an attack is greater than 10, gain mana equal to 25% of the damage dealt.";
+    }
+    #endregion
     public override void Attack(BaseCharacter c)
     {
         if (currentMana < passiveValues.secPassiveThreshold)

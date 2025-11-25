@@ -15,12 +15,22 @@ public class PurpleCharacter : BaseCharacter
         manaType = ManaType.Purple;
         hexColour = "AD00FF";
         base.Init();
-        description = $"<b><color=#{hexColour}> {manaType} Character </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
-        $"\n <b>Passives: \n</b> Passive 1 (0 mana): Reduces damage taken by 5 and reduces damage taken by allies by 1." +
-        $"\n Passive 2 ({passiveValues.secPassiveThreshold} mana): Heal back {RegenHealth} after taking damage." +
-        $"\n Passive 3 ({passiveValues.thirdPassiveThreshold} mana): When taking damage deal {ReturnDamage} damage to the enemy.";
 
     }
+    #region descriptions
+    public override string GetPassiveOneDesc()
+    {
+        return $"Reduces damage taken by 5 and reduces damage taken by allies by 1.";
+    }
+    public override string GetPassiveTwoDesc()
+    {
+        return $"Heal back {RegenHealth} after taking damage.";
+    }
+    public override string GetPassiveThreeDesc()
+    {
+        return $"When taking damage deal {ReturnDamage} damage to the enemy.";
+    }
+    #endregion
     public override void LoseMana(int amount, string source = "Unknown")
     {
         base.LoseMana(amount);

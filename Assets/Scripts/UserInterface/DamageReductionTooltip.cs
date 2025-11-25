@@ -14,6 +14,24 @@ public class DamageReductionTooltip : ToolTip
         Tooltip = $"<color=grey>Defence Stats</color>\n" +
             $"Damage Reduction = {character.GetDamageReduction_Public()}." +
             $"\nDamage reduction lowers damage taken by the specified amount." +
-            $"\nFormula = Damage Incoming - Damage Reduction.";
+            $"\nFormula = Damage Incoming ({IncomingDamage()}) - Damage Reduction ({character.GetDamageReduction_Public()}).";
+    }
+    private string IncomingDamage()
+    {
+        if (EnemyCharacter.Instance != null)
+        {
+            if (Party.Instance.HasKnowledgeOfEnemy)
+            {
+                return EnemyCharacter.Instance.GetDamage_Public().ToString();
+            }
+            else
+            {
+                return "?";
+            }
+        }
+        else
+        {
+            return "?";
+        }
     }
 }

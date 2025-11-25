@@ -131,6 +131,15 @@ public class WolfEnemy : EnemyCharacter
         }
 
     }
+    public override int GetDamage_Public()
+    {
+        int damage = 0;
+        foreach(Wolf w in WolfPack)
+        {
+            damage += w.GetDamage();
+        }
+        return damage / PackSize;
+    }
 }
 public class Wolf
 {
@@ -157,6 +166,10 @@ public class Wolf
     {
         target.LoseMana(TurnDamage);
         target.AddStatusEffect(WoundStatus);
+    }
+    public int GetDamage()
+    {
+        return TurnDamage;
     }
     public void PreformTurn()
     {

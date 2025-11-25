@@ -150,32 +150,9 @@ public class NavigationItem : MonoBehaviour
         itemButton.interactable = b;
         playerCanMoveTo = b;
     }
-    public void ChangeEnable()
-    {
-        if (IsCleared && PlayerIsHere)
-        {
-            foreach (NavigationItem item in aboveConnections)
-            {
-                item.ToggleButton(true);
-            }
-            ToggleButton(false);
-            
-        }
-        else if (PlayerIsHere)
-        {
-            ToggleButton(true);
-        }
-        else if (playerCanMoveTo && !PlayerIsHere)
-        {
-            ToggleButton(true);
-        }
-        else
-        {
-            ToggleButton(false);
-        }
-    }
     public void OnClicked()
     {
+        MapController.Instance.currentLocation.PlayerIsHere = false;
         switch (ItemType)
         {
             case MapItem.Normal:

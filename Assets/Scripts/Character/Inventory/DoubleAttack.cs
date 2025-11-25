@@ -25,4 +25,8 @@ public class DoubleAttack : DraggableItem, IOnAttackItem
             originCharacter.Attack(character);
         }
     }
+    public override string GetEffectDesc()
+    {
+        return $"Once a turn, when the character with this item equiped attacks, the character at position {characterIndex +1} attacks immediately after for free.";
+    }
 }

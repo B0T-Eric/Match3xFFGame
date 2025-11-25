@@ -8,14 +8,22 @@ public class WeaponPoisonItem : DraggableItem, IOnAttackItem
 {
     [SerializeField]
     Sprite poisonSprite;
+    int stacksToApply = 1;
     public void OnAttack(BaseCharacter character, int damage)
     {
         int rng = Random.Range(0, 2);
         if (rng == 0)
         {
             Poison p = new Poison(poisonSprite);
-            character.AddStatusEffect(p);
+            for (int i = 0; i < stacksToApply; i++)
+            {
+                character.AddStatusEffect(p);
+            }
         }
         
+    }
+    public override string GetEffectDesc()
+    {
+        return $"On attack there is a 50% chance to apply {stacksToApply} stacks of poison to the enemy.";
     }
 }

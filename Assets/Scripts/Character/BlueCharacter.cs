@@ -18,13 +18,22 @@ public class BlueCharacter : BaseCharacter
         manaType = ManaType.Blue;
         hexColour = "000CFF";
         base.Init();
-        description = $"<b><color=#{hexColour}> {manaType} Character </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
-            $"\n <b>Passives: \n</b> Passive 1 (0 mana): Deal +5 bonus damage on attack to enemies who have a status effect applied to them." +
-            $"\n Passive 2 ({passiveValues.secPassiveThreshold} mana): Deal an additional +5 bonus damage ontop of the first pasives bonus damage." +
-            $"\n Passive 3 ({passiveValues.thirdPassiveThreshold} mana): For each status affecting the enemy deal +3 bonus damage on attack.";
        
     }
-
+    #region descriptions
+    public override string GetPassiveOneDesc()
+    {
+        return $"Deal +5 bonus damage on attack to enemies who have a status effect applied to them.";
+    }
+    public override string GetPassiveTwoDesc()
+    {
+        return $"Deal an additional +5 bonus damage ontop of the first passives bonus damage.";
+    }
+    public override string GetPassiveThreeDesc()
+    {
+        return $"For each status affecting the enemy deal +3 bonus damage on attack.";
+    }
+    #endregion
     protected override int GetDamage()
     {
         int damage = base.GetDamage();

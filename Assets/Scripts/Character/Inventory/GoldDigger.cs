@@ -8,6 +8,9 @@ public class GoldDigger : DraggableItem, IStatItem
     TextMeshProUGUI goldText;
     int goldCount = 0;
     bool IsUpgradedOnce, IsUpgradedTwice;
+    int firstTier = 1;
+    int tierIncrease = 6;
+    int lastTier = 7;
     public void GainGold()
     {
         int rng = Random.Range(15, 26);
@@ -19,11 +22,11 @@ public class GoldDigger : DraggableItem, IStatItem
     {
         if(IsUpgradedOnce && IsUpgradedTwice)
         {
-            IncreaseStats(7);
+            IncreaseStats(lastTier);
         }
         else if (IsUpgradedOnce)
         {
-            IncreaseStats(1);
+            IncreaseStats(firstTier);
         }
         //idk if it needs more..
     }
@@ -32,11 +35,11 @@ public class GoldDigger : DraggableItem, IStatItem
     {
         if (IsUpgradedOnce && IsUpgradedTwice)
         {
-            DecreaseStats(7);
+            DecreaseStats(lastTier);
         }
         else if (IsUpgradedOnce)
         {
-            DecreaseStats(1);
+            DecreaseStats(firstTier);
         }
         //idk if it needs more..
     }
@@ -46,12 +49,12 @@ public class GoldDigger : DraggableItem, IStatItem
         if (goldCount > 200 && !IsUpgradedOnce)
         {
             IsUpgradedOnce = true;
-            IncreaseStats(1);
+            IncreaseStats(firstTier);
         }
         else if (goldCount > 1000 && IsUpgradedOnce && !IsUpgradedTwice)
         {
             IsUpgradedTwice = true;
-            IncreaseStats(6);
+            IncreaseStats(tierIncrease);
         }
     }
 
@@ -72,5 +75,12 @@ public class GoldDigger : DraggableItem, IStatItem
         itemSO.damageReduction -= num;
         itemSO.flatDamageIncrease -= num;
         itemSO.healingMult -= num / 10f;
+    }
+    public override string GetEffectDesc()
+    {
+        return $"<b>Current Gold: {goldCount}</b>\nEvery time you complete a stage, gain a random amount of gold (15-25)." +
+            $"\nAt 200 gold the item increases it's current stats to +{firstTier} and +{firstTier * 10}% respectively." +
+            $"\nAt > 700 gold the item reaches it's peak stats amplifying them by +{tierIncrease} and +{tierIncrease * 10}% respectively." +
+            $"\nFor a combined total of {lastTier} and {lastTier * 10}% to the respective stats.";
     }
 }

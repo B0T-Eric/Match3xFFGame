@@ -46,6 +46,8 @@ public class MapController : MonoBehaviour
     GameObject[][] navGrid;
     [SerializeField]
     float spacing;
+    private bool GoingNorth = true;
+    private bool BossDefeated = false;
     #endregion
     const string navScene = "NavigationScene";
     private void Awake()
@@ -77,8 +79,13 @@ public class MapController : MonoBehaviour
         if (scene.name.Equals(navScene))
         {
             mapCanvas.SetActive(true);
+            
             if(currentLocation != null)
             {
+                if (BossDefeated)
+                {
+                    BossRoomClear();
+                }
                 currentLocation.SetCleared(true);
                 ToggleMapInteraction();
             }
@@ -193,7 +200,7 @@ public class MapController : MonoBehaviour
     private GameObject GetMapItem(MapItem map, int row, int col)
     {
         GameObject g = Instantiate(mapItems[(int)map]);
-        InitializeMapItem(ref g, row, col);
+        InitializeMapItem(ref g, row, col, map);
         return g;
     }
 
@@ -237,34 +244,40 @@ public class MapController : MonoBehaviour
         {
             //enemy
             g = GetMapItem(MapItem.Normal, row, col);
+            InitializeMapItem(ref g, row, col, MapItem.Normal);
 
         }
         else if (rng > 60 && rng < 85)
         {
             //bonus
             g = GetMapItem(MapItem.Mystery, row, col);
+            InitializeMapItem(ref g, row, col, MapItem.Mystery);
         }
         else
         {
             //rest
             g = GetMapItem(MapItem.Rest, row, col);
+            InitializeMapItem(ref g, row, col, MapItem.Rest);
         }
-        InitializeMapItem(ref g, row, col);
+        
         return g;
     }
-    private void InitializeMapItem(ref GameObject g, int row, int col)
+    private void InitializeMapItem(ref GameObject g, int row, int col, MapItem type)
     {
+        
         g.transform.SetParent(scrollView.transform, false);
         NavigationItem navItem = g.GetComponent<NavigationItem>();
         navItem.RowNumber = row;
         navItem.ColumnIndex = col;
+        navItem.ItemType = type;
         if (row != 0)
         {
             navItem.MakeConnections(ref navGrid);
         }
-        if(row == 0 && CurrentStage == 0) 
+        if (row == 0 && CurrentStage == 0)
         {
             navItem.PlayerIsHere = true;
+            currentLocation = navItem;
         }
         if (navItem != null)
         {
@@ -333,12 +346,38 @@ public class MapController : MonoBehaviour
             pathRect.localEulerAngles = new Vector3(0f, 0f, -angle);
         }
     }
+    public void DefeatBoss()
+    {
+        BossDefeated = true;
+    }
     public void BossRoomClear()
     {
-
+        FlipDirection();
+        ReplaceStart();
+        BossDefeated = false;
+        StartCoroutine(DelayedUI());
+    }
+    private void FlipDirection()
+    {
+        GoingNorth = !GoingNorth;
+    }
+    private void ReplaceStart()
+    {
+        int col = cols / 2;
+        GameObject g = navGrid[0][col];
+        NavigationItem i = g.GetComponent<NavigationItem>();
+        if(i.ItemType != MapItem.Boss)
+        {
+            RemoveFromConnections(i);
+            i.RemoveItemFromMap();
+            g = GetMapItem(MapItem.Boss, 0, col);
+            InitializeMapItem(ref g, 0, col, MapItem.Boss);
+            navGrid[0][col] = g;
+        }
     }
     public void ToggleMapInteraction()
     {
+        NavigationItem current = null;
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
@@ -349,9 +388,44 @@ public class MapController : MonoBehaviour
                     continue;
                 }
                 NavigationItem navItem = g.GetComponent<NavigationItem>();
-                navItem.ChangeEnable();
+                if (navItem.PlayerIsHere)
+                {
+                    current = navItem;
+                }
             }
         }
+        SetNavigation(current);
+    }
+    private void SetNavigation(NavigationItem current)
+    {
+        foreach (GameObject[] row in navGrid)
+        {
+            foreach (GameObject go in row)
+            {
+                if (go == null) continue;
+                go.GetComponent<NavigationItem>().ToggleButton(false);
+            }
+        }
+        if (!current.IsCleared)
+        {
+            current.ToggleButton(true);
+            return;
+        }
+        if (GoingNorth)
+        {
+            foreach (NavigationItem navigationItem in current.GetAboveConnections())
+            {
+                navigationItem.ToggleButton(true);
+            }
+        }
+        else
+        {
+            foreach (NavigationItem navigationItem in current.GetBelowConnections())
+            {
+                navigationItem.ToggleButton(true);
+            }
+        }
+        
     }
     private IEnumerator DelayedUI()
     {

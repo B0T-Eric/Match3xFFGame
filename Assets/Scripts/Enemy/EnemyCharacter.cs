@@ -35,6 +35,20 @@ public class EnemyCharacter : BaseCharacter
         InitializeButtons();
         UpdateDisplays();
     }
+    #region descriptions
+    public override string GetPassiveOneDesc()
+    {
+        return $"";
+    }
+    public override string GetPassiveTwoDesc()
+    {
+        return $"";
+    }
+    public override string GetPassiveThreeDesc()
+    {
+        return $"";
+    }
+    #endregion
     protected virtual void InitializeDisplays()
     {
         nameText = GameObject.Find("EnemyNameText").GetComponent<TextMeshProUGUI>();
@@ -58,7 +72,10 @@ public class EnemyCharacter : BaseCharacter
         maxDamage = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
         enemyName = statsSO.EnemyName;
     }
-
+    public override int GetDamage_Public()
+    {
+        return currentTurnDamage;
+    }
     private void StatusEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (display != null)

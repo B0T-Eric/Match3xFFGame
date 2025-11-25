@@ -15,14 +15,23 @@ public class YellowCharacter : BaseCharacter
         manaType = ManaType.Yellow;
         hexColour = "FFEA00";
         base.Init();
-        description = $"<b><color=#{hexColour}> {manaType} Character </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
-        $"\n <b>Passives: \n</b> Passive 1 (0 mana): Provides the ability to see how much damage the enemy is doing each turn and who they are attacking." +
-        $"\n Passive 2 ({passiveValues.secPassiveThreshold} mana): Applies weakness on attack. \n" +
-        $"<color=#{hexColour}>Weakness:</color> Reduces outgoing damage by {weaknessEffect * 100}% for {weaknessDuration} turns." +
-        $"\n Passive 3 ({passiveValues.thirdPassiveThreshold} mana): At the beginning of each turn, restore {heal} mana to all party memebers";
 
     }
-
+    #region descriptions
+    public override string GetPassiveOneDesc()
+    {
+        return $"Provides the ability to see how much damage the enemy is doing each turn and who they are attacking.";
+    }
+    public override string GetPassiveTwoDesc()
+    {
+        return $"Applies weakness on attack. \n" +
+        $"<color=#{hexColour}>Weakness:</color> Reduces outgoing damage by {weaknessEffect * 100}% for {weaknessDuration} turns.";
+    }
+    public override string GetPassiveThreeDesc()
+    {
+        return $"At the beginning of each turn, restore {heal} mana to all party memebers";
+    }
+    #endregion
     public override void Attack(BaseCharacter c)
     {
         

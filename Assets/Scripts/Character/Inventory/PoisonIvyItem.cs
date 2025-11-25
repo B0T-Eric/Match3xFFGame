@@ -11,10 +11,17 @@ public class PoisonIvyItem : DraggableItem, IOnDamageTakenItem
     Sprite poisonSprite;
     
     private Poison poison;
-    
+    private int stacksToApply = 1;
     public void OnDamageTaken(BaseCharacter character)
     {
         poison = new Poison(poisonSprite);
-        EnemyCharacter.Instance.AddStatusEffect(poison);
+        for (int i = 0; i < stacksToApply; i++)
+        {
+            EnemyCharacter.Instance.AddStatusEffect(poison);
+        }
+    }
+    public override string GetEffectDesc()
+    {
+        return $"Whenever the character who has this item equiped takes damage, apply {stacksToApply} stacks of poison to the enemy.";
     }
 }

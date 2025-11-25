@@ -14,9 +14,9 @@ public class PotentialToolTip : ToolTip
         Tooltip = $"<color=#00FFFF>Potential Stats</color>\n" +
             $"\nPotential retained this turn = {Mathf.RoundToInt(character.potential * character.GetRetainMult_Public())}" +
             $"\nAmount of potential retained whenever potential is retained in combat." +
-            $"\nFormula = current potential * potential retain multiplier \n" +
+            $"\nFormula = current potential ({character.potential}) * potential retain multiplier ({character.GetRetainMult_Public()})\n" +
             $"\nCurrent potential = {character.potential}." +
             $"\nAmount of potential gained from matches during turns." +
-            $"\nFormula = current potential + flat potential increase * potential multiplier.";
+            $"\nFormula = number of tiles matched + flat potential increase ({character.GetPotentialIncrease_Public()}) * potential multiplier ({character.GetPotentialMult_Public()}).";
     }
 }

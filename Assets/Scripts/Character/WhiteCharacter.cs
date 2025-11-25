@@ -20,6 +20,20 @@ public class WhiteCharacter : BaseCharacter
         potential += amount;
         UpdateDisplays();
     }
+    #region descriptions
+    public override string GetPassiveOneDesc()
+    {
+        return $"Matches of spirit tokens higher than 3 gain more potential: 4 gets an additional 3 potential, 5+ gets an additional 6.Reduces damage taken by 5 and reduces damage taken by allies by 1.";
+    }
+    public override string GetPassiveTwoDesc()
+    {
+        return $"Now attacks twice for full damage.";
+    }
+    public override string GetPassiveThreeDesc()
+    {
+        return $"Each equiped item on this character increases potential gained by {ItemPotentialModifier * 100}%";
+    }
+    #endregion
     public override float GetPotentialMult()
     {
         float mult = 1f;
@@ -38,10 +52,6 @@ public class WhiteCharacter : BaseCharacter
         manaType = ManaType.White;
         hexColour = "FFFFFF";
         base.Init();
-        description = $"<b><color=#{hexColour}> {manaType} Character </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
-        $"\n <b>Passives: \n</b> Passive 1 (0 mana): Matches of spirit tokens higher than 3 gain more potential: 4 gets an additional 3 potential, 5+ gets an additional 6." +
-        $"\n Passive 2 ({passiveValues.secPassiveThreshold} mana): Now attacks twice for full damage." +
-        $"\n Passive 3 ({passiveValues.thirdPassiveThreshold} mana): Each equiped item on this character increases potential gained by {ItemPotentialModifier * 100}%";
 
     }
     public override void Attack(BaseCharacter c)

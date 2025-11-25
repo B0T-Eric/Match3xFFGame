@@ -39,6 +39,10 @@ public class ContinueClick : MonoBehaviour
         {
             Destroy(RewardCanvas);
         }
+        if (SceneManager.GetActiveScene().name.Equals("BossScene"))
+        {
+            MapController.Instance.DefeatBoss();
+        }
         SceneManager.LoadScene("NavigationScene");
     }
 }
