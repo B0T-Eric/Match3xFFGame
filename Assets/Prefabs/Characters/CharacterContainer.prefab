@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ca472ba15e7576418925b9e5001a117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Tooltip: 
 --- !u!1 &1654015201071261750
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,6 +400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18b3796261865304faba9acfff334c58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Tooltip: 
 --- !u!1 &4512299884555462263
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,6 +489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5128a509b26f1f34cab77f840fb4bd5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Tooltip: 
 --- !u!1 &4643811802386169538
 GameObject:
   m_ObjectHideFlags: 0
@@ -518,6 +521,7 @@ RectTransform:
   m_Children:
   - {fileID: 8512073551990453655}
   - {fileID: 3916324544099807624}
+  - {fileID: 64468119344072316}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -890,6 +894,41 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &8906774943218182258
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 64468119344072316}
+  m_Layer: 0
+  m_Name: CompanionPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &64468119344072316
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8906774943218182258}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8792966180364937772}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -135.1, y: -53.3}
+  m_SizeDelta: {x: 64, y: 64}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &693498560612680254
 PrefabInstance:
   m_ObjectHideFlags: 0

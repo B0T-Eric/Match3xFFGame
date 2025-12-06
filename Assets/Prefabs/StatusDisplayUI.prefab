@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 1835228488787826287}
   - component: {fileID: 6686237328656702379}
   - component: {fileID: 288114750412798888}
+  - component: {fileID: -8658890519702442863}
   m_Layer: 0
   m_Name: StatusDisplayUI
   m_TagString: Untagged
@@ -239,6 +240,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   durationText: {fileID: 5553150504920546652}
   stackText: {fileID: 7725922670567864449}
+--- !u!114 &-8658890519702442863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4135935120684652481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60eb8692886b57a45822ea7fce5649b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tooltip: 
 --- !u!1 &5530446272012985514
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlagueItem : DraggableItem, IOnTurnEnd, IOnTurnStart, IUpgradableItem
 {
     public int Tier {  get; set; }
-    public int UpgradeAmount { get; set; }
+    public int UpgradeAmount { get; set; } = 1;
     public float UpgradeModifier { get; set; }
     private int AdditionalDamage = 0;
     public void OnTurnEnd()
@@ -30,6 +30,7 @@ public class PlagueItem : DraggableItem, IOnTurnEnd, IOnTurnStart, IUpgradableIt
     }
     public void Upgrade()
     {
+        Tier++;
         AdditionalDamage += UpgradeAmount;
     }
     public override string GetEffectDesc()

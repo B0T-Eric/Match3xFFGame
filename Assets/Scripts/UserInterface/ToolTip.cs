@@ -10,7 +10,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         HoverToolTip.HideTootTip_Static();
     }
-    protected virtual void DisplayToolTip(string? tooltip)
+    protected virtual void DisplayToolTip(string tooltip)
     { 
         System.Func<string> getTooltipTextFunc = () =>
         {

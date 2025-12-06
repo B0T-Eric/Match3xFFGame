@@ -9,10 +9,13 @@ namespace Assets.Scripts.UserInterface
         private void Start()
         {
             item = GetComponent<DraggableItem>();
+            
+        }
+        private void Update()
+        {
             Tooltip = $"<color=grey><b>{item.itemSO.itemName}</color></b>" +
                 $"\n{item.GetDescription()}";
         }
-
 
     }
 }

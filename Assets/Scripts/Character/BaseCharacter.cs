@@ -43,7 +43,7 @@ public abstract class BaseCharacter : MonoBehaviour
     public ManaType manaType;
     public ObservableCollection<BaseStatus> statusEffects;
     protected PassiveValues passiveValues;
-    
+    public int damageTaken = 0;
     #endregion
     #region Character States
     public CharacterState state;
@@ -60,17 +60,18 @@ public abstract class BaseCharacter : MonoBehaviour
     public ManaBar manaBar;
     public TextMeshProUGUI potentialText, healthText;
     public CharacterInventorySlot[] inventorySlots;
+    private RectTransform companionLocation;
     #endregion
     #region Character Inventory
     public List<DraggableItem> items;
-    protected OnAttackDelegate onAttack;
-    protected OnDamageTakenDelegate onDamageTaken;
-    protected OnTurnEndDelegate onTurnEnd;
-    protected OnTurnStartDelegate onTurnStart;
+    public OnAttackDelegate onAttack;
+    public OnDamageTakenDelegate onDamageTaken;
+    public OnTurnEndDelegate onTurnEnd;
+    public OnTurnStartDelegate onTurnStart;
     #endregion
+    public BaseCompanion companion;
     public virtual void Init()
     {
-        
         passiveValues = new PassiveValues(20,35);
         statusEffects = new ObservableCollection<BaseStatus>();
         currentMana = statsSO.initialMana;
@@ -92,9 +93,6 @@ public abstract class BaseCharacter : MonoBehaviour
                 healthText = tmp;
         }
         turnStateButton = g.GetComponentInChildren<Button>();
-        //inventorySlots[0] = GameObject.Find("ItemSlotOne").GetComponent<CharacterInventorySlot>();
-        //inventorySlots[1] = GameObject.Find("ItemSlotTwo").GetComponent<CharacterInventorySlot>();
-        //inventorySlots[2] = GameObject.Find("ItemSlotThree").GetComponent<CharacterInventorySlot>();
         inventorySlots = GetComponentsInChildren<CharacterInventorySlot>(true);
         turnStateButton.onClick.AddListener(ChangeTurnState);
         manaBar.Init(this);
@@ -118,7 +116,17 @@ public abstract class BaseCharacter : MonoBehaviour
             display.DisplayStatus(statusEffects, sender, e);
         }
     }
+    public RectTransform GetCompanionLocation()
+    {
+        foreach (RectTransform rt in GetComponentsInChildren<RectTransform>(true))
+        {
+            if (rt.name == "CompanionPosition")
+                return rt;
+        }
 
+        Debug.LogError("CompanionPosition not found!");
+        return null;
+    }
     protected virtual void UpdateDisplays()
     {
         ChangeStateDisplay();
@@ -186,6 +194,10 @@ public abstract class BaseCharacter : MonoBehaviour
             case TurnState.Heal: HealMana(potential); break;
             case TurnState.Retain: RetainPotential(); break;
         }
+        if (companion != null)
+        {
+            companion.PreformAction();
+        }
         UpdateDisplays();
     }
     public virtual void Attack(BaseCharacter c)
@@ -206,6 +218,14 @@ public abstract class BaseCharacter : MonoBehaviour
         }
         nextTurnPotential = 0;
 
+    }
+    public void IncreaseDamageTaken(int damage)
+    {
+        damageTaken += damage;
+    }
+    public void ResetDamageTaken()
+    {
+        damageTaken = 0;
     }
     protected virtual int GetDamage()
     {
@@ -283,6 +303,7 @@ public abstract class BaseCharacter : MonoBehaviour
         {
             amount -= GetDamageReduction();
             amount = Mathf.Max(amount,0);
+            IncreaseDamageTaken(amount);
             currentMana -= amount;
             if (onDamageTaken != null)
             {

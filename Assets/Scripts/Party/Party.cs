@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using TMPro;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -135,6 +136,15 @@ public class Party : MonoBehaviour
     public void DisplayCharactersOnGameStart()
     {
         GameContainer.Instance.DisplayParty(members);
+        ResetPartyDamageTaken();
+    }
+    //set damage taken to 0 on start of game
+    private void ResetPartyDamageTaken()
+    {
+        foreach(BaseCharacter character in members)
+        {
+            character.ResetDamageTaken();
+        }
     }
     public void EquipItemOnCharacter(DraggableItem item)
     {

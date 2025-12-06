@@ -72,6 +72,10 @@ public class Weakness : BaseStatus, IDurationStatus
     {
         return OutgoingDamageModifier;
     }
+    public override string ToString()
+    {
+        return $"Lowers outgoing damage by {OutgoingDamageModifier}x for {Duration} turns.";
+    }
 }
 public class Brittle : BaseStatus, IUseStatus
 {
@@ -100,6 +104,10 @@ public class Brittle : BaseStatus, IUseStatus
         DecreaseUseCount();
         return IncomingDamageMultiplier;
     }
+    public override string ToString()
+    {
+        return $"Increases incoming damage by {IncomingDamageMultiplier}x for {UseCount} attacks.";
+    }
 }
 public class Rage : BaseStatus, IDurationStatus
 {
@@ -127,6 +135,10 @@ public class Rage : BaseStatus, IDurationStatus
     {
         return OutgoingDamageMultiplier;
     }
+    public override string ToString()
+    {
+        return $"Increases outgoing damage by {OutgoingDamageMultiplier}x for {Duration} turns.";
+    }
 }
 public class Passion : BaseStatus, IDurationStatus
 {
@@ -149,6 +161,10 @@ public class Passion : BaseStatus, IDurationStatus
         Icon = sprite;
         Duration = 1;
         PotentialGainMult = 2f;
+    }
+    public override string ToString()
+    {
+        return $"Increases potential by {PotentialGainMult}x for {Duration} turns.";
     }
 }
 public class Poison : BaseStatus, IStackableStatus
@@ -176,6 +192,11 @@ public class Poison : BaseStatus, IStackableStatus
         Icon = sprite;
         StackCount = 1;
     }
+    public override string ToString()
+    {
+        return $"A stacking debuff which can have varied affects based on items." +
+            $"\nCurrent Stacks: {StackCount}.";
+    }
 }
 public class Hunger : BaseStatus, IStackableStatus
 {
@@ -202,6 +223,10 @@ public class Hunger : BaseStatus, IStackableStatus
         StackCount = stacks;
         Icon = sprite;
         NotifyChanged();
+    }
+    public override string ToString()
+    {
+        return $"Each stack of Hunger provides 10% increased damage.\nCurrent damage boost:{StackCount /10}%";
     }
 }
 public class Wound : BaseStatus, IStackableStatus, IDurationStatus,  IOnDamageTakenItem
@@ -249,16 +274,20 @@ public class Wound : BaseStatus, IStackableStatus, IDurationStatus,  IOnDamageTa
     {
         character.LoseMana(1 * StackCount, this.GetType().Name);
     }
+    public override string ToString()
+    {
+        return $"On hit, take additional damage based on the amount of stacks.\nCurrent damage boost {1 * StackCount}.";
+    }
 }
 
 public class ExchangeEffect : BaseStatus, IPartyStatus
 {
-    ManaType type;
+    ManaType Type;
 
     public ExchangeEffect(Sprite sprite, ManaType type)
     {
         Icon = sprite;
-        this.type = type;
+        Type = type;
     }
 
     public override void PreformEffect()
@@ -277,7 +306,7 @@ public class ExchangeEffect : BaseStatus, IPartyStatus
     private void RemoveMana()
     {
         TileState state = TileState.A;
-        switch (type)
+        switch (Type)
         {
             case ManaType.Yellow:
                 state = TileState.A;
@@ -305,6 +334,10 @@ public class ExchangeEffect : BaseStatus, IPartyStatus
                 break;
         }
         Party.Instance.RemoveTileType(state);
+    }
+    public override string ToString()
+    {
+        return $"Lowered party health by 10, Removed {Type} spirit tokens from pool.";
     }
 }
 

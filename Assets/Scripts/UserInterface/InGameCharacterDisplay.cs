@@ -12,13 +12,24 @@ public class InGameCharacterDisplay : MonoBehaviour
     public bool IsDisplaying =false;
     [SerializeField]
     StatusDisplayManager statusManager;
+    [SerializeField]
+    SpriteRenderer companionRender, characterRender;
     public void DisplayCharacter(BaseCharacter c)
     {
         character = c;
         c.display = this;
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = character.sprite;
-        IsDisplaying = true;
+        characterRender = GetComponent<SpriteRenderer>();
+        characterRender.sprite = character.sprite;
+        companionRender = transform.GetComponentInChildren<SpriteRenderer>();
+        if(character.companion != null)
+        {
+            companionRender.sprite = character.companion.GetSprite();
+        }
+        else
+        {
+            companionRender.sprite = null;
+        }
+            IsDisplaying = true;
     }
 
     internal void DisplayStatus(ObservableCollection<BaseStatus> statusEffects, object sender, NotifyCollectionChangedEventArgs e)

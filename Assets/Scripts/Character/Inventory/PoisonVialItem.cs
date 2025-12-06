@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonVialItem : DraggableItem, IOnTurnEnd
+public class PoisonVialItem : DraggableItem, IOnTurnEnd, IUpgradableItem
 {
     Sprite poisonSprite;
     int stacksToApply = 1;
+    public int Tier { get; set; }
+    public int UpgradeAmount { get; set; } = 1;
+    public float UpgradeModifier { get; set; }
     public void OnTurnEnd()
     {
         Poison p = new Poison(poisonSprite);
@@ -16,6 +19,17 @@ public class PoisonVialItem : DraggableItem, IOnTurnEnd
     }
     public override string GetEffectDesc()
     {
-        return $"Apply a {stacksToApply} stack poison to the enemy at end of turn.";
+        return $"Apply {stacksToApply} stack poison to the enemy at end of turn.";
+    }
+    public override string GetUpgradeEffectDesc()
+    {
+        return $"Current Tier: {Tier}" +
+            $"\nIncreases stacks applied by {UpgradeAmount} per tier.";
+
+    }
+    public void Upgrade()
+    {
+        Tier++;
+        stacksToApply += UpgradeAmount;
     }
 }

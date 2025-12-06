@@ -10,7 +10,8 @@ public class GameResources : MonoBehaviour
     public List<GameObject> ItemPool;
     public List<BaseStatus> PartyStatusPool;
     public List<ExchangeReward> ExchangeRewardPool;
-    
+    public List<UpgradeEventReward> ForgeRewardPool;
+    public List<CompanionEventReward> CompanionRewardPool;
     private void Awake()
     {
         DontDestroyOnLoad(this);

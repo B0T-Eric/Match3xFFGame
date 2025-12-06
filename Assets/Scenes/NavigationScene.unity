@@ -1211,7 +1211,6 @@ MonoBehaviour:
   rows: 15
   cols: 7
   roomsPerRow: 0
-  gridNavItems: []
   spacing: 48
 --- !u!4 &1826078964
 Transform:
@@ -1243,6 +1242,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EventPool:
   - {fileID: 2205362881785441686, guid: f3a693f43564f2e48b20b8eabe0a8b08, type: 3}
+  - {fileID: -434711234791745287, guid: adf6ca34de170fa4b8cc0778210c4a66, type: 3}
+  - {fileID: 329767284935046198, guid: a65d40ae63e009e48a8e8eb2a3f00677, type: 3}
+  - {fileID: -2205278043607512524, guid: 19dc3fb80efa63043ac4c7f13acd4c03, type: 3}
+  - {fileID: -7458820156397238568, guid: 521dcea11fe742f438f346a259165eec, type: 3}
+  - {fileID: -7764704305467341428, guid: 9d60f39a33b9d6341bfb42ef5bab3231, type: 3}
+  - {fileID: 8481220680139973854, guid: f09e60441d72c834e9fc915a7d05705d, type: 3}
+  - {fileID: 3129651188978647390, guid: a9183efdf0a13dd4fb541eacc78691af, type: 3}
+  - {fileID: -90340539760767569, guid: 805bb93ba0bfadf4ea51dca3f650e1fc, type: 3}
   ItemPool:
   - {fileID: 9187195536599491579, guid: 688fca842023dc34cb33fa99e77fdf2f, type: 3}
   - {fileID: 9187195536599491579, guid: af44ea1cbb54ab147986156455a717de, type: 3}
@@ -1263,6 +1270,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f96fa1ce328e2324fad1797f580a8a85, type: 2}
   - {fileID: 11400000, guid: 22f2f6c739c89f84b81e8ecbfc21bb23, type: 2}
   - {fileID: 11400000, guid: b495c68687f42e74bb9a029806be83e0, type: 2}
+  ForgeRewardPool:
+  - {fileID: 11400000, guid: bf6755c76f8077e47b36fb371401b53f, type: 2}
+  - {fileID: 11400000, guid: 893396a33b9db474bb7fa3276cd200ce, type: 2}
+  - {fileID: 11400000, guid: 5d9f4281029c8eb4eb2c84148f5b3562, type: 2}
+  CompanionRewardPool:
+  - {fileID: 11400000, guid: 8c11293584263bc42804315db23b2cd5, type: 2}
+  - {fileID: 11400000, guid: 9eef2b9e56a2ea64399b7285de55ba7a, type: 2}
+  - {fileID: 11400000, guid: f86be5ba058e4964a820d2305d327c49, type: 2}
+  - {fileID: 11400000, guid: 7d21979a6647d20449e42962c1f5f86f, type: 2}
+  - {fileID: 11400000, guid: c17b2a2eea528b048932729df68e329e, type: 2}
+  - {fileID: 11400000, guid: 418f4aaf34639054ba89d6a136bdecce, type: 2}
+  - {fileID: 11400000, guid: 7358164fd7f4f7840ab32bb7e9c14431, type: 2}
+  - {fileID: 11400000, guid: b9e9c801c1eba5b4bb7a59a8b78e63f2, type: 2}
 --- !u!1 &1957735791
 GameObject:
   m_ObjectHideFlags: 0
