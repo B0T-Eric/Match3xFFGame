@@ -10,6 +10,10 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
     public BaseCharacter character;
     public bool isOccupied = false;
     DraggableItem draggableItem;
+    public DraggableItem GetItem()
+    {
+        return draggableItem;
+    }
     public void DisplayEquipedItem(GameObject itemObject)
     {
         GameObject obj = Instantiate(itemObject);

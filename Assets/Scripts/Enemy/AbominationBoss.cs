@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class AbominationBoss : EnemyCharacter
@@ -55,7 +56,7 @@ public class AbominationBoss : EnemyCharacter
         }
         targets = validTargets;
     }
-    public override void PreformTurn()
+    public override async Task<bool> PreformTurn()
     {
         if (cycleIndex == 0)
         {
@@ -80,5 +81,8 @@ public class AbominationBoss : EnemyCharacter
             cycleIndex = 0;
         }
         Indicator.ShiftPointer();
+        //to do: introduce animation or action time variable in base character
+        await Task.Delay(1000);
+        return true;
     }
 }

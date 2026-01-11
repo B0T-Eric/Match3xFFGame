@@ -83,7 +83,7 @@ public abstract class BaseEvent : MonoBehaviour
         else if(reward is IRewardStatus statusReward)
         {
             Party.Instance.AddStatus(statusReward.GetReward());
-            GameResources.Instance.PartyStatusPool.RemoveAt(index);
+            GameResources.Instance.ExchangeRewardPool.RemoveAt(index);
         }
         ToggleButtons();
     }

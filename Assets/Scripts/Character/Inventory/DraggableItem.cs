@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
-using static DraggableItem;
+
+public enum ItemRarity { None,Common, Uncommon, Rare, Cursed}
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public ItemScriptableObject itemSO;
     public Image image;
     public Transform parentAfterDrag;
-
     private CharacterInventorySlot startSlot;
     protected BaseCharacter itemHolder;
     private void Start()
@@ -19,6 +19,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         itemHolder = transform.parent.parent.parent.parent.GetComponent<BaseCharacter>();
         image = GetComponent<Image>();
         image.sprite = itemSO.itemImage;
+        
     }
     public string GetDescription()
     {
@@ -92,21 +93,54 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Debug.Log("End Drag");
         
         CharacterInventorySlot newSlot = parentAfterDrag.GetComponentInParent<CharacterInventorySlot>();
-        if (newSlot != null && newSlot != startSlot)
+        if (newSlot == null)
+            return;
+        if (newSlot.isOccupied && this is ICombinableItem)
         {
-            transform.SetParent(newSlot.transform);
+            DraggableItem item = newSlot.GetItem();
+            if (item is ICombinableItem)
+            {
+                GameObject combinedItem = LookUpRecipe(this.itemSO.ID, item.itemSO.ID);
+                newSlot.UnequipItem();
+                startSlot.UnequipItem();
+                Destroy(item.gameObject);
+                newSlot.DisplayEquipedItem(combinedItem);
+                Destroy(this.gameObject);
+            }
         }
         else
         {
-            transform.SetParent(startSlot.transform);
-            startSlot.EquipItem(this);
+            if (newSlot != startSlot)
+            {
+                transform.SetParent(newSlot.transform);
+            }
+            else
+            {
+                transform.SetParent(startSlot.transform);
+                startSlot.EquipItem(this);
+            }
+            image.raycastTarget = true;
         }
-        image.raycastTarget = true;
+
     }
-    public BaseStatus ApplyItemStatus()
+    private GameObject LookUpRecipe(int id1, int id2)
     {
-        return itemSO.status;
+        int resultId = 0;
+        if(GameResources.Instance.MergeItemRecipes.TryGetValue((id1,id2), out resultId))
+        {
+            return GameResources.Instance.ItemPool[resultId];
+        }
+        else if(GameResources.Instance.MergeItemRecipes.TryGetValue((id2, id1), out resultId))
+        {
+            return GameResources.Instance.ItemPool[resultId];
+        }
+        else
+        {
+            Debug.Log("Failed to find valid combination.");
+            return null;
+        }
     }
+    
 }
 // item effects to trigger on attack (triggered on the hit)
 public interface IOnAttackItem
@@ -136,5 +170,7 @@ public interface IUpgradableItem
     public float UpgradeModifier { get; set; }
     void Upgrade();
 }
+public interface ICombinableItem 
+{
 
-
+}

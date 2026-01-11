@@ -19,6 +19,6 @@ MonoBehaviour:
   healingMult: 0
   damageReduction: 0
   itemImage: {fileID: 21300000, guid: 1f19b090ce76de241b20fd8bfd4eaa15, type: 3}
-  description: When attacking, if the holder has a buff or debuff affecting them,
-    add 3 stacks of poison.
   itemName: Poison Chalice
+  ID: 4
+  Rarity: 1

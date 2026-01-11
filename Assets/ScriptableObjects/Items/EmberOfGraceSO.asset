@@ -19,5 +19,6 @@ MonoBehaviour:
   healingMult: 1
   damageReduction: 0
   itemImage: {fileID: 21300000, guid: 7e127cc1d7d3c5c449872cf407eb304e, type: 3}
-  description: Grants stacking healing multiplier every rest.
   itemName: Ember of Grace
+  ID: 7
+  Rarity: 2

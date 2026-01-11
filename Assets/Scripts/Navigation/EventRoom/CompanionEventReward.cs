@@ -11,6 +11,7 @@ public class CompanionEventReward : BaseEventReward
         GameObject companionObj = Instantiate(companionPrefab, character.GetCompanionLocation(),false);
         BaseCompanion companion = companionObj.GetComponent<BaseCompanion>();
         character.companion = companion;
+        companion.Init(character);
         e.ToggleButtons();
     }
 }

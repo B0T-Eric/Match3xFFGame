@@ -6,16 +6,27 @@ public class GameResources : MonoBehaviour
 {
     private static GameResources instance;
     public static GameResources Instance {  get { return instance; } }
-    public List<BaseEvent> EventPool = new List<BaseEvent>();
+    public List<BaseEvent> EventPool = new();
     public List<GameObject> ItemPool;
+    public List<GameObject> CommonItemPool;
+    public List<GameObject> UncommonItemPool;
+    public List<GameObject> RareItemPool;
     public List<BaseStatus> PartyStatusPool;
     public List<ExchangeReward> ExchangeRewardPool;
     public List<UpgradeEventReward> ForgeRewardPool;
     public List<CompanionEventReward> CompanionRewardPool;
+    //recipees dictionary (id of item 1, id of item 2, id of result item)
+    public Dictionary<(int,int),int> MergeItemRecipes = new();
     private void Awake()
     {
         DontDestroyOnLoad(this);
         instance = this;
+        AddRecipes();
+    }
+    public virtual void AddRecipes()
+    {
+        //poison catalyst and plague = plague explosion
+        MergeItemRecipes.Add((3, 9), 11);
     }
     public GameObject GetRandomItem()
     {

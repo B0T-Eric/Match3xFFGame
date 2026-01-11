@@ -14,4 +14,6 @@ public class ItemScriptableObject : ScriptableObject
     public BaseStatus status;
     public Sprite itemImage;
     public string itemName;
+    public int ID;
+    public ItemRarity Rarity;
 }

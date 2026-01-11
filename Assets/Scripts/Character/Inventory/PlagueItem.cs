@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
-public class PlagueItem : DraggableItem, IOnTurnEnd, IOnTurnStart, IUpgradableItem
+/// <summary>
+/// Turn end deal damage based on poison stacks, turn start lower stacks
+/// </summary>
+public class PlagueItem : DraggableItem, IOnTurnEnd, IOnTurnStart, IUpgradableItem, ICombinableItem
 {
     public int Tier {  get; set; }
     public int UpgradeAmount { get; set; } = 1;

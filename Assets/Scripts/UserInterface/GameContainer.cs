@@ -1,3 +1,4 @@
+using Assets.Scripts.UserInterface;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -8,7 +9,7 @@ public class GameContainer : MonoBehaviour
     public static GameContainer Instance;
     public GameObject EnemyPrefab;
     public List<Transform> EnemyTransforms;
-    public List<GameObject> displays;
+    public List<Transform> PartyTransforms;
     public List<InGameCharacterDisplay> enemyDisplays;
     List<InGameCharacterDisplay> characterDisplays = new List<InGameCharacterDisplay>(4);
     private void Awake()
@@ -17,46 +18,37 @@ public class GameContainer : MonoBehaviour
         {
             Instance = this;
         }
-
-        for (int i = 0; i < displays.Count; i++)
-        {
-            characterDisplays.Add(displays[i].GetComponent<InGameCharacterDisplay>());
-        }
     }
     public void DisplayParty(List<BaseCharacter> characters)
     {
         for (int i = 0; i < characters.Count; i++)
         {
+            GameObject g = Instantiate(characters[i].InGameDisplayPrefab, PartyTransforms[i]);
+            characterDisplays.Add(g.GetComponent<InGameCharacterDisplay>());
             characterDisplays[i].DisplayCharacter(characters[i]);
-        }
-        int index = 0;
-        foreach (InGameCharacterDisplay characterDisplay in characterDisplays)
-        {
-            if (!characterDisplay.IsDisplaying)
-            {
-                displays[index].SetActive(false);
-            }
-            index++;
         }
     }
     public void DisplayEnemy(BaseCharacter character)
     {
         if(character is WolfEnemy wolves)
         {
+            WolfEnemy we = character as WolfEnemy;
             for(int i = 0; i < wolves.PackSize; i++)
             {
                 GameObject wolfDisplayObj = Instantiate(EnemyPrefab, EnemyTransforms[i]);
                 wolfDisplayObj.transform.SetParent(GameObject.Find("GameContainer").transform);
-                InGameCharacterDisplay wolfDisplay = wolfDisplayObj.GetComponent<InGameCharacterDisplay>();
+                EnemyInGameDisplay wolfDisplay = wolfDisplayObj.GetComponent<EnemyInGameDisplay>();
+                we.WolfDisplays.Add(wolfDisplay);
                 wolfDisplay.DisplayCharacter(character);
                 enemyDisplays.Add(wolfDisplay);
+                
             } 
         }
         else
         {
             GameObject enemyDisplayObj = Instantiate(EnemyPrefab, EnemyTransforms[0]);
             enemyDisplayObj.transform.SetParent(GameObject.Find("GameContainer").transform);
-            InGameCharacterDisplay enemyDisplay = enemyDisplayObj.GetComponent<InGameCharacterDisplay>();
+            EnemyInGameDisplay enemyDisplay = enemyDisplayObj.GetComponent<EnemyInGameDisplay>();
             enemyDisplay.DisplayCharacter(character);
         }
     }

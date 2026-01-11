@@ -30,10 +30,11 @@ public struct PrefabInstancePool<T> where T : MonoBehaviour
     {
         if(pool == null)
         {
-            Object.Destroy (instance.gameObject);
+            
+            Object.Destroy(instance.gameObject);
             return;
         }
         pool.Push (instance);
-        instance.gameObject.SetActive (false);
+        instance.gameObject.SetActive(false);
     }
 }

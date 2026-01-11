@@ -1261,6 +1261,20 @@ MonoBehaviour:
   - {fileID: 9187195536599491579, guid: c99ba3b3801919e43b78be4b3afed69c, type: 3}
   - {fileID: 9187195536599491579, guid: cb1b23189e0c98c4196477444d0209a7, type: 3}
   - {fileID: 9187195536599491579, guid: ce9ed4644e7539742bc11a02dc44ee63, type: 3}
+  - {fileID: 9187195536599491579, guid: 18148ac050516d4499697c471af9e4d6, type: 3}
+  CommonItemPool:
+  - {fileID: 9187195536599491579, guid: ce9ed4644e7539742bc11a02dc44ee63, type: 3}
+  - {fileID: 9187195536599491579, guid: 515390679271e114e8a6ac1332b3c50d, type: 3}
+  - {fileID: 9187195536599491579, guid: 1ecd1be2d63795e42aebf40ef3f085c1, type: 3}
+  - {fileID: 9187195536599491579, guid: af44ea1cbb54ab147986156455a717de, type: 3}
+  - {fileID: 9187195536599491579, guid: 1f80eee2cf299064285157723c2b734b, type: 3}
+  - {fileID: 9187195536599491579, guid: cb1b23189e0c98c4196477444d0209a7, type: 3}
+  UncommonItemPool:
+  - {fileID: 9187195536599491579, guid: c99ba3b3801919e43b78be4b3afed69c, type: 3}
+  - {fileID: 9187195536599491579, guid: 2b86bdce24232db49989dddbe45d1d4c, type: 3}
+  RareItemPool:
+  - {fileID: 9187195536599491579, guid: 286352ca573d90b4db25965ee0dfac1d, type: 3}
+  - {fileID: 9187195536599491579, guid: 688fca842023dc34cb33fa99e77fdf2f, type: 3}
   ExchangeRewardPool:
   - {fileID: 11400000, guid: 31bb43b6495cd904da80cd2ecc19a811, type: 2}
   - {fileID: 11400000, guid: 5e9290cb284664349a8fdcb88b67f909, type: 2}

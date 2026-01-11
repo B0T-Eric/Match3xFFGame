@@ -55,17 +55,21 @@ MonoBehaviour:
   nextTurnPotential: 0
   retainMultiplier: 0
   manaType: 0
-  secPassiveThreshold: 20
-  thirdPassiveThreshold: 35
+  damageTaken: 0
   state: 0
   turnState: 0
   abilityButton: {fileID: 0}
   turnStateButton: {fileID: 0}
   hexColour: 
+  description: 
   partyUi: {fileID: 4643811802386169538, guid: 40aca299d7956cc4da4357ab62de74c9, type: 3}
   sprite: {fileID: 21300000, guid: 9cbe126391466f94f8a71908cf97b8ad, type: 3}
+  InGameDisplayPrefab: {fileID: 1686202729253865109, guid: 475d5a85614e9f34cb58d81bf0a85ae4, type: 3}
+  display: {fileID: 0}
   manaBar: {fileID: 0}
-  damageText: {fileID: 0}
+  potentialText: {fileID: 0}
+  healthText: {fileID: 0}
   inventorySlots: []
   items: []
+  companion: {fileID: 0}
   weaknessIcon: {fileID: 21300000, guid: 586e402383520dc48a781e46df3cb2f9, type: 3}

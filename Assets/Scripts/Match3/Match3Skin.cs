@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
@@ -224,14 +222,18 @@ public class Match3Skin : MonoBehaviour
             EndTurn();
         }
     }
-    private void EndTurn()
+    private async void EndTurn()
     {
         
         foreach (BaseCharacter character in Party.Instance.members)
         {
-            if (EnemyCharacter.Instance.currentMana > 0)
+            if (EnemyCharacter.Instance.currentMana > 0 && character.potential > 0)
             {
-                character.PreformTurn();
+                bool turnCompleted = await character.PreformTurn();
+                if (turnCompleted)
+                {
+                    continue;
+                }
             }
             else
             {
@@ -240,7 +242,7 @@ public class Match3Skin : MonoBehaviour
         }
         if(EnemyCharacter.Instance.currentMana > 0)
         {
-            EnemyCharacter.Instance.PreformTurn();
+            bool turnCompleted = await EnemyCharacter.Instance.PreformTurn();
             if (AllPartyMembersAlive())
             {
                 foreach(BaseCharacter character in Party.Instance.members)
@@ -248,7 +250,7 @@ public class Match3Skin : MonoBehaviour
                     character.TurnEnd();
                 }
                 EnemyCharacter.Instance.TurnEnd();
-                EnemyCharacter.Instance.LogTurnDamage();
+                CombatLog.Instance.StoreTurnLog(turnCount);
                 NewTurn();
             }
             else

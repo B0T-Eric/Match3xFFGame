@@ -2,8 +2,10 @@
 using System.Linq;
 using UnityEngine;
 
-
-public class PoisonCatalyst : DraggableItem, IOnAttackItem, IUpgradableItem
+/// <summary>
+/// when out going damage from the holders attacking turn, deal damage equal to stack count times a multiplier.
+/// </summary>
+public class PoisonCatalyst : DraggableItem, IOnAttackItem, IUpgradableItem, ICombinableItem
 {
     private float damageMultiplier = 3;
     private int damageThreshold = 20;

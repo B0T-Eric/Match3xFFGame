@@ -19,6 +19,6 @@ MonoBehaviour:
   healingMult: 0
   damageReduction: 0
   itemImage: {fileID: 21300000, guid: 8c3cd2d46f2ebab46ba1606e4a384ab5, type: 3}
-  description: When attacked Poison Ivy strikes the attacker applying a stack of
-    Poison.
   itemName: Poison Ivy
+  ID: 1
+  Rarity: 1

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -49,18 +50,17 @@ public abstract class BaseCharacter : MonoBehaviour
     public CharacterState state;
     public TurnState turnState;
     public Button abilityButton, turnStateButton;
-    bool AbilityActive = false;
     #endregion
     #region Display
     public string hexColour;
     public string description;
     public GameObject partyUi;
     public Sprite sprite;
-    internal InGameCharacterDisplay display;
+    public GameObject InGameDisplayPrefab;
+    public InGameCharacterDisplay display;
     public ManaBar manaBar;
     public TextMeshProUGUI potentialText, healthText;
     public CharacterInventorySlot[] inventorySlots;
-    private RectTransform companionLocation;
     #endregion
     #region Character Inventory
     public List<DraggableItem> items;
@@ -99,7 +99,6 @@ public abstract class BaseCharacter : MonoBehaviour
         description = GetDescription();
         UpdateDisplays();
     }
-
     private string GetDescription()
     {
         return $"<b><color=#{hexColour}>{GetCharacterName()} </b></color>\n Gain potential via matching the {manaType} spirit tokens. " +
@@ -169,36 +168,22 @@ public abstract class BaseCharacter : MonoBehaviour
                 break;
         }
     }
-    public void ToggleAbility()
+    public virtual async Task<bool> PreformTurn()
     {
-        AbilityActive = !AbilityActive;
-        if ( AbilityActive )
-        {
-            abilityButton.interactable = true;
-        }
-        else
-        {
-            abilityButton.interactable = false;
-        }
-    }
-    public virtual void PreformTurn()
-    {
-        BaseCharacter target = null;
-        if (this.GetType() != typeof(EnemyCharacter))
-        {
-            target = EnemyCharacter.Instance;
-        }
+        //call the ingame character methods that call the animations to happen, the animations then have the events in them to do "Attack" or "Heal" or "Retain".
         switch (turnState)
         {
-            case TurnState.Attack: Attack(target); break;
-            case TurnState.Heal: HealMana(potential); break;
-            case TurnState.Retain: RetainPotential(); break;
+            case TurnState.Attack: display.AttackTrue(); break;
+            case TurnState.Heal: display.HealTrue();  break;
+            case TurnState.Retain: display.RetainTrue(); break;
         }
         if (companion != null)
         {
             companion.PreformAction();
         }
         UpdateDisplays();
+        await Task.Delay(1000);
+        return true;
     }
     public virtual void Attack(BaseCharacter c)
     {
@@ -301,6 +286,7 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         if(state != CharacterState.Dead && currentMana > 0)
         {
+            display.DefendTrue();
             amount -= GetDamageReduction();
             amount = Mathf.Max(amount,0);
             IncreaseDamageTaken(amount);

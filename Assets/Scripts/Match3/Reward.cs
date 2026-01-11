@@ -1,9 +1,7 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Reward : MonoBehaviour
@@ -66,9 +64,41 @@ public class Reward : MonoBehaviour
     }
     private GameObject GetItem()
     {
-        
-        int itemIndex = Random.Range(0, GameResources.Instance.ItemPool.Count);
-        return GameResources.Instance.ItemPool[itemIndex];
+        ItemRarity rarity = GetRandomRarity();
+        List<GameObject> validItems = GetItemsOfRarity(rarity);
+        //logic to prevent duplicates maybe ?
+        int rng = UnityEngine.Random.Range(0,validItems.Count);
+        return validItems[rng];
     }
 
+    private ItemRarity GetRandomRarity()
+    {
+        int rng = UnityEngine.Random.Range(0, 101);
+        if (rng < 51)
+        {
+            return ItemRarity.Common;
+        }
+        else if(rng > 50 && rng < 76)
+        {
+            return ItemRarity.Uncommon;
+        }
+        else
+        {
+            return ItemRarity.Rare;
+        }
+    }
+
+    private List<GameObject> GetItemsOfRarity(ItemRarity rarity)
+    {
+        GameResources instance = GameResources.Instance;
+        switch (rarity) 
+        {
+            case ItemRarity.Common: return instance.CommonItemPool;
+            case ItemRarity.Uncommon: return instance.UncommonItemPool;
+            case ItemRarity.Rare: return instance.RareItemPool;
+            default: return instance.ItemPool;
+        }
+
+        
+    }
 }

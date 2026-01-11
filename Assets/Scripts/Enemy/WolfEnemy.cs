@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Assets.Scripts.UserInterface;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static Unity.VisualScripting.Member;
@@ -13,7 +16,7 @@ public class WolfEnemy : EnemyCharacter
     private Sprite WoundSprite;
     public List<Wolf> WolfPack;
     private int WolfIndex;
-    public List<InGameCharacterDisplay> WolfDisplays;
+    public List<EnemyInGameDisplay> WolfDisplays;
     public override void Init()
     {
         
@@ -28,7 +31,11 @@ public class WolfEnemy : EnemyCharacter
             WolfPack[i].SetAttackToggle(Convert.ToBoolean(rng));
         }
         InitializeDisplays();
-        InitializeButtons();
+        //give each wolf a reference to how they're displayed
+        for(int i = 0; i < PackSize; i++)
+        {
+            WolfPack[i].SetDisplay(WolfDisplays[i]);
+        }
         UpdateDisplays();
     }
     public int RoundToNearestMultipleOfFour(int number)
@@ -75,8 +82,7 @@ public class WolfEnemy : EnemyCharacter
             GameContainer.Instance.enemyDisplays.RemoveAt(WolfIndex);
             maxMana -= target.MaxHealth;
         }
-        damageTakenString += $" \n {amount} from {source} ";
-        Debug.Log(damageTakenString);
+        CombatLog.Instance.AmendTextToLog($"{this.GetType().Name} took {damageTaken} from {source}");
         UpdateDisplays();
     }
     //do not consider targets.
@@ -98,12 +104,15 @@ public class WolfEnemy : EnemyCharacter
         return damage;
     }
     //call for wolf to preform the turn which will randomly alternate attacks.
-    public override void PreformTurn()
+    public override async Task<bool> PreformTurn()
     {
         foreach (Wolf wolf in WolfPack)
         {
+            //to do: introduce animation or action time variable in base character
+            await Task.Delay(250 + (250 * WolfPack.IndexOf(wolf) ));
             wolf.PreformTurn();
         }
+        return true;
     }
     public override void TurnStart()
     {
@@ -149,6 +158,7 @@ public class Wolf
     private int CurrentHealth;
     public bool IsDead;
     public BaseCharacter target;
+    private EnemyInGameDisplay display;
     private bool AttackToggle;
     public void Attack()
     {
@@ -173,6 +183,7 @@ public class Wolf
     }
     public void PreformTurn()
     {
+        display.AttackTrue();
         if (AttackToggle)
         {
             Attack();
@@ -190,7 +201,7 @@ public class Wolf
     }
     public void TakeDamge(int damage)
     {
-        
+        display.DefendTrue();
         CurrentHealth -= damage;
         
         if (CurrentHealth <= 0)
@@ -198,6 +209,10 @@ public class Wolf
             IsDead = true;
         }
 
+    }
+    public void SetDisplay(EnemyInGameDisplay dis)
+    {
+        display = dis;
     }
     public Wolf(int maxHealth, Sprite woundIcon, ref ObservableCollection<BaseStatus> statusEffects)
     {
