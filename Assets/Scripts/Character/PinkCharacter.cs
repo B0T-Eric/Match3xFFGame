@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using static UnityEngine.UI.Image;
 /// <summary>
 /// Pink character classes purpose is to facilitate the unique buffs and attacks of the pink character.
 /// The unique effects of pink character are their unique statuses which change mana generation and damage delt.
@@ -13,133 +14,91 @@ public class PinkCharacter : BaseCharacter
 {
     public Sprite rageSprite, passionSprite;
     [SerializeField]
-    private float[] modifiers = { 0.5f, 1.5f, 2f, 2.5f };
+    PinkSpecialAttack spec;
+    private bool stanceActive = false;
     public override void Init()
     {
         manaType = ManaType.Pink;
         hexColour = "FF00BE";
+        onAttack += OnAttack;
+        attacks.Clear();
+        attacks.Add(spec);
         base.Init();
     }
     #region descriptions
     public override string GetPassiveOneDesc()
     {
-        return $"At the beginning of each turn this character gains one of two status effects: " +
-            $"\n <color=red>Rage:</color> Increases outgoing attack damage by 50%." +
-            $"\n <color=#{hexColour}>Passion:</color> Double potential gained.";
+        return $"Under specific conditions call upon the aid of their bodies occupants to empower their attack." +
+            $"\n<b>Empowered Conditions</b> - When initial damage is a multiple of:\n" +
+            $"3 (6,9,12,15 etc...), 4 (8,12,16,20 etc...) and 6 (12,18,24,30 etc...).\n" +
+            $"If second passive is active an additional condition is added: 5 (10,15,20,25 etc...)." +
+            $"\n<b>Increases to damage:</b>\n" +
+            $"When initial damage is a multiple of 3 or more conditions; damage is increased by 200%\n" +
+            $"When initial damage is a multiple of 2 of 3 conditions; damage is increased by 100%\n" +
+            $"When initial damage is a multiple of 1 or none of the conditions; damage is not increased";
     }
     public override string GetPassiveTwoDesc()
     {
-        return $"Attacks now trigger twice but become unpredictable dealing either {modifiers[0] * 100}%, {modifiers[1] * 100}%, {modifiers[2] * 100}%, {modifiers[3] * 100}% of potential as damage.";
+        return $"Empowered attacks are no longer increased in damage, instead the damage is split across multiple hits\nA new condition is added to condition pool`.";
     }
     public override string GetPassiveThreeDesc()
     {
-        return $"When a single hit from an attack is greater than 10, gain mana equal to 25% of the damage dealt.";
+        return $"If damage is less than 10 damage becomes 10.\nDamage greater than 20 heals for 25% of the damage dealt.";
     }
     #endregion
     public override void Attack(BaseCharacter c)
     {
-        if (currentMana < passiveValues.secPassiveThreshold)
+        if (state == CharacterState.Alive)
         {
-            base.Attack(c);
-        }
-        //level 2 passive attacks 2 times with variably amped damage.
-        else
-        {
-            if (state == CharacterState.Alive)
+            int damage = GetDamage();
+            if (damage > 0)
             {
-                int damage = GetDamage();
-                if(damage > 0)
+                if (selectedAttack == 0)
                 {
-                    damage /= 2;
-                    int firstHit = GetDamageSpecial(damage);
-                    int secondHit = GetDamageSpecial(damage);
-                    //animate
-                    Hit(c, firstHit);
-                    //animate
-                    Hit(c, secondHit);
+                    attacks[selectedAttack].Attack(c, damage, this, GetCharacterName(), onAttack);
                 }
-            }
-            nextTurnPotential = 0;
-        }
-    }
-
-    private void Hit(BaseCharacter c, int firstHit)
-    {
-        c.LoseMana(firstHit, this.GetType().Name);
-        if (firstHit > 10 && currentMana > passiveValues.thirdPassiveThreshold)
-        {
-            base.HealMana(Mathf.RoundToInt(firstHit * 0.25f));
-        }
-        //delegate for apply on hit effects/extra damage
-        if (onAttack != null)
-        {
-            onAttack.Invoke(c, firstHit);
-        }
-    }
-
-    private int GetDamageSpecial(int damage)
-    {
-        int rng = Random.Range(0, 101);
-        if(rng >= 0 && rng < 30)
-        {
-            return Mathf.RoundToInt(damage * modifiers[0]);
-        }
-        else if(rng >= 30 && rng < 55)
-        {
-            return Mathf.RoundToInt(damage * modifiers[1]);
-        }
-        else if(rng >= 55 && rng < 75)
-        {
-            return Mathf.RoundToInt(damage * modifiers[2]);
-        }
-        else if(rng >= 75 && rng < 90)
-        {
-            return Mathf.RoundToInt(damage * modifiers[3]);
-        }
-        else
-        {
-            return damage;
-        } 
-    }
-    protected override int GetDamage()
-    {
-        int damage = potential;
-        //status based damage amp / conditional damage from abilities or other party members
-        foreach (DraggableItem item in items)
-        {
-            if (item.itemSO.flatDamageIncrease > 0)
-            {
-                damage += item.itemSO.flatDamageIncrease;
-            }
-            if (item.itemSO.damageMult > 0)
-            {
-                damage = (int)(damage * item.itemSO.damageMult);
+   
             }
         }
-        if (statusEffects.Any(rage => rage is Rage))
-        {
-            Rage r = statusEffects.FirstOrDefault(s => s is Rage) as Rage;
-            damage = Mathf.RoundToInt(damage * r.ApplyRage());
-        }
-
-        return damage;
+        nextTurnPotential = 0;
     }
-    public override void GainPotential(int amount)
+    private void OnAttack(BaseCharacter c, int damage)
     {
-        if (statusEffects.Any(p => p is Passion))
+        if (damage > 20 && IsPassiveThreeActive)
         {
-            Passion passion = statusEffects.FirstOrDefault(p => p is Passion) as Passion;
-            amount = Mathf.RoundToInt(amount * passion.PotentialGainMult);
+            base.HealMana(Mathf.RoundToInt(damage * 0.25f));
         }
-        base.GainPotential(amount);
     }
-    public override void TurnStart()
+    protected override void AbilityButtonClick()
     {
-        int rng = Random.Range(0,2);
-        switch (rng)
+        Ability.ActivateAbility();
+        stanceActive = true;
+        onHit += OnHit;
+    }
+    public void OnHit(BaseCharacter character)
+    {
+        if (stanceActive)
+        {
+            GetBuff(1);
+            onHit -= OnHit;
+            stanceActive = false;
+        }
+    }
+    private void GetBuff(int num)
+    {
+        switch (num)
         {
             case 0: AddStatusEffect(new Rage(rageSprite)); break;
             case 1: AddStatusEffect(new Passion(passionSprite)); break;
+        }
+    }
+
+    public override void TurnStart()
+    {
+        if(stanceActive)
+        {
+            GetBuff(1);
+            stanceActive = false;
         }
         base.TurnStart();
     }

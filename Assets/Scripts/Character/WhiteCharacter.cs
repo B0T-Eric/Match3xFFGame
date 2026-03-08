@@ -1,10 +1,25 @@
+using Assets.Scripts.Character.CharacterAttacks;
+using System.Linq;
 using UnityEngine;
 /// <summary>
 /// 
 /// </summary>
 public class WhiteCharacter : BaseCharacter
 {
-    float ItemPotentialModifier = 0.33f;
+    float ItemPotentialModifier = 0.15f;
+    [SerializeField]
+    TwoHitAttack doubleAttack;
+    [SerializeField]
+    PreparationAttack preparationAttack;
+    [SerializeField]
+    QuickAttack quickAttack;
+    int bUseCount = 2;
+    float bModifier = 0.5f;
+    int weakDuration = 2;
+    float weakModifier = 0.25f;
+    [SerializeField]
+    Sprite brittleSprite, weakSprite;
+    
     public override void GainPotential(int amount)
     {
         if(amount == 4)
@@ -20,32 +35,95 @@ public class WhiteCharacter : BaseCharacter
         potential += amount;
         UpdateDisplays();
     }
+    protected override void UpdatePassives()
+    {
+        if (preparationAttack.IsPreparing)
+        {
+            turnStateButton.interactable = false;
+        }
+        else
+        {
+            turnStateButton.interactable = true;
+        }
+        if (IsPassiveTwoActive)
+        {
+            if (!attacks.Contains(preparationAttack))
+            {
+                attacks.Add(preparationAttack);
+            }
+            if (!attacks.Contains(doubleAttack))
+            {
+                attacks.Add(doubleAttack);
+            }
+            if (!attacks.Contains(quickAttack))
+            {
+                attacks.Add(quickAttack);
+            }
+
+        }
+        else
+        {
+            if (attacks.Contains(preparationAttack))
+            {
+                attacks.Remove(preparationAttack);
+            }
+            if (attacks.Contains(doubleAttack))
+            {
+                attacks.Remove(doubleAttack);
+            }
+            if (attacks.Contains(quickAttack))
+            {
+                attacks.Remove(quickAttack);
+            }
+            selectedAttack = 0;
+        }
+    }
     #region descriptions
     public override string GetPassiveOneDesc()
     {
-        return $"Matches of spirit tokens higher than 3 gain more potential: 4 gets an additional 3 potential, 5+ gets an additional 6.Reduces damage taken by 5 and reduces damage taken by allies by 1.";
+        return $"Matches of spirit tokens 4+ gain more potential: 4 gets an additional 3 potential, 5+ gets an additional 6.\n" +
+            $"Each equiped item on this character increases potential retained by {ItemPotentialModifier * 100}%";
     }
     public override string GetPassiveTwoDesc()
     {
-        return $"Now attacks twice for full damage.";
+        return $"Gains 3 new attacks:\n" +
+            $"<b>Preparation:</b> {GetCharacterName()} prepares for their next strike across 3 turns, dealing massive (300% damage) amounts of damage once preparation is complete.\n" +
+            $"<b>Twin Strike:</b> {GetCharacterName()} strikes an enemy 2 times for 100% damage on each hit.\n" +
+            $"<b>Quick Strike:</b> {GetCharacterName()} attack for 75% damage and gain 5 potentail next turn.";
     }
     public override string GetPassiveThreeDesc()
     {
-        return $"Each equiped item on this character increases potential gained by {ItemPotentialModifier * 100}%";
+        return $"When attacking, apply weakness to enemies above 50% max health or brittle to enemies below.\n" +
+            $"Brittle increases damage taken by {bModifier * 100}% for the next {bUseCount} attacks.\n" +
+            $"Weakness decreases damage dealt by {weakModifier * 100}% for {weakDuration} turns.";
     }
     #endregion
-    public override float GetPotentialMult()
+    protected override void AbilityButtonClick()
     {
-        float mult = 1f;
-        foreach (DraggableItem item in items)
+        Ability.ActivateAbility(EnemyCharacter.Instance);
+    }
+    protected override float GetRetainMult()
+    {
+        float mult = 0.75f;
+        foreach(DraggableItem item in items)
         {
-            if (item.itemSO.potentialGainMult != 0f)
-            {
-                mult += item.itemSO.potentialGainMult;
-            }
             mult += ItemPotentialModifier;
         }
         return mult;
+    }
+    public void OnAttack(BaseCharacter character, int damage)
+    {
+        Brittle brittle = new Brittle(bUseCount, bModifier, brittleSprite);
+        Weakness weakness = new Weakness(weakDuration,weakModifier,weakSprite);
+        int halfHp = character.maxMana / 2;
+        if (character.currentMana > halfHp)
+        {
+            character.AddStatusEffect(weakness);
+        }
+        else
+        {
+            character.AddStatusEffect(brittle);
+        }
     }
     public override void Init()
     {
@@ -53,35 +131,5 @@ public class WhiteCharacter : BaseCharacter
         hexColour = "FFFFFF";
         base.Init();
 
-    }
-    public override void Attack(BaseCharacter c)
-    {
-        if (state == CharacterState.Alive)
-        {
-            //animate
-            int damage = GetDamage();
-            if (damage > 0)
-            {
-                
-                c.LoseMana(damage, this.GetType().Name);
-                //delegate for apply on hit effects/extra damage
-                if (onAttack != null)
-                {
-                    onAttack.Invoke(c, damage);
-                }
-                if (currentMana > passiveValues.secPassiveThreshold)
-                {
-                    
-                    c.LoseMana(damage, this.GetType().Name);
-                    //delegate for apply on hit effects/extra damage
-                    if (onAttack != null)
-                    {
-                        onAttack.Invoke(c, damage);
-                    }
-
-                }
-            }
-        }
-        nextTurnPotential = 0;
     }
 }

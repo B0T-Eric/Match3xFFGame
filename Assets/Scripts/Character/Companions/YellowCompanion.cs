@@ -10,6 +10,7 @@ public class YellowCompanion : BaseCompanion
     {
         int damage = pairedCharacter.potential % threshold;
         EnemyCharacter.Instance.LoseMana(damage, companionName);
+        CombatLog.Instance.AmendTextToLog($"{companionName} dealt {damage} damage to {EnemyCharacter.Instance.GetCharacterName()}");
     }
     protected override string GetDescription()
     {

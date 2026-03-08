@@ -18,6 +18,7 @@ public class OrangeCompanion : BaseCompanion
             }
         }
         EnemyCharacter.Instance.LoseMana(dmg, companionName);
+        CombatLog.Instance.AmendTextToLog($"{companionName} dealt {dmg} to {EnemyCharacter.Instance.GetCharacterName()}");
     }
     protected override string GetDescription()
     {

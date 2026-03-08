@@ -86,13 +86,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 9187195536599491579}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 309443eb321d0b64e835c0c04470e3dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 3e9c232d064bfaa45953ed418db15e5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemSO: {fileID: 11400000, guid: 6d805fa0fe1c9dd4a93a4fcfe816c309, type: 2}
   image: {fileID: 2174053049322829634}
   parentAfterDrag: {fileID: 0}
-  poisonSprite: {fileID: 21300000, guid: a9546f4ad5a4f1f428a3f975449fe239, type: 3}
+  poisonSprite: {fileID: 21300000, guid: 1f19b090ce76de241b20fd8bfd4eaa15, type: 3}
 --- !u!114 &3819879605928976846
 MonoBehaviour:
   m_ObjectHideFlags: 0

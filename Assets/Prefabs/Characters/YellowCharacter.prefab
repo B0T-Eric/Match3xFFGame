@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8286353252797284497}
   - component: {fileID: 532754249567704769}
+  - component: {fileID: 3824704531964351764}
+  - component: {fileID: -5480708298090924266}
+  - component: {fileID: 2475802058637974636}
   m_Layer: 0
   m_Name: YellowCharacter
   m_TagString: Untagged
@@ -54,22 +57,76 @@ MonoBehaviour:
   potential: 0
   nextTurnPotential: 0
   retainMultiplier: 0
-  manaType: 0
+  manaType: 1
   damageTaken: 0
   state: 0
   turnState: 0
-  abilityButton: {fileID: 0}
-  turnStateButton: {fileID: 0}
+  isStunned: 0
   hexColour: 
   description: 
   partyUi: {fileID: 4643811802386169538, guid: 40aca299d7956cc4da4357ab62de74c9, type: 3}
   sprite: {fileID: 21300000, guid: 9cbe126391466f94f8a71908cf97b8ad, type: 3}
+  downSprite: {fileID: 21300000, guid: 68b294666e3a6a04c86a61f7c40d616a, type: 3}
+  deadSprite: {fileID: 21300000, guid: a23f9fe0c01e9494dbd628ceb8014e4e, type: 3}
   InGameDisplayPrefab: {fileID: 1686202729253865109, guid: 475d5a85614e9f34cb58d81bf0a85ae4, type: 3}
   display: {fileID: 0}
+  turnPicker: {fileID: 0}
   manaBar: {fileID: 0}
   potentialText: {fileID: 0}
   healthText: {fileID: 0}
   inventorySlots: []
+  abilityButton: {fileID: 0}
+  turnStateButton: {fileID: 0}
   items: []
   companion: {fileID: 0}
-  weaknessIcon: {fileID: 21300000, guid: 586e402383520dc48a781e46df3cb2f9, type: 3}
+  characterDescription: {fileID: -5480708298090924266}
+  Ability: {fileID: 2475802058637974636}
+  attacks:
+  - {fileID: 3824704531964351764}
+  selectedAttack: 0
+--- !u!114 &3824704531964351764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 037108274cd938741af1932fc9492b95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: Standard basic attack dealing base damage.
+  Name: Basic Attack
+--- !u!114 &-5480708298090924266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5c2406d5583b51489a3b52d0da68580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  passiveIcons:
+  - {fileID: 21300000, guid: 100fa73e372f60f4eab109f9e631a8e7, type: 3}
+  - {fileID: -1156505173, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+  - {fileID: 360038554, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+  - {fileID: -1263489021, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+--- !u!114 &2475802058637974636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5f35a0abf2a9e642a958dde5ee980c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilityCooldown: 1
+  cost: 15
+  character: {fileID: 532754249567704769}

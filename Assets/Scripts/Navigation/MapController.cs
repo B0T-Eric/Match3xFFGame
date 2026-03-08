@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-public enum MapItem { Normal, Mystery, Rest, Boss }
+public enum MapItem { Normal, Mystery, Rest, Boss, Elite }
 public class MapController : MonoBehaviour
 {
     private static MapController instance;
@@ -20,8 +20,10 @@ public class MapController : MonoBehaviour
     //all possible enemy prefabs to include in scenes.
     public GameObject[] EnemyArray;
     public GameObject[] BossArray;
+    public GameObject[] EliteArray;
     //a set of enemies, 1 per row for the game to pull from if required
     public GameObject[] EnemyList;
+    public GameObject[] EliteList;
     [SerializeField]
     private int LevelMapCount;
     bool hasInitialized = false;
@@ -45,7 +47,7 @@ public class MapController : MonoBehaviour
     const string navScene = "NavigationScene";
     private void Awake()
     {
-
+        rows = RunSettings.GetMapSize();
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
@@ -263,6 +265,7 @@ public class MapController : MonoBehaviour
         navItem.RowNumber = row;
         navItem.ColumnIndex = col;
         navItem.ItemType = type;
+        navItem.Encounter = GetEnemyType(type);
         if (row != 0)
         {
             navItem.MakeConnections(ref navGrid);
@@ -282,6 +285,22 @@ public class MapController : MonoBehaviour
             }
         }
         
+    }
+
+    public GameObject GetRandomElite()
+    {
+        int rng = Random.Range(0, EliteArray.Length);
+        return EliteArray[rng];
+    }
+    private EnemyType GetEnemyType(MapItem type)
+    {
+        switch (type)
+        {
+            case MapItem.Normal: return EnemyType.Normal;
+            case MapItem.Elite: return EnemyType.Elite;
+            case MapItem.Boss: return EnemyType.Boss;
+            default: return EnemyType.None;
+        }
     }
     #endregion
     private void PopulateUI()
@@ -428,8 +447,9 @@ public class MapController : MonoBehaviour
     public void IncrementStage()
     {
         CurrentStage++;
-        EnemyHealthModifier += 0.1f;
-        EnemyDamageModifier += 0.05f;
+        //adjust scaling based on difficulty setting in run modifiers class.
+        EnemyHealthModifier += RunSettings.GetHealthGrowth();
+        EnemyDamageModifier += RunSettings.GetDamageGrowth();
         Party.Instance.StageText.text = $"Stage: {CurrentStage + 1}";
     }
     

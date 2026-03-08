@@ -10,6 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8286353252797284497}
   - component: {fileID: 4013886687115856689}
+  - component: {fileID: -8659655939902490718}
+  - component: {fileID: 8757066083179012063}
+  - component: {fileID: -1899079513645272607}
+  - component: {fileID: 6665335893146768877}
   m_Layer: 0
   m_Name: PinkCharacter
   m_TagString: Untagged
@@ -54,28 +58,92 @@ MonoBehaviour:
   potential: 0
   nextTurnPotential: 0
   retainMultiplier: 0
-  manaType: 0
+  manaType: 6
   damageTaken: 0
   state: 0
   turnState: 0
-  abilityButton: {fileID: 0}
-  turnStateButton: {fileID: 0}
+  isStunned: 0
   hexColour: 
   description: 
   partyUi: {fileID: 4643811802386169538, guid: 40aca299d7956cc4da4357ab62de74c9, type: 3}
   sprite: {fileID: 21300000, guid: 5de0c5834c3378c418f82d5ab9648984, type: 3}
+  downSprite: {fileID: 21300000, guid: 0e3b11a6441000640b1f57eb66aefbf4, type: 3}
+  deadSprite: {fileID: 21300000, guid: a23f9fe0c01e9494dbd628ceb8014e4e, type: 3}
   InGameDisplayPrefab: {fileID: 1686202729253865109, guid: 475d5a85614e9f34cb58d81bf0a85ae4, type: 3}
   display: {fileID: 0}
+  turnPicker: {fileID: 0}
   manaBar: {fileID: 0}
   potentialText: {fileID: 0}
   healthText: {fileID: 0}
   inventorySlots: []
+  abilityButton: {fileID: 0}
+  turnStateButton: {fileID: 0}
   items: []
   companion: {fileID: 0}
+  characterDescription: {fileID: -1899079513645272607}
+  Ability: {fileID: 6665335893146768877}
+  attacks: []
+  selectedAttack: 0
   rageSprite: {fileID: 21300000, guid: 90edb282f30f58344a5135ca30f606f7, type: 3}
   passionSprite: {fileID: 21300000, guid: 21d17d86233e6d74b92500a5fdbd6ed0, type: 3}
-  modifiers:
-  - 0.5
-  - 1.5
-  - 2
-  - 2.5
+  spec: {fileID: 8757066083179012063}
+--- !u!114 &-8659655939902490718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 037108274cd938741af1932fc9492b95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: Standard basic attack dealing base damage.
+  Name: Basic Attack
+--- !u!114 &8757066083179012063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9baf61bc73d73f44e9120b292d6bef85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: Utilise the spirits of fallen friends to deal damage
+  Name: Familiar Strikes
+--- !u!114 &-1899079513645272607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5c2406d5583b51489a3b52d0da68580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  passiveIcons:
+  - {fileID: 21300000, guid: f3c3f9978e0f49f4091d81de1273abf4, type: 3}
+  - {fileID: -1156505173, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+  - {fileID: 360038554, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+  - {fileID: -1263489021, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+--- !u!114 &6665335893146768877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6534d01ba81d889478042a94d42f5303, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilityCooldown: 1
+  cost: 0
+  character: {fileID: 4013886687115856689}

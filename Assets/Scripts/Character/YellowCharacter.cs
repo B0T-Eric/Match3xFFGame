@@ -1,15 +1,14 @@
 ﻿using System.Collections;
+using System.ComponentModel.Design.Serialization;
 using UnityEngine;
 /// <summary>
 /// 
 /// </summary>
 public class YellowCharacter : BaseCharacter
 {
-    //heal amount 
-    int heal = 5;
-    public Sprite weaknessIcon;
-    int weaknessDuration = 2;
-    float weaknessEffect = 0.75f;
+    float baseEvasionChance = 0.25f;
+    float evasionIncrease = 0.025f;
+    float maxHpDamage = 0.03f;
     public override void Init()
     {
         manaType = ManaType.Yellow;
@@ -20,44 +19,58 @@ public class YellowCharacter : BaseCharacter
     #region descriptions
     public override string GetPassiveOneDesc()
     {
-        return $"Provides the ability to see how much damage the enemy is doing each turn and who they are attacking.";
+        return $"Provides the ability to see how much damage the enemy is doing each turn and who they are attacking.\nCan also see through enemy deception.";
     }
     public override string GetPassiveTwoDesc()
     {
-        return $"Applies weakness on attack. \n" +
-        $"<color=#{hexColour}>Weakness:</color> Reduces outgoing damage by {weaknessEffect * 100}% for {weaknessDuration} turns.";
+        return $"While above {passiveValues.secPassiveThreshold} mana, gain a {baseEvasionChance*100}% chance to evade enemy damage.\n" +
+            $"Evasion chance increases by {evasionIncrease * 100}% for each mana above 20.";
     }
     public override string GetPassiveThreeDesc()
     {
-        return $"At the beginning of each turn, restore {heal} mana to all party memebers";
+        return $"When evading retaliate with a swift attack dealing {maxHpDamage * 100}% of the enemies health.";
     }
     #endregion
-    public override void Attack(BaseCharacter c)
+    protected override void AbilityButtonClick()
     {
-        
-        if (currentMana > passiveValues.secPassiveThreshold)
-        {
-            ApplyWeakness(c);
-        }
-        base.Attack(c);
-
+        Ability.ActivateAbility(EnemyCharacter.Instance);
     }
-    private void ApplyWeakness(BaseCharacter c) 
+    public override void LoseMana(int amount, string source = "Unknown")
     {
-        //Modifier = 0.75 (25% reduction), Duration = 2 turns.
-        Weakness weakness = new Weakness(weaknessDuration, weaknessEffect, weaknessIcon);
-        c.AddStatusEffect(weakness);
-    }
-    public override void TurnStart()
-    {
-        if (currentMana > passiveValues.thirdPassiveThreshold)
+        float evadeChance = GetEvasionChance();
+        if(Random.value < evadeChance)
         {
-            foreach (BaseCharacter c in Party.Instance.members)
+            if (IsPassiveThreeActive) //retaliate
             {
-                c.HealMana(heal);
+                Retaliation(amount);
+            }
+            else //ignore incoming damage.
+            {
+                return;
             }
         }
-        base.TurnStart();
+        else
+        {
+            base.LoseMana(amount, source);
+        } 
+    }
+    void Retaliation(int dmg)
+    {
+        EnemyCharacter c = EnemyCharacter.Instance;
+        int damage = Mathf.RoundToInt(c.maxMana * maxHpDamage);
+        c.LoseMana(damage, $"{GetCharacterName()} retaliation");
+        nextTurnPotential = damage;
+    }
+    private float GetEvasionChance()
+    {
+        float evasion = baseEvasionChance;
+        float increase = 0;
+        for (int i = 20; i < currentMana; i++)
+        {
+            increase += evasionIncrease;
+        }
+        evasion += increase;
+        return evasion;
     }
 }
 

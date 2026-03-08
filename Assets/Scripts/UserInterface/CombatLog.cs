@@ -5,10 +5,12 @@ using UnityEngine.UI;
 public class CombatLog : MonoBehaviour
 {
     public static CombatLog Instance { get; private set; }
+    [SerializeField]
     TextMeshProUGUI log, title;
     List<string> combatLogs = new();
     string logText;
     int currentLogIndex = 0;
+    int turn = 1;
     Button nextButton, lastButton, previousButton, firstButton;
     private void Start()
     {
@@ -20,13 +22,33 @@ public class CombatLog : MonoBehaviour
     public void AmendTextToLog(string message)
     {
         logText += $"-{message}.\n";
+        if(currentLogIndex == turn-1)
+        {
+            log.text = logText;
+        }
     }
     //end of every turn save the string to the logs, so player can cycle through the log.
     //the logText is cleared to for the start of the next turn to begin.
-    public void StoreTurnLog(int turn)
+    public void StoreTurnLog()
     {
         combatLogs[turn-1] = logText;
         logText = "";
+        IncreaseTurn();
+        CreateLogIndex();
+        UpdateButtons();
+    }
+    public void IncreaseTurn()
+    {
+        turn++;
+    }
+    public void CreateLogIndex()
+    {
+        combatLogs.Add("");
+    }
+    public void SetIndex(int i)
+    {
+        currentLogIndex = i;
+        UpdateLog();
     }
     public void ResetLog()
     {
@@ -35,11 +57,14 @@ public class CombatLog : MonoBehaviour
         logText = "";
         title.text = "";
         log.text = logText;
+        turn = 1;
+        CreateLogIndex();
     }
     public void UpdateLog()
     {
         title.text = $"Turn {currentLogIndex + 1}";
         log.text = combatLogs[currentLogIndex];
+        UpdateButtons();
     }
     protected void InitializeButtons()
     {

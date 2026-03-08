@@ -10,6 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8286353252797284497}
   - component: {fileID: 6253988286475376894}
+  - component: {fileID: 4408301470243216492}
+  - component: {fileID: 3492188049531184214}
+  - component: {fileID: -3263932289769514487}
+  - component: {fileID: 6599321012626912798}
+  - component: {fileID: 2055922038878310559}
+  - component: {fileID: 1295945326025241036}
   m_Layer: 0
   m_Name: WhiteCharacter
   m_TagString: Untagged
@@ -54,21 +60,126 @@ MonoBehaviour:
   potential: 0
   nextTurnPotential: 0
   retainMultiplier: 0
-  manaType: 0
+  manaType: 5
   damageTaken: 0
   state: 0
   turnState: 0
-  abilityButton: {fileID: 0}
-  turnStateButton: {fileID: 0}
+  isStunned: 0
   hexColour: 
   description: 
   partyUi: {fileID: 4643811802386169538, guid: 40aca299d7956cc4da4357ab62de74c9, type: 3}
   sprite: {fileID: 21300000, guid: 7a97aa48b25cf6c4d9c15798edf9408d, type: 3}
+  downSprite: {fileID: 21300000, guid: d07dc24236b604d42af1df39aadea27a, type: 3}
+  deadSprite: {fileID: 21300000, guid: a23f9fe0c01e9494dbd628ceb8014e4e, type: 3}
   InGameDisplayPrefab: {fileID: 1686202729253865109, guid: 475d5a85614e9f34cb58d81bf0a85ae4, type: 3}
   display: {fileID: 0}
+  turnPicker: {fileID: 0}
   manaBar: {fileID: 0}
   potentialText: {fileID: 0}
   healthText: {fileID: 0}
   inventorySlots: []
+  abilityButton: {fileID: 0}
+  turnStateButton: {fileID: 0}
   items: []
   companion: {fileID: 0}
+  characterDescription: {fileID: -3263932289769514487}
+  Ability: {fileID: 1295945326025241036}
+  attacks:
+  - {fileID: 4408301470243216492}
+  selectedAttack: 0
+  doubleAttack: {fileID: 3492188049531184214}
+  preparationAttack: {fileID: 6599321012626912798}
+  quickAttack: {fileID: 2055922038878310559}
+  brittleSprite: {fileID: 21300000, guid: 537bf23c37718484884daf1b7946330d, type: 3}
+  weakSprite: {fileID: 21300000, guid: 586e402383520dc48a781e46df3cb2f9, type: 3}
+--- !u!114 &4408301470243216492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 037108274cd938741af1932fc9492b95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: Standard basic attack dealing base damage.
+  Name: Basic Attack
+--- !u!114 &3492188049531184214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eb8d1fc26fa7ed45b66a881107b6c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: Attack two times in one attack for full damage.
+  Name: Twin Strike
+--- !u!114 &-3263932289769514487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5c2406d5583b51489a3b52d0da68580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  passiveIcons:
+  - {fileID: 21300000, guid: 9c734e4c35ec0ed4fbb03be5f3bbd2a4, type: 3}
+  - {fileID: -1156505173, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+  - {fileID: 360038554, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+  - {fileID: -1263489021, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+--- !u!114 &6599321012626912798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59d4780296b1dda4d9abe11b29ea45df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: Prepare a massive attack which deals damage after 3 turns
+  Name: Preparation
+  IsPreparing: 0
+  multiplier: 3
+--- !u!114 &2055922038878310559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78934eb3721f3dc46a1a569c439cc831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: A weak attack that grants potential next turn.
+  Name: Quick Strike
+--- !u!114 &1295945326025241036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76fb417c3d5de1745ae94c5065e638fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilityCooldown: 2
+  cost: 10
+  character: {fileID: 6253988286475376894}
+  attack1: {fileID: 4408301470243216492}

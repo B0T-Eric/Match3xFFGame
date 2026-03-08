@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd
+public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd, IDebuff
 {
     public Burn(int duration, int damage, BaseCharacter target, Sprite icon)
     {
@@ -18,7 +19,7 @@ public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd
     public int Damage { get; set; }
     public int Duration { get; set; }
 
-    public void DealDamage()
+    public virtual void DealDamage()
     {
         if (Duration > 0)
         {
@@ -46,7 +47,43 @@ public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd
         PreformEffect();
     }
 }
-public class Weakness : BaseStatus, IDurationStatus
+public class SuperBurn : Burn
+{
+    private readonly float DamageGain = 0.25f;
+    private int durationDecreased = 0;
+    private int startDuration;
+    public SuperBurn(int duration, int damage, BaseCharacter target, Sprite icon) : base(duration, damage, target, icon)
+    {
+        startDuration = duration;
+    }
+    public override void DealDamage()
+    {
+        if (Duration > 0)
+        {
+            int increasedDamage;
+            if (durationDecreased > 0)
+            {
+                increasedDamage = Mathf.RoundToInt(Damage * (durationDecreased * DamageGain));
+            }
+            else
+            {
+                increasedDamage = Damage;
+            }
+            character.LoseMana(increasedDamage, this.GetType().Name);
+        }
+    }
+    public new void DecreaseDuration()
+    {
+        Duration--;
+        durationDecreased++;
+        NotifyChanged();
+    }
+    public override string ToString()
+    {
+        return $"Burning for {Damage} damage every turn for {Duration} ({startDuration} start) turns,\n each turn passed increases damage by {DamageGain*100}%.";
+    }
+}
+public class Weakness : BaseStatus, IDurationStatus, IDebuff
 {
     public int Duration { get; set;}
 
@@ -77,7 +114,7 @@ public class Weakness : BaseStatus, IDurationStatus
         return $"Lowers outgoing damage by {OutgoingDamageModifier}x for {Duration} turns.";
     }
 }
-public class Brittle : BaseStatus, IUseStatus
+public class Brittle : BaseStatus, IUseStatus, IDebuff
 {
     public int UseCount { get; set; }
 
@@ -109,7 +146,7 @@ public class Brittle : BaseStatus, IUseStatus
         return $"Increases incoming damage by {IncomingDamageMultiplier}x for {UseCount} attacks.";
     }
 }
-public class Rage : BaseStatus, IDurationStatus
+public class Rage : BaseStatus, IDurationStatus, IBuff, IOnGetDamageMult
 {
     public int Duration { get; set; }
 
@@ -129,18 +166,19 @@ public class Rage : BaseStatus, IDurationStatus
     {
         Icon=sprite;
         Duration = 1;
-        OutgoingDamageMultiplier = 1.5f;
+        OutgoingDamageMultiplier = .5f;
     }   
-    public float ApplyRage()
-    {
-        return OutgoingDamageMultiplier;
-    }
     public override string ToString()
     {
-        return $"Increases outgoing damage by {OutgoingDamageMultiplier}x for {Duration} turns.";
+        return $"Increases outgoing damage by {OutgoingDamageMultiplier*100}% for {Duration} turns.";
+    }
+
+    public int GetDamageMult(int num)
+    {
+        return Mathf.RoundToInt(num * OutgoingDamageMultiplier);
     }
 }
-public class Passion : BaseStatus, IDurationStatus
+public class Passion : BaseStatus, IDurationStatus, IBuff, IOnGetPotentialMult
 {
     public int Duration { get; set; }
 
@@ -166,8 +204,13 @@ public class Passion : BaseStatus, IDurationStatus
     {
         return $"Increases potential by {PotentialGainMult}x for {Duration} turns.";
     }
+
+    public int GetPotentialMult(int num)
+    {
+        return Mathf.RoundToInt(num * PotentialGainMult);
+    }
 }
-public class Poison : BaseStatus, IStackableStatus
+public class Poison : BaseStatus, IStackableStatus, IDebuff
 {
     public int StackCount { get; set; }
 
@@ -198,7 +241,7 @@ public class Poison : BaseStatus, IStackableStatus
             $"\nCurrent Stacks: {StackCount}.";
     }
 }
-public class Hunger : BaseStatus, IStackableStatus
+public class Hunger : BaseStatus, IStackableStatus, IBuff
 {
     public int StackCount { get; set; }
     public void DecreaseStack()
@@ -229,11 +272,10 @@ public class Hunger : BaseStatus, IStackableStatus
         return $"Each stack of Hunger provides 10% increased damage.\nCurrent damage boost:{StackCount /10}%";
     }
 }
-public class Wound : BaseStatus, IStackableStatus, IDurationStatus,  IOnDamageTakenItem
+public class Wound : BaseStatus, IStackableStatus, IDurationStatus,  IOnHitItem, IDebuff
 {
     public int StackCount { get; set; }
     public int Duration { get; set; }
-
     public Wound(Sprite sprite, int duration)
     {
         Icon = sprite;
@@ -270,7 +312,7 @@ public class Wound : BaseStatus, IStackableStatus, IDurationStatus,  IOnDamageTa
         NotifyChanged();
     }
 
-    public void OnDamageTaken(BaseCharacter character)
+    public void OnHit(BaseCharacter character)
     {
         character.LoseMana(1 * StackCount, this.GetType().Name);
     }
@@ -280,7 +322,7 @@ public class Wound : BaseStatus, IStackableStatus, IDurationStatus,  IOnDamageTa
     }
 }
 
-public class ExchangeEffect : BaseStatus, IPartyStatus
+public class ExchangeEffect : BaseStatus, IPartyStatus, IBuff
 {
     ManaType Type;
 
@@ -340,4 +382,87 @@ public class ExchangeEffect : BaseStatus, IPartyStatus
         return $"Lowered party health by 10, Removed {Type} spirit tokens from pool.";
     }
 }
+public class Bubble : BaseStatus, IDebuff, IOnDamageTakenItem, IUseStatus, IOnTurnStart, IOnApply
+{
+    public int baseDamage = 20;
+    public float damageMultiplier = 2.5f;
 
+    public int UseCount { get; set; }
+
+    public override void PreformEffect()
+    {
+        character.isStunned = true;
+    }
+
+    public void OnDamageTaken(BaseCharacter baseCharacter, int damage)
+    {
+        baseCharacter.LoseMana(Mathf.RoundToInt(damage * 2.5f), this.GetType().Name);
+        character.isStunned = false;
+        DecreaseUseCount();
+    }
+
+    public void OnTurnStart()
+    {
+        character.LoseMana(baseDamage, this.GetType().Name);
+        character.isStunned = false;
+        DecreaseUseCount();
+    }
+
+    public void DecreaseUseCount()
+    {
+        UseCount--;
+    }
+
+    public void IncreaseUseCount(int count)
+    {
+        UseCount += count;
+    }
+
+    public Bubble(Sprite sprite, BaseCharacter target)
+    {
+        Icon = sprite;
+        UseCount = 1;
+        character = target;
+    }
+}
+//reduce damage and reduce damage resistance
+public class Freeze : BaseStatus, IDebuff, IOnGetDamage, IOnGetDamageReduction, IDurationStatus
+{
+    int damage;
+    int damageReduction;
+
+    public int Duration { get; set; }
+
+    public Freeze(Sprite sprite, BaseCharacter target, int damage, int damageReduction, int duration)
+    {
+        Icon = sprite;
+        this.damage = damage;
+        this.damageReduction = damageReduction;
+        Duration = duration;
+    }
+    public Freeze(Sprite sprite, BaseCharacter target, int damage, int duration)
+    {
+        Icon = sprite;
+        this.damage = damage;
+        damageReduction = 0;
+        Duration = duration;
+    }
+    public int GetDamage()
+    {
+        return damage;
+    }
+    public int GetDamageReduction()
+    {
+        return damageReduction;
+    }
+
+    public void DecreaseDuration()
+    {
+        Duration--;
+    }
+
+    public void IncreaseDuration(int duration)
+    {
+        Duration += duration;
+    }
+}

@@ -13,6 +13,7 @@ public class BlueCompanion : BaseCompanion
             {
                 if(s is not Hunger)
                 stackable.IncreaseStack(StackIncrease);
+                CombatLog.Instance.AmendTextToLog($"{companionName} increased {stackable.GetType().Name} stacks by {StackIncrease}");
             }
         }
     }

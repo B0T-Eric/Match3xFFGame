@@ -1,13 +1,8 @@
-﻿using Assets.Scripts.UserInterface;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static Unity.VisualScripting.Member;
 
 public class WolfEnemy : EnemyCharacter
 { 
@@ -82,7 +77,7 @@ public class WolfEnemy : EnemyCharacter
             GameContainer.Instance.enemyDisplays.RemoveAt(WolfIndex);
             maxMana -= target.MaxHealth;
         }
-        CombatLog.Instance.AmendTextToLog($"{this.GetType().Name} took {damageTaken} from {source}");
+        CombatLog.Instance.AmendTextToLog($"Wolf took {amount} damage from {source}");
         UpdateDisplays();
     }
     //do not consider targets.
@@ -106,11 +101,14 @@ public class WolfEnemy : EnemyCharacter
     //call for wolf to preform the turn which will randomly alternate attacks.
     public override async Task<bool> PreformTurn()
     {
-        foreach (Wolf wolf in WolfPack)
+        if (!isStunned)
         {
-            //to do: introduce animation or action time variable in base character
-            await Task.Delay(250 + (250 * WolfPack.IndexOf(wolf) ));
-            wolf.PreformTurn();
+            foreach (Wolf wolf in WolfPack)
+            {
+                //to do: introduce animation or action time variable in base character
+                await Task.Delay(250 + (250 * WolfPack.IndexOf(wolf)));
+                wolf.PreformTurn();
+            } 
         }
         return true;
     }
@@ -149,6 +147,7 @@ public class WolfEnemy : EnemyCharacter
         }
         return damage / PackSize;
     }
+
 }
 public class Wolf
 {
@@ -162,7 +161,7 @@ public class Wolf
     private bool AttackToggle;
     public void Attack()
     {
-        target.LoseMana(TurnDamage);
+        target.LoseMana(TurnDamage, "Wolf");
     }
     public void SetAttackToggle(bool b)
     {
@@ -174,7 +173,7 @@ public class Wolf
     }
     public void Wound()
     {
-        target.LoseMana(TurnDamage);
+        target.LoseMana(TurnDamage,"Wolf");
         target.AddStatusEffect(WoundStatus);
     }
     public int GetDamage()

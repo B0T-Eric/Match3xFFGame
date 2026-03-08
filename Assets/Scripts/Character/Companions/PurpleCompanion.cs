@@ -15,14 +15,19 @@ public class PurpleCompanion : BaseCompanion
         {
             active = true;
         }
-        if(active)
+        if (active)
         {
-            pairedCharacter.HealMana(Mathf.RoundToInt(pairedCharacter.damageTaken / 3));
-            EnemyCharacter.Instance.LoseMana(Mathf.RoundToInt(pairedCharacter.damageTaken / 9),companionName);
+            int healAmount = pairedCharacter.damageTaken / 9;
+            int damageAmount = pairedCharacter.damageTaken / 3;
+            pairedCharacter.HealMana(Mathf.RoundToInt(healAmount));
+            CombatLog.Instance.AmendTextToLog($"{companionName} healed {pairedCharacter.GetCharacterName()} for {healAmount}");
+            EnemyCharacter.Instance.LoseMana(Mathf.RoundToInt(pairedCharacter.damageTaken / 9), companionName);
+            CombatLog.Instance.AmendTextToLog($"{companionName} dealt {damageAmount} to {EnemyCharacter.Instance.GetCharacterName()}");
         }
         else
         {
             pairedCharacter.LoseMana(damageToCharacter, companionName);
+            CombatLog.Instance.AmendTextToLog($"{companionName} dealt damage to {pairedCharacter.GetCharacterName()}");
         }
     }
     public override void Init(BaseCharacter c)

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using TMPro;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -137,6 +136,10 @@ public class Party : MonoBehaviour
     {
         GameContainer.Instance.DisplayParty(members);
         ResetPartyDamageTaken();
+        foreach(BaseCharacter character in members)
+        {
+            character.CombatStart();
+        }
     }
     //set damage taken to 0 on start of game
     private void ResetPartyDamageTaken()
@@ -150,7 +153,7 @@ public class Party : MonoBehaviour
     {
         foreach(BaseCharacter character in members)
         {
-            if(character.items.Count < 3)
+            if(character.items.Count < character.inventorySlots.Length)
             {
                 character.EquipItem(item);
                 break;

@@ -8,6 +8,7 @@ public class GreenCompanion : BaseCompanion
     public override void PreformAction()
     {
         pairedCharacter.HealMana(HealAmount);
+        CombatLog.Instance.AmendTextToLog($"{companionName} heals {pairedCharacter.GetCharacterName()} for {HealAmount}");
     }
     protected override string GetDescription()
     {

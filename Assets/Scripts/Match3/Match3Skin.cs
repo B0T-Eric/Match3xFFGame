@@ -38,7 +38,10 @@ public class Match3Skin : MonoBehaviour
     [SerializeField]
     GameObject enemyPrefab;
     public Canvas enemyCanvas;
-
+    [SerializeField]
+    Button endTurnButton;
+    [SerializeField]
+    GameObject movesObject;
     [SerializeField]
     Tile[] tilePrefabs;
 
@@ -49,6 +52,7 @@ public class Match3Skin : MonoBehaviour
     public bool IsPlaying => IsBusy || game.PossibleMove.IsValid;
     public bool IsBusy => busyDuration > 0f;
     private bool resolvingMove = false;
+    private bool IsInteractable = true;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -63,9 +67,10 @@ public class Match3Skin : MonoBehaviour
 
     public void StartNewGame()
     {
+        CombatLog.Instance.ResetLog();
         Party.Instance.DisplayCharactersOnGameStart();
         container.gameObject.SetActive(true);
-        
+        endTurnButton.onClick.AddListener(EndTurnClick);
         busyDuration = 0f;
         SpawnEnemy();
         turnCount = 1;
@@ -101,15 +106,29 @@ public class Match3Skin : MonoBehaviour
     {
         enemyCanvas.gameObject.SetActive(true);
         GameObject enemy;
-        if (SceneManager.GetActiveScene().name.Equals("BossScene"))
+        NavigationItem navItem = MapController.Instance.currentLocation;
+        if (navItem.IsDemonic)
         {
-            enemy = Instantiate(MapController.Instance.GetRandomBoss());
+            //get demonic enemy from seperate array.
+            enemy = null;
         }
         else
         {
-            enemy = Instantiate(MapController.Instance.EnemyList[MapController.Instance.CurrentStage]);
+            if (navItem.Encounter == EnemyType.Boss)
+            {
+                enemy = Instantiate(MapController.Instance.GetRandomBoss());
+            }
+            else if (navItem.Encounter == EnemyType.Elite)
+            {
+                //get elite enemy from elite array array. 
+                enemy = Instantiate(MapController.Instance.GetRandomElite());
+            }
+            else 
+            {
+                //get enemy from normal enemy array.
+                enemy = Instantiate(MapController.Instance.EnemyList[MapController.Instance.CurrentStage]);
+            }
         }
-        
         RectTransform rect = enemy.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(-200, 0);
         rect.SetParent(enemyCanvas.transform, false);
@@ -118,7 +137,10 @@ public class Match3Skin : MonoBehaviour
 
     private void NewTurn()
     {
-        foreach(BaseCharacter character in Party.Instance.members)
+        IsInteractable = true;
+        endTurnButton.enabled = false;
+        movesObject.SetActive(false);
+        foreach (BaseCharacter character in Party.Instance.members)
         {
             character.TurnStart();
         }
@@ -126,6 +148,8 @@ public class Match3Skin : MonoBehaviour
         movesRemaining = movesPerTurn;
         Party.Instance.TurnText.text = $"Turn {turnCount}.";
         Party.Instance.MovesText.text = $"Moves: {movesRemaining} / {movesPerTurn}";
+        CombatLog.Instance.SetIndex(turnCount-1);
+        CombatLog.Instance.AmendTextToLog($"Start of turn {turnCount}");
     }
 
     Tile SpawnTile(TileState t, float x, float y) => tilePrefabs[(int)t - 1].Spawn(new Vector3(x + tileOffset.x, y + tileOffset.y));
@@ -201,14 +225,17 @@ public class Match3Skin : MonoBehaviour
 
     private void DoMove(Move move)
     {
-        bool success = game.TryMove(move);
-        Tile a = tiles[move.From], b = tiles[move.To];
-        busyDuration = tileSwapper.Swap(a, b, !success);
-        if(success)
+        if (IsInteractable)
         {
-            tiles[move.From] = b;
-            tiles[move.To] = a;
-            resolvingMove = true;
+            bool success = game.TryMove(move);
+            Tile a = tiles[move.From], b = tiles[move.To];
+            busyDuration = tileSwapper.Swap(a, b, !success);
+            if(success)
+            {
+                tiles[move.From] = b;
+                tiles[move.To] = a;
+                resolvingMove = true;
+            }
         }
     }
     public void DecreaseMovesRemaining()
@@ -218,16 +245,22 @@ public class Match3Skin : MonoBehaviour
         if (movesRemaining == 0)
         {
             //end turn
-            turnCount++;
-            EndTurn();
+            IsInteractable = false;
+            endTurnButton.enabled = true;
+            movesObject.SetActive(true);
         }
+    }
+    private void EndTurnClick()
+    {
+        EndTurn();
+        endTurnButton.enabled = false;
     }
     private async void EndTurn()
     {
         
         foreach (BaseCharacter character in Party.Instance.members)
         {
-            if (EnemyCharacter.Instance.currentMana > 0 && character.potential > 0)
+            if (EnemyCharacter.Instance.currentMana > 0)
             {
                 bool turnCompleted = await character.PreformTurn();
                 if (turnCompleted)
@@ -245,12 +278,14 @@ public class Match3Skin : MonoBehaviour
             bool turnCompleted = await EnemyCharacter.Instance.PreformTurn();
             if (AllPartyMembersAlive())
             {
-                foreach(BaseCharacter character in Party.Instance.members)
+                CombatLog.Instance.AmendTextToLog($"End of Turn {turnCount}");
+                turnCount++;
+                foreach (BaseCharacter character in Party.Instance.members)
                 {
                     character.TurnEnd();
                 }
                 EnemyCharacter.Instance.TurnEnd();
-                CombatLog.Instance.StoreTurnLog(turnCount);
+                CombatLog.Instance.StoreTurnLog();
                 NewTurn();
             }
             else
@@ -270,6 +305,7 @@ public class Match3Skin : MonoBehaviour
         {
             bc.statusEffects.Clear();
         }
+        CombatLog.Instance.ResetLog();
         enemyCanvas.gameObject.SetActive(false);
         gameObject.SetActive(false);
         EnemyCharacter.Instance.Die();

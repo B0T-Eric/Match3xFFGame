@@ -1,21 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using UnityEngine;
 
 public class AbominationBoss : EnemyCharacter
 {
-    private BossIndicator Indicator;
+
     [SerializeField]
     private Sprite WoundSprite;
     private Wound wound;
     [SerializeField]
     private Sprite HungerSprite;
     private Hunger hunger;
-    [SerializeField]
-    private List<Sprite> AttackCycleIcons;
 
-    private int cycleIndex = 0;
+
     public override void Init()
     {
         base.Init();
@@ -25,12 +24,14 @@ public class AbominationBoss : EnemyCharacter
     protected override void InitializeDisplays()
     {
         base.InitializeDisplays();
-        Indicator = GameObject.Find("BossTurnIndicator").GetComponent<BossIndicator>();
-        Indicator.SetIconImages(AttackCycleIcons);
     }
     public override void Attack(BaseCharacter c)
     {
-        c.LoseMana(currentTurnDamage, this.GetType().Name);
+        c.LoseMana(currentTurnDamage, GetCharacterName());
+    }
+    public override string GetCharacterName()
+    {
+        return $"Abomination";
     }
     protected override int GetDamage()
     {
@@ -39,9 +40,7 @@ public class AbominationBoss : EnemyCharacter
     }
     private int GetHungerAmp()
     {
-        var hunger = System.Linq.Enumerable.FirstOrDefault(
-            System.Linq.Enumerable.OfType<Hunger>(statusEffects)
-        );
+        var hunger = Enumerable.FirstOrDefault(Enumerable.OfType<Hunger>(statusEffects));
         return hunger != null ? hunger.StackCount : 0;
     }
     protected override void SelectTargets()
@@ -56,33 +55,52 @@ public class AbominationBoss : EnemyCharacter
         }
         targets = validTargets;
     }
-    public override async Task<bool> PreformTurn()
+    protected override void HandleActions(EnemyAction action, int index)
     {
-        if (cycleIndex == 0)
+        if (action is EnemyAttack)
         {
-            foreach (BaseCharacter target in targets)
+            action.PreformAction(this);
+        }
+        else if (action is EnemyApplyStatus statusAction)
+        {
+            if(index == 1)
             {
-                Attack(target);
+                statusAction.SetStatus(hunger);
+                action.PreformAction(this);
             }
-            cycleIndex = 1;
-            
-        }
-        else if (cycleIndex == 1)
-        {
-            AddStatusEffect(hunger);
-            cycleIndex = 2;
-        }
-        else if(cycleIndex == 2)
-        {
-            foreach(BaseCharacter target in targets)
+            else
             {
-                target.AddStatusEffect(wound);
-            }
-            cycleIndex = 0;
+                statusAction.SetStatus(wound);
+                action.PreformAction(targets);
+            }            
         }
-        Indicator.ShiftPointer();
-        //to do: introduce animation or action time variable in base character
-        await Task.Delay(1000);
-        return true;
     }
+    //public override async Task<bool> PreformTurn()
+    //{
+    //    if (cycleIndex == 0)
+    //    {
+    //        foreach (BaseCharacter target in targets)
+    //        {
+    //            Attack(target);
+    //        }
+    //        cycleIndex = 1;
+    //    }
+    //    else if (cycleIndex == 1)
+    //    {
+    //        AddStatusEffect(hunger);
+    //        cycleIndex = 2;
+    //    }
+    //    else if(cycleIndex == 2)
+    //    {
+    //        foreach(BaseCharacter target in targets)
+    //        {
+    //            target.AddStatusEffect(wound);
+    //        }
+    //        cycleIndex = 0;
+    //    }
+    //    Indicator.ShiftPointer();
+    //    //to do: introduce animation or action time variable in base character
+    //    await Task.Delay(1000);
+    //    return true;
+    //}
 }

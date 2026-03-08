@@ -9,7 +9,7 @@ public class Reward : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI rewardText;
     [SerializeField]
-    RawImage rewardSprite;
+    Image rewardSprite;
 
     GameObject selectedItem;
     private Button button;
@@ -30,7 +30,7 @@ public class Reward : MonoBehaviour
         GameObject.Find("GameContainer").SetActive(false);
         //pick Item from List
         selectedItem = GetItem();
-        rewardSprite.texture = selectedItem.GetComponent<DraggableItem>().itemSO.itemImage.texture;
+        rewardSprite.sprite = selectedItem.GetComponent<DraggableItem>().itemSO.itemImage;
         rewardText.text = selectedItem.GetComponent<DraggableItem>().itemSO.itemName;
         button.onClick.AddListener(EquipItem);
     }

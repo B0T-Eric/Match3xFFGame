@@ -41,26 +41,18 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public string GetItemStatDesc()
     {
         List<string> parts = new List<string>();
-
         if (itemSO.potentialGainIncrease > 0)
             parts.Add($"+{itemSO.potentialGainIncrease} Potential Gain");
-
         if (itemSO.potentialGainMult > 0)
             parts.Add($"+{itemSO.potentialGainMult * 100f}% Potential Gain");
-
         if (itemSO.damageMult > 0)
             parts.Add($"+{itemSO.damageMult * 100f}% Damage");
-
         if (itemSO.flatDamageIncrease > 0)
             parts.Add($"+{itemSO.flatDamageIncrease} Flat Damage");
-
         if (itemSO.healingMult > 0)
             parts.Add($"+{itemSO.healingMult * 100f}% Healing");
-
         if (itemSO.damageReduction > 0)
             parts.Add($"{itemSO.damageReduction}% Damage Reduction");
-
-        // If no stats were added, give a fallback message
         if (parts.Count == 0)
             return "No stat bonuses.";
 
@@ -85,7 +77,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnDrag(PointerEventData eventData)
     {
         Debug.Log("Dragging");
-        transform.position = Input.mousePosition;
+        transform.position = eventData.position;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -95,19 +87,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         CharacterInventorySlot newSlot = parentAfterDrag.GetComponentInParent<CharacterInventorySlot>();
         if (newSlot == null)
             return;
-        if (newSlot.isOccupied && this is ICombinableItem)
-        {
-            DraggableItem item = newSlot.GetItem();
-            if (item is ICombinableItem)
-            {
-                GameObject combinedItem = LookUpRecipe(this.itemSO.ID, item.itemSO.ID);
-                newSlot.UnequipItem();
-                startSlot.UnequipItem();
-                Destroy(item.gameObject);
-                newSlot.DisplayEquipedItem(combinedItem);
-                Destroy(this.gameObject);
-            }
-        }
         else
         {
             if (newSlot != startSlot)
@@ -123,7 +102,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
     }
-    private GameObject LookUpRecipe(int id1, int id2)
+    public static GameObject LookUpRecipe(int id1, int id2)
     {
         int resultId = 0;
         if(GameResources.Instance.MergeItemRecipes.TryGetValue((id1,id2), out resultId))
@@ -150,7 +129,11 @@ public interface IOnAttackItem
 // item effects to trigger on damage taken
 public interface IOnDamageTakenItem
 {
-    void OnDamageTaken(BaseCharacter character);
+    void OnDamageTaken(BaseCharacter baseCharacter, int damage);
+}
+public interface IOnHitItem
+{
+    void OnHit(BaseCharacter character);
 }
 // item effects to trigger on turn end
 public interface IOnTurnEnd

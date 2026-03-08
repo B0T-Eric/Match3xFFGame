@@ -5,7 +5,10 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [TextArea, SerializeField]
     protected string Tooltip;
-    
+    public void SetToolTip(string tooltip)
+    {
+        Tooltip = tooltip;
+    }
     protected virtual void HideToolTip()
     {
         HoverToolTip.HideTootTip_Static();

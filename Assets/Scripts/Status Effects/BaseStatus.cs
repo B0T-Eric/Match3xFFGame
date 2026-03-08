@@ -56,4 +56,39 @@ public interface IStatItem
     void OnEquip();
     void OnUnequip();
 }
+public interface IDebuff
+{
 
+}
+public interface IBuff
+{
+
+}
+public interface IOnApply
+{
+
+}
+public interface IOnGetDamage
+{
+    public int GetDamage();
+}
+public interface IOnGetDamageReduction
+{
+    public int GetDamageReduction();
+}
+public interface IOnGetHealing
+{
+    public int GetHealing();
+}
+public interface IOnGetDamageMult
+{
+    public int GetDamageMult(int num);
+}
+public interface IOnGetPotentialMult
+{
+    public int GetPotentialMult(int num);
+}
+public interface IOnGetPotential
+{
+    public int GetPotential();
+}

@@ -10,6 +10,9 @@ public class PinkCompanion : BaseCompanion
     public override void PreformAction()
     {
         if(pairedCharacter.potential > threshold)
-        pairedCharacter.Attack(EnemyCharacter.Instance);
+        {
+            pairedCharacter.Attack(EnemyCharacter.Instance);
+            CombatLog.Instance.AmendTextToLog($"{companionName} gave {pairedCharacter.GetCharacterName()} an extra attack.");
+        }
     }
 }

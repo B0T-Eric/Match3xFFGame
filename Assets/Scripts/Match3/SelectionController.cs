@@ -9,12 +9,10 @@ public class SelectionController : MonoBehaviour
 {
     public Button selectButton;
     public GameObject characterPrefab;
-    private Color notSelectedColour = new Color(1f, 1f, 1f, 0.39f);
-    private Color selectedColour = new Color(0f,1f,0.3f,0.39f);
+
     private Image panel;
     private TextMeshProUGUI buttonText;
-    string addText = "Add To Party";
-    string removeText = "Remove";
+
     public CharacterSelectManager characterSelectManager;
 
     private bool isSelected = false;
@@ -27,8 +25,6 @@ public class SelectionController : MonoBehaviour
     private void SelectButtonClicked()
     {
         isSelected = !isSelected;
-        buttonText.text = isSelected ? removeText : addText;
-        panel.color = isSelected ? selectedColour : notSelectedColour;
-        characterSelectManager.OnCharacterSelected(characterPrefab, isSelected);
+
     }
 }

@@ -26,7 +26,7 @@ public class GameResources : MonoBehaviour
     public virtual void AddRecipes()
     {
         //poison catalyst and plague = plague explosion
-        MergeItemRecipes.Add((3, 9), 11);
+        MergeItemRecipes.Add((3, 9), 10);
     }
     public GameObject GetRandomItem()
     {

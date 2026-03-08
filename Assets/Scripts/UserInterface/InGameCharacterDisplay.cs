@@ -37,6 +37,25 @@ public class InGameCharacterDisplay : MonoBehaviour
         }
             IsDisplaying = true;
     }
+    //update sprite between alive, down and dead.
+    public void SetState(CharacterState passedState)
+    {
+        if (passedState == CharacterState.Down)
+        {
+            character.state = passedState;
+            characterRender.sprite = character.downSprite;
+        }
+        else if (passedState == CharacterState.Dead)
+        {
+            character.state = passedState;
+            characterRender.sprite = character.deadSprite;
+        }
+        else
+        {
+            characterRender.sprite = character.sprite;
+        }
+
+    }
     //call the Attack(BaseCharacter c) method
     public virtual void Attack()
     {

@@ -22,8 +22,8 @@ public class Tile : MonoBehaviour
     {
         Tile instance = pool.GetInstance(this);
         instance.pool = pool;
-        instance.transform.SetParent(GameObject.Find("GameContainer").transform);
-        instance.transform.position = position;
+        instance.transform.SetParent(GameObject.Find("GridBack").transform);
+        instance.transform.localPosition = position;
         instance.transform.localScale = Vector3.one;
         instance.disappearProgress = -1f;
         instance.falling.progress = -1f;

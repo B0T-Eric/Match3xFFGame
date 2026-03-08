@@ -19,6 +19,7 @@ public class WhiteCompanion : BaseCompanion
         if (wSwitch)
         {
             EnemyCharacter.Instance.AddStatusEffect(weakness);
+            CombatLog.Instance.AmendTextToLog($"{companionName} applied {modifier * 100}% Weakness for {weakness.Duration}");
         }
         wSwitch = !wSwitch;
     }
@@ -29,6 +30,6 @@ public class WhiteCompanion : BaseCompanion
     }
     protected override string GetDescription()
     {
-        return $"Applies {duration} turn of weakness every second turn.\nWeakness lowers damage by {(1+modifier) * 100}%";
+        return $"Applies {duration} turn of weakness every second turn.\nWeakness lowers damage by {(modifier) * 100}%";
     }
 }

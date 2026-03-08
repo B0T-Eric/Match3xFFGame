@@ -10,6 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8286353252797284497}
   - component: {fileID: 6248460109347619752}
+  - component: {fileID: -7976191574750109161}
+  - component: {fileID: 458050990398859377}
+  - component: {fileID: 5397138845084529524}
+  - component: {fileID: 3295434632617504109}
   m_Layer: 0
   m_Name: OrangeCharacter
   m_TagString: Untagged
@@ -54,22 +58,96 @@ MonoBehaviour:
   potential: 0
   nextTurnPotential: 0
   retainMultiplier: 0
-  manaType: 0
+  manaType: 4
   damageTaken: 0
   state: 0
   turnState: 0
-  abilityButton: {fileID: 0}
-  turnStateButton: {fileID: 0}
+  isStunned: 0
   hexColour: 
   description: 
   partyUi: {fileID: 4643811802386169538, guid: 40aca299d7956cc4da4357ab62de74c9, type: 3}
   sprite: {fileID: 21300000, guid: 5135762c95a187d45a99fe5354647f6f, type: 3}
+  downSprite: {fileID: 21300000, guid: 58d4d1a9fb8cf2741964857822488f79, type: 3}
+  deadSprite: {fileID: 21300000, guid: a23f9fe0c01e9494dbd628ceb8014e4e, type: 3}
   InGameDisplayPrefab: {fileID: 1686202729253865109, guid: 475d5a85614e9f34cb58d81bf0a85ae4, type: 3}
   display: {fileID: 0}
+  turnPicker: {fileID: 0}
   manaBar: {fileID: 0}
   potentialText: {fileID: 0}
   healthText: {fileID: 0}
   inventorySlots: []
+  abilityButton: {fileID: 0}
+  turnStateButton: {fileID: 0}
   items: []
   companion: {fileID: 0}
+  characterDescription: {fileID: 458050990398859377}
+  Ability: {fileID: 3295434632617504109}
+  attacks:
+  - {fileID: -7976191574750109161}
+  selectedAttack: 0
   Icon: {fileID: 21300000, guid: b5ae692e413470f4ca54ca3b81812975, type: 3}
+  SuperFireIcon: {fileID: 21300000, guid: 25d960b4f5ac7d848b15e01918f9e9ff, type: 3}
+  fsa: {fileID: 5397138845084529524}
+--- !u!114 &-7976191574750109161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 037108274cd938741af1932fc9492b95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: Standard basic attack dealing base damage.
+  Name: Basic Attack
+--- !u!114 &458050990398859377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5c2406d5583b51489a3b52d0da68580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  passiveIcons:
+  - {fileID: 21300000, guid: a591c1a646b8d73499a2ae1de8f556cb, type: 3}
+  - {fileID: -1156505173, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+  - {fileID: 360038554, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+  - {fileID: -1263489021, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
+--- !u!114 &5397138845084529524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7c40f31419733c4296e52f418fe1403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Description: Rain fire from the sky burning the enemy
+  Name: Fire Storm
+--- !u!114 &3295434632617504109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767179064042262019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aa9c452ca785b04f9c460692559bcd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilityCooldown: 2
+  cost: 25
+  character: {fileID: 6248460109347619752}
+  duration: 1
+  damage: 50
+  icon: {fileID: 21300000, guid: b5ae692e413470f4ca54ca3b81812975, type: 3}

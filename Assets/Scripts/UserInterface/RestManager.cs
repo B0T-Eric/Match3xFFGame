@@ -50,9 +50,13 @@ public class RestManager : MonoBehaviour
 
     public void HealMember()
     {
-        if (selectedCharacter == null) return;
+        if (selectedCharacter == null) return; //add visual telling player to select a character
         else
         {
+            if(selectedCharacter.state == CharacterState.Dead)
+            {
+                selectedCharacter.display.SetState(CharacterState.Alive);
+            }
             selectedCharacter.HealMana(soloHealAmount);
             EmberOfGraceUpgrade(selectedCharacter);
             DisableOptions();

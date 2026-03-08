@@ -11,16 +11,7 @@ public class StatusDisplayManager : MonoBehaviour
     {
         if (statusDisplays.ContainsKey(status))
             return;
-        GameObject display;
-        if(status.GetType() == typeof(ExchangeEffect))
-        {
-            display = Instantiate(statusDisplayUI, transform);
-        }
-        else
-        {
-            display = Instantiate(statusDisplay, transform);
-        }
-            
+        GameObject display = Instantiate(statusDisplayUI, transform);
         StatusDisplay s = display.GetComponent<StatusDisplay>();
         s.Init(status);
         statusDisplays[status] = display;

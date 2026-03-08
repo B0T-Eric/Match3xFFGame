@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+public enum EnemyType { None, Normal, Elite, Boss}
 public class NavigationItem : MonoBehaviour
 {
     public int RowNumber;
@@ -14,8 +14,10 @@ public class NavigationItem : MonoBehaviour
     [SerializeField]
     private List<NavigationItem> aboveConnections;
     public bool PlayerIsHere = false;
+    public EnemyType Encounter;
     bool playerCanMoveTo = false;
     public bool IsCleared { get; private set; } = false;
+    public bool IsDemonic = false;
     private Button itemButton;
     Image backgroundImage;
     private void Start()
@@ -110,6 +112,7 @@ public class NavigationItem : MonoBehaviour
                     backgroundImage.color = purple;
                 else
                     backgroundImage.color = new Color(99f/255f, 20f/255f, 97f/255f, 1f);
+                IsDemonic = true;
             }
             else
             {

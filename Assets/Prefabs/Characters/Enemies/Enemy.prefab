@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7035115188081709046}
   - component: {fileID: 6456658440911644902}
   - component: {fileID: -4458547039014917812}
+  - component: {fileID: 3201176298134061116}
+  - component: {fileID: 3390607530068385079}
   m_Layer: 5
   m_Name: Enemy
   m_TagString: Untagged
@@ -64,19 +66,59 @@ MonoBehaviour:
   nextTurnPotential: 0
   retainMultiplier: 0
   manaType: 0
-  secPassiveThreshold: 20
-  thirdPassiveThreshold: 35
+  damageTaken: 0
   state: 0
   turnState: 0
   abilityButton: {fileID: 0}
   turnStateButton: {fileID: 0}
   hexColour: 
+  description: 
   partyUi: {fileID: 0}
   sprite: {fileID: 21300000, guid: c4db8df0b11b5ab45bd9824532c67bb8, type: 3}
+  downSprite: {fileID: 0}
+  deadSprite: {fileID: 0}
+  InGameDisplayPrefab: {fileID: 0}
+  display: {fileID: 0}
+  turnPicker: {fileID: 0}
   manaBar: {fileID: 0}
-  damageText: {fileID: 0}
+  potentialText: {fileID: 0}
+  healthText: {fileID: 0}
   inventorySlots: []
   items: []
+  companion: {fileID: 0}
+  characterDescription: {fileID: 0}
+  attacks: []
+  selectedAttack: 0
   targets: []
   maxDamage: 15
   minDamage: 5
+  enemyActions:
+  - {fileID: 3201176298134061116}
+  - {fileID: 3390607530068385079}
+--- !u!114 &3201176298134061116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237478499908310623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9aa761cffcbebf4892e68cef9899d2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 21300000, guid: 9ff1ab81ebc2ea342a758fed742bb9ac, type: 3}
+--- !u!114 &3390607530068385079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237478499908310623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb57b90e8c1a6ad43ac03067b4e7394c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 21300000, guid: f620fa2cdb1eab64c9f8df425bb18921, type: 3}
+  HealAmount: 5

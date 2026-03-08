@@ -20,11 +20,23 @@ public class EnemyCharacter : BaseCharacter
     protected int minDamage;
     protected int currentTurnDamage;
     TextMeshProUGUI nameText;
-    
+
+    [SerializeField]
+    public List<EnemyAction> enemyActions;
+    protected int actionIndex;
+    protected EnemyActionIndicator Indicator;
     string enemyName;
     private void Awake()
     {
         instance = this;
+    }
+    public List<EnemyAction> GetEnemyActions()
+    {
+        return enemyActions;
+    }
+    public void SetIndicator(EnemyActionIndicator indicator)
+    {
+        Indicator = indicator;
     }
     public override void Init()
     {
@@ -56,7 +68,11 @@ public class EnemyCharacter : BaseCharacter
         potentialText = GameObject.Find("EnemyDmgText").GetComponent<TextMeshProUGUI>();
         GameContainer.Instance.DisplayEnemy(this);
         manaBar.Init(this);
-        nameText.text = enemyName;
+        nameText.text = GetCharacterName();
+    }
+    public override string GetCharacterName()
+    {
+        return $"{enemyName}";
     }
     protected void InitializeStats()
     {
@@ -85,11 +101,22 @@ public class EnemyCharacter : BaseCharacter
         Destroy(gameObject);
     }
 
+    //protected virtual void SelectTargets() 
+    //{
+    //    int targetCount = Random.Range(1, Party.Instance.members.Count);
+    //    targets = GetTargets(targetCount);
+    //}
     protected virtual void SelectTargets() 
     {
-        int targetCount = Random.Range(1, Party.Instance.members.Count);
-        targets = GetTargets(targetCount);
-        Debug.Log($"{targets.Count} target count");
+        List<BaseCharacter> validTargets = new List<BaseCharacter>();
+        foreach (BaseCharacter bc in Party.Instance.members)
+        {
+            if (bc.state == CharacterState.Alive || bc.state == CharacterState.Down)
+            {
+                validTargets.Add(bc);
+            }
+        }
+        targets = validTargets;
     }
     protected virtual List<BaseCharacter> GetTargets(int targetCount)
     {
@@ -105,12 +132,17 @@ public class EnemyCharacter : BaseCharacter
     }
     public override void TurnStart()
     {
+
         if (onTurnStart != null)
         {
             foreach (OnTurnStartDelegate onTurnStart in onTurnStart.GetInvocationList().Cast<OnTurnStartDelegate>())
             {
                 onTurnStart.Invoke();
             }
+        }
+        if (isStunned)
+        {
+            isStunned = false;
         }
         CheckStatusDurations();
         SelectTargets();
@@ -119,10 +151,33 @@ public class EnemyCharacter : BaseCharacter
     }
     public override async Task<bool> PreformTurn()
     {
-        display.AttackTrue();
-        //to do: introduce animation or action time variable in base character
-        await Task.Delay(1000);
+        if (!isStunned)
+        {
+            if (actionIndex == enemyActions.Count)
+            {
+                actionIndex = 0;
+            }
+            else
+            {
+                EnemyAction action = enemyActions[actionIndex];
+                HandleActions(action, actionIndex);
+                actionIndex++;
+                Indicator.ShiftPointer();
+            }
+            await Task.Delay(1000); 
+        }
         return true;
+    }
+    protected virtual void HandleActions(EnemyAction action, int index)
+    {
+        if (action is EnemyAttack)
+        {
+            action.PreformAction(this);
+        }
+        else if (action is EnemyHeal)
+        {
+            action.PreformAction(this);
+        }
     }
     public void Attack()
     {
@@ -133,8 +188,7 @@ public class EnemyCharacter : BaseCharacter
     }
     public override void Attack(BaseCharacter c)
     {
-        //animate
-        c.LoseMana(currentTurnDamage, this.GetType().Name);
+        c.LoseMana(currentTurnDamage, GetCharacterName());
     }
     //get damage from a range based on a min and max value, then distribute the damage evenly between targets
     //if the damage is to 1 target make sure it's not over 60.
@@ -173,7 +227,7 @@ public class EnemyCharacter : BaseCharacter
             }
         }
         currentMana -= amount;
-        CombatLog.Instance.AmendTextToLog($"{this.GetType().Name} took {damageTaken} from {source}");
+        CombatLog.Instance.AmendTextToLog($"{GetCharacterName()} took {amount} damage from {source}");
         UpdateDisplays();
     }
 

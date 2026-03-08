@@ -2,6 +2,7 @@ using NUnit.Compatibility;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class StatusDisplay : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class StatusDisplay : MonoBehaviour
     public void Init(BaseStatus status)
     {
         this.status = status;
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Image renderer = GetComponent<Image>();
         string sceneName = SceneManager.GetActiveScene().name;
         if (sceneName == "GameScene")
         {
@@ -46,11 +47,11 @@ public class StatusDisplay : MonoBehaviour
             }
             ToggleText(status);
             this.status.Changed += Status_Changed;
-            spriteRenderer.sprite = game.statusSprites[index];
+            renderer.sprite = game.statusSprites[index];
         }
         else
         {
-            spriteRenderer.sprite = status.Icon;
+            renderer.sprite = status.Icon;
         }
         
     }

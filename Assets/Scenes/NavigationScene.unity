@@ -1199,7 +1199,9 @@ MonoBehaviour:
   - {fileID: 5237478499908310623, guid: e704babbdbfb4aa4cb8dd14722530fc0, type: 3}
   BossArray:
   - {fileID: 5237478499908310623, guid: 8b9f13e09fd488f4e8a2ee6d7ee485cc, type: 3}
+  EliteArray: []
   EnemyList: []
+  EliteList: []
   LevelMapCount: 0
   mapItems:
   - {fileID: 8964468360260794018, guid: 0cbb4c88e22ccd24e90411d15868824a, type: 3}
@@ -1353,8 +1355,8 @@ MonoBehaviour:
   m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 0
-  m_Elasticity: 0.1
-  m_Inertia: 1
+  m_Elasticity: 0
+  m_Inertia: 0
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 1
   m_Viewport: {fileID: 537888870}
