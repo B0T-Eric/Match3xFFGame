@@ -6,7 +6,7 @@ public class GameResources : MonoBehaviour
 {
     private static GameResources instance;
     public static GameResources Instance {  get { return instance; } }
-    public List<BaseEvent> EventPool = new();
+    public List<BaseEvent> EventPool;
     public List<GameObject> ItemPool;
     public List<GameObject> CommonItemPool;
     public List<GameObject> UncommonItemPool;

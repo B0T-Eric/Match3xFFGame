@@ -1196,10 +1196,10 @@ MonoBehaviour:
   scrollView: {fileID: 480349509}
   EnemyArray:
   - {fileID: 5237478499908310623, guid: 430f8b016c08e1042b433d67043112d7, type: 3}
-  - {fileID: 5237478499908310623, guid: e704babbdbfb4aa4cb8dd14722530fc0, type: 3}
   BossArray:
   - {fileID: 5237478499908310623, guid: 8b9f13e09fd488f4e8a2ee6d7ee485cc, type: 3}
-  EliteArray: []
+  EliteArray:
+  - {fileID: 5237478499908310623, guid: e704babbdbfb4aa4cb8dd14722530fc0, type: 3}
   EnemyList: []
   EliteList: []
   LevelMapCount: 0
@@ -1208,6 +1208,7 @@ MonoBehaviour:
   - {fileID: 8498971211051752283, guid: 4ec47f29440a4044b83759f1c6f36bc9, type: 3}
   - {fileID: 948417887240996118, guid: 19b53084d802cc541aaf6793204a59fc, type: 3}
   - {fileID: 5969348920148989191, guid: 05a95d2aabe278048829a2d1c746f08b, type: 3}
+  - {fileID: 8964468360260794018, guid: 367bcb06f7158624abbce8a44eb58764, type: 3}
   currentLocation: {fileID: 0}
   CurrentStage: 0
   rows: 15

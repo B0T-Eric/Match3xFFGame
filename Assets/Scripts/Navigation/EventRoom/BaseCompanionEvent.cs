@@ -8,7 +8,7 @@ public class BaseCompanionEvent : BaseEvent
 {
     [SerializeField]
     int rewardIndex;
-    int cancelIndex = 7;
+    private int cancelIndex = 7;
     CompanionEventReward selectedCompanion;
     List<BaseCharacter> validCharacters; //the characters who can have a companion.
     //base event pulls 0 by default
@@ -44,6 +44,7 @@ public class BaseCompanionEvent : BaseEvent
             DisplayCharacterSelectOptions();
         }
         
+
     }
     private void DisplayCharacterSelectOptions()
     {

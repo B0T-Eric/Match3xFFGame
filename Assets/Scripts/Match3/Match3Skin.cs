@@ -107,28 +107,7 @@ public class Match3Skin : MonoBehaviour
         enemyCanvas.gameObject.SetActive(true);
         GameObject enemy;
         NavigationItem navItem = MapController.Instance.currentLocation;
-        if (navItem.IsDemonic)
-        {
-            //get demonic enemy from seperate array.
-            enemy = null;
-        }
-        else
-        {
-            if (navItem.Encounter == EnemyType.Boss)
-            {
-                enemy = Instantiate(MapController.Instance.GetRandomBoss());
-            }
-            else if (navItem.Encounter == EnemyType.Elite)
-            {
-                //get elite enemy from elite array array. 
-                enemy = Instantiate(MapController.Instance.GetRandomElite());
-            }
-            else 
-            {
-                //get enemy from normal enemy array.
-                enemy = Instantiate(MapController.Instance.EnemyList[MapController.Instance.CurrentStage]);
-            }
-        }
+        enemy = Instantiate(navItem.GetEnemyPrefab());
         RectTransform rect = enemy.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(-200, 0);
         rect.SetParent(enemyCanvas.transform, false);

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,11 +16,15 @@ public class NavigationItem : MonoBehaviour
     private List<NavigationItem> aboveConnections;
     public bool PlayerIsHere = false;
     public EnemyType Encounter;
+    [SerializeField]
+    private GameObject enemyPrefab;
     bool playerCanMoveTo = false;
     public bool IsCleared { get; private set; } = false;
     public bool IsDemonic = false;
     private Button itemButton;
     Image backgroundImage;
+    public void SetEnemy(GameObject o) => enemyPrefab = o;
+    public GameObject GetEnemyPrefab() => enemyPrefab;
     private void Start()
     {
         itemButton = gameObject.GetComponent<Button>();   
@@ -165,7 +170,10 @@ public class NavigationItem : MonoBehaviour
                 LoadRestScene();
                 break;
             case MapItem.Boss:
-                LoadBossScene();
+                LoadEnemyScene();
+                break;
+            case MapItem.Elite:
+                LoadEnemyScene();
                 break;
             default:
                 LoadRandomScene();

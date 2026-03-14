@@ -1,6 +1,7 @@
 ﻿
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public enum MapItem { Normal, Mystery, Rest, Boss, Elite }
@@ -28,7 +29,7 @@ public class MapController : MonoBehaviour
     private int LevelMapCount;
     bool hasInitialized = false;
     //Items to place on map screen (buttons which contain either normal encounter, boss ecounter (at end), random encounters, or resting scene
-    //index 0 = normal, 1 = mystery, 2 = rest, 3 = boss.
+    //index 0 = normal, 1 = mystery, 2 = rest, 3 = boss, 4 = elite.
     [SerializeField]
     private GameObject[] mapItems;
     public NavigationItem currentLocation;
@@ -104,6 +105,7 @@ public class MapController : MonoBehaviour
         if (!hasInitialized)
         {
             EnemyList = new GameObject[rows];
+            EliteList = new GameObject[rows];
             MakeGrid(rows, cols);
             hasInitialized = true;
         }
@@ -162,14 +164,19 @@ public class MapController : MonoBehaviour
         }
 
     }
-
+    private void PopulateEnemiesPerRow(int row)
+    {
+        //populate enemy arrays with an enemy per row
+        EnemyList[row] = EnemyArray[Random.Range(0, EnemyArray.Length)];
+        EliteList[row] = EliteArray[Random.Range(0, EliteArray.Length)];
+    }
     private void GenerateGrid(int rows, int cols)
     {
         navGrid = new GameObject[rows][];
 
         for (int i = 0; i < rows; i++)
         {
-            EnemyList[i] = EnemyArray[Random.Range(0, EnemyArray.Length)];
+            PopulateEnemiesPerRow(i);
             GameObject[] navItems = new GameObject[cols];
             if (i > 1 && i < rows - 2)
             {
@@ -238,9 +245,18 @@ public class MapController : MonoBehaviour
         if (rng > 0 && rng < 60)
         {
             //enemy
-            g = GetMapItem(MapItem.Normal, row, col);
-            InitializeMapItem(ref g, row, col, MapItem.Normal);
+            int rng2 = Random.Range(0, 100);
+            if(rng2 > 0 && rng2 < 70)
+            {
+                g = GetMapItem(MapItem.Normal, row, col);
+                InitializeMapItem(ref g, row, col, MapItem.Normal);
+            }
+            else
+            {
 
+                g = GetMapItem(MapItem.Elite, row, col);
+                InitializeMapItem(ref g, row, col, MapItem.Elite);
+            }
         }
         else if (rng > 60 && rng < 85)
         {
@@ -266,6 +282,8 @@ public class MapController : MonoBehaviour
         navItem.ColumnIndex = col;
         navItem.ItemType = type;
         navItem.Encounter = GetEnemyType(type);
+        GameObject enemyPref = GetEnemyPref(navItem.Encounter, row);
+        navItem.SetEnemy(enemyPref);
         if (row != 0)
         {
             navItem.MakeConnections(ref navGrid);
@@ -286,7 +304,23 @@ public class MapController : MonoBehaviour
         }
         
     }
-
+    private GameObject GetEnemyPref(EnemyType type,int i)
+    {
+        
+        if(type == EnemyType.Normal)
+        {
+            return EnemyList[i]; //get normal enemy from list
+        }
+        else if(type == EnemyType.Elite)
+        {
+            return EliteList[i]; //get elite from row list
+        }
+        else if(type == EnemyType.Boss)
+        {
+            return GetRandomBoss();
+        }
+        else return null;
+    }
     public GameObject GetRandomElite()
     {
         int rng = Random.Range(0, EliteArray.Length);

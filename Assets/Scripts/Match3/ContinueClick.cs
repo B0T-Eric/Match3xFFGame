@@ -14,10 +14,13 @@ public class ContinueClick : MonoBehaviour
     /// </summary>
     public void ContinueClicked()
     {
-        
+        LoadMap();
+    }
+    public static void LoadMap()
+    {
         foreach (BaseCharacter character in Party.Instance.members)
         {
-            //gold digger item logic.
+            //gold digger item logic. this should be made into a delegate or event
             foreach (DraggableItem item in character.items)
             {
                 if (item is GoldDigger gd)
@@ -28,21 +31,19 @@ public class ContinueClick : MonoBehaviour
             }
             //gotta reset potential since it breaks healing rooms, I found out (29/10/25)
             character.potential = 0;
+            character.nextTurnPotential = 0;
         }
-        
+
         if (MapController.Instance != null)
         {
             //MapController.Instance.MarkRoomCleared(MapController.Instance.SelectedRow, MapController.Instance.SelectedColumn);
         }
         MapController.Instance.IncrementStage();
-        if (RewardCanvas != null)
-        {
-            Destroy(RewardCanvas);
-        }
-        if (SceneManager.GetActiveScene().name.Equals("BossScene"))
+        if (MapController.Instance.currentLocation.ItemType == MapItem.Boss) //this should check for if the navigation item type is a Boss.
         {
             MapController.Instance.DefeatBoss();
         }
         SceneManager.LoadScene("NavigationScene");
+
     }
 }

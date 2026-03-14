@@ -1,3 +1,4 @@
+using Assets.Scripts.UserInterface;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -10,63 +11,42 @@ public class Reward : MonoBehaviour
     TextMeshProUGUI rewardText;
     [SerializeField]
     Image rewardSprite;
-
-    GameObject selectedItem;
-    private Button button;
-
-    [SerializeField]
-    Button continueButton;
-    [SerializeField]
-    Button skipButton;
-
-    [SerializeField]
-    Canvas canvas;
-    private void Start()
+    public EndCombatScreen endCombatScreen;
+    GameObject item;
+    public Button button;
+    public bool selected = false;
+    public void Init(EndCombatScreen endCombatScreen)
     {
-        continueButton.enabled = false;
-        continueButton.interactable = false;
-        canvas = GetComponentInParent<Canvas>();
+        this.endCombatScreen = endCombatScreen;
         button = GetComponent<Button>();
-        GameObject.Find("GameContainer").SetActive(false);
         //pick Item from List
-        selectedItem = GetItem();
-        rewardSprite.sprite = selectedItem.GetComponent<DraggableItem>().itemSO.itemImage;
-        rewardText.text = selectedItem.GetComponent<DraggableItem>().itemSO.itemName;
-        button.onClick.AddListener(EquipItem);
+        item = GetItem();
+        rewardSprite.sprite = item.GetComponent<DraggableItem>().itemSO.itemImage;
+        rewardText.text = item.GetComponent<DraggableItem>().itemSO.itemName;
+        button.onClick.AddListener(() => endCombatScreen.SetSelectedItem(item));
+        button.onClick.AddListener(() => endCombatScreen.ChangeButtonVisual(this));
+        
     }
 
-    private void EquipItem()
-    { 
-        foreach(BaseCharacter c in Party.Instance.members)
-        {
-            foreach (CharacterInventorySlot slot in c.inventorySlots)
-            {
-                bool isSlotFree = !slot.isOccupied && slot.transform.childCount == 0;
-                if(isSlotFree)
-                {
-                    slot.DisplayEquipedItem(selectedItem);
-                    gameObject.SetActive(false);
-                    continueButton.enabled = true;
-                    continueButton.interactable = true;
-                    skipButton.gameObject.SetActive(false);
-                    return;
-                }       
-            } 
-        }
-        Debug.Log("Didn't Find Empty Slot");
-    }
-    public void SkipItem()
+    public void UpdateVisuals()
     {
-        gameObject.SetActive(false);
-        continueButton.enabled = true;
-        continueButton.interactable = true;
-        skipButton.gameObject.SetActive(false);
+        if (selected)
+        {
+            Image image = GetComponent<Image>();
+            Color color = Color.green;
+            image.color = color;
+        }
+        else
+        {
+            Image image = GetComponent<Image>();
+            Color color = Color.white;
+            image.color = color;
+        }
     }
     private GameObject GetItem()
     {
         ItemRarity rarity = GetRandomRarity();
         List<GameObject> validItems = GetItemsOfRarity(rarity);
-        //logic to prevent duplicates maybe ?
         int rng = UnityEngine.Random.Range(0,validItems.Count);
         return validItems[rng];
     }

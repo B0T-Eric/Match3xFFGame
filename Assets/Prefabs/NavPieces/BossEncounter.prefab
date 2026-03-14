@@ -123,7 +123,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2984377637804020088}
         m_TargetAssemblyTypeName: NavigationItem, Assembly-CSharp
-        m_MethodName: LoadBossScene
+        m_MethodName: LoadEnemyScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -145,3 +145,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0746db42e9e174090ff49fe8459c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RowNumber: 0
+  ColumnIndex: 0
+  MapPrefab: {fileID: 0}
+  ItemType: 0
+  belowConnections: []
+  aboveConnections: []
+  PlayerIsHere: 0
+  Encounter: 0
+  enemyPrefab: {fileID: 0}
+  IsDemonic: 0
