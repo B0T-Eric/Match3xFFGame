@@ -12,13 +12,12 @@ public class EnemyInGameDisplay : InGameCharacterDisplay
     {
         enemy.Attack();
     }
-    public override void DisplayCharacter(BaseCharacter c)
+    public void DisplayCharacter(EnemyCharacter c)
     {
-        character = c;
         c.display = this;
-        characterRender.sprite = character.sprite;
+        characterRender.sprite = c.sprite;
         animator = GetComponent<Animator>();
-        enemy = c as EnemyCharacter;
+        enemy = c;
         if (enemy is not WolfEnemy)
         {
             EnemyActionIndicator indicator = GetComponentInChildren<EnemyActionIndicator>();

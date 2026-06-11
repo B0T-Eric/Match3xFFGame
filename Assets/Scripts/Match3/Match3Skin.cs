@@ -239,7 +239,7 @@ public class Match3Skin : MonoBehaviour
         
         foreach (BaseCharacter character in Party.Instance.members)
         {
-            if (EnemyCharacter.Instance.currentMana > 0)
+            if (EnemyCharacter.Instance.stats.CurrentMana > 0)
             {
                 bool turnCompleted = await character.PreformTurn();
                 if (turnCompleted)
@@ -252,7 +252,7 @@ public class Match3Skin : MonoBehaviour
                 break;
             }
         }
-        if(EnemyCharacter.Instance.currentMana > 0)
+        if(EnemyCharacter.Instance.stats.CurrentMana > 0)
         {
             bool turnCompleted = await EnemyCharacter.Instance.PreformTurn();
             if (AllPartyMembersAlive())
@@ -334,7 +334,10 @@ public class Match3Skin : MonoBehaviour
     float2 ScreenToTileSpace(Vector3 screenPosition)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-        Vector3 p = ray.origin - ray.direction * (ray.origin.z / ray.direction.z);
+        float gridZ = GameObject.Find("GridBack").transform.position.z;
+        float t = (gridZ - ray.origin.z) / ray.direction.z;
+        Vector3 p = ray.origin + ray.direction * t;
+        //Vector3 p = ray.origin - ray.direction * (ray.origin.z / ray.direction.z);
         return float2(p.x - tileOffset.x + 0.5f, p.y - tileOffset.y + 0.5f);
     }
 }

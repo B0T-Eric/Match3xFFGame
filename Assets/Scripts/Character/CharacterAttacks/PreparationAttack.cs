@@ -10,7 +10,7 @@ namespace Assets.Scripts.Character.CharacterAttacks
         int timerStop = 3;
         [SerializeField]
         float multiplier;
-        public override void Attack(BaseCharacter c, int damage, BaseCharacter origin, string characterName, OnAttackDelegate onAttack)
+        public override void Attack(EnemyCharacter c, int damage, BaseCharacter origin, string characterName, OnAttackEnemyDelegate onAttack)
         {
             if(timer == timerStop)
             {

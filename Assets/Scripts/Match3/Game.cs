@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    public Sprite[] statusSprites;
     Vector3 dragStart;
     bool isDragging;
     [SerializeField]

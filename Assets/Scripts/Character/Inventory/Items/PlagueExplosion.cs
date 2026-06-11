@@ -7,7 +7,7 @@ using UnityEngine;
 /// Turn start, add poison (scales with item level).
 /// On attack, deal a multiplier of the poison stacks on the enemy. (doesn't lower stacks)
 /// </summary>
-public class PlagueExplosion : DraggableItem, IOnAttackItem, IUpgradableItem
+public class PlagueExplosion : BaseItem, IOnAttackItem, IUpgradableItem
 {
     private int additionalPoison = 1;
     private float damageMultiplier = 3;
@@ -24,7 +24,7 @@ public class PlagueExplosion : DraggableItem, IOnAttackItem, IUpgradableItem
             }
         }
     }
-    public void OnAttack(BaseCharacter character, int damage)
+    public void OnAttack(EnemyCharacter character, int damage)
     {
             Poison poison = EnemyCharacter.Instance.statusEffects.OfType<Poison>().FirstOrDefault();
             if (poison != null)

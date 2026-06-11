@@ -4,12 +4,12 @@ using UnityEngine;
 /// <summary>
 /// This item will randomly (coinflip - 50% chance) apply poison on attack from item holder
 /// </summary>
-public class WeaponPoisonItem : DraggableItem, IOnAttackItem
+public class WeaponPoisonItem : BaseItem, IOnAttackItem
 {
     [SerializeField]
     Sprite poisonSprite;
     int stacksToApply = 1;
-    public void OnAttack(BaseCharacter character, int damage)
+    public void OnAttack(EnemyCharacter character, int damage)
     {
         int rng = Random.Range(0, 2);
         if (rng == 0)
@@ -17,7 +17,7 @@ public class WeaponPoisonItem : DraggableItem, IOnAttackItem
             Poison p = new Poison(poisonSprite);
             for (int i = 0; i < stacksToApply; i++)
             {
-                character.AddStatusEffect(p);
+                StatusHandler.AddStatusEffect(p,character);
             }
         }
         

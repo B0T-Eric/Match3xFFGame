@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FireStormAttack : BasicAttack
 {
-    public override void Attack(BaseCharacter target, int damage, BaseCharacter origin, string characterName, OnAttackDelegate onAttack, BaseStatus status)
+    public override void Attack(EnemyCharacter target, int damage, BaseCharacter origin, string characterName, OnAttackEnemyDelegate onAttack, BaseStatus status)
     {
         int burnCount = damage / 7;
         int burnDamage = damage / 2;
@@ -27,10 +27,10 @@ public class FireStormAttack : BasicAttack
     }
     void ApplyBurn(Burn burn)
     {
-        EnemyCharacter.Instance.AddStatusEffect(burn);
+        StatusHandler.AddStatusEffect(burn, EnemyCharacter.Instance);
     }
     void ApplySuperBurn(SuperBurn burn)
     {
-        EnemyCharacter.Instance.AddStatusEffect(burn);
+        StatusHandler.AddStatusEffect(burn, EnemyCharacter.Instance);
     }
 }

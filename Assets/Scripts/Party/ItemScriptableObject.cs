@@ -11,6 +11,8 @@ public class ItemScriptableObject : ScriptableObject
     public int flatDamageIncrease;
     public float healingMult;
     public int damageReduction;
+    public int healFlat;
+    public float retainMult;
     public BaseStatus status;
     public Sprite itemImage;
     public string itemName;

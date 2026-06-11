@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class OrangeCompanion : BaseCompanion
 {
-    int damage = 1;
+    int damage = 3;
     public override void PreformAction()
     {
         int dmg = 0;
@@ -22,6 +22,6 @@ public class OrangeCompanion : BaseCompanion
     }
     protected override string GetDescription()
     {
-        return $"Deal damage for each burn on the enemy.";
+        return $"Deal {damage} damage for each burn on the enemy.";
     }
 }

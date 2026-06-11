@@ -15,4 +15,8 @@ public class PinkCompanion : BaseCompanion
             CombatLog.Instance.AmendTextToLog($"{companionName} gave {pairedCharacter.GetCharacterName()} an extra attack.");
         }
     }
+    protected override string GetDescription()
+    {
+        return $"Once per turn, the paired character attacks again if their potential is greater than {threshold}";
+    }
 }

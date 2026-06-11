@@ -11,5 +11,16 @@ using UnityEngine;
 /// </summary>
 public class PinkAbility : BaseAbility
 {
-
+    public override void ActivateAbility()
+    {
+        base.ActivateAbility();
+        CombatLog.Instance.AmendTextToLog($"{character.GetCharacterName()} has begun meditating.");
+    }
+    public override string GetDescription()
+    {
+        return $"Meditate:" +
+            $"\nEnter a peaceful trance, if attacked gain rage, if not gain passion." +
+            $"\nAffects apply next turn." +
+            $"\nCost: {cost}    Cooldown: {abilityCooldown}";
+    }
 }

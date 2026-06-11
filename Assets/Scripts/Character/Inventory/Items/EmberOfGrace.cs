@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using TMPro;
 using UnityEngine;
-public class EmberOfGrace : DraggableItem, IStatItem
+public class EmberOfGrace : BaseItem, IStatItem
 {
     [SerializeField]
     TextMeshProUGUI restText;

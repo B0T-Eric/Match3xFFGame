@@ -18,7 +18,7 @@ public class WhiteCompanion : BaseCompanion
     {
         if (wSwitch)
         {
-            EnemyCharacter.Instance.AddStatusEffect(weakness);
+            StatusHandler.AddStatusEffect(weakness,EnemyCharacter.Instance);
             CombatLog.Instance.AmendTextToLog($"{companionName} applied {modifier * 100}% Weakness for {weakness.Duration}");
         }
         wSwitch = !wSwitch;

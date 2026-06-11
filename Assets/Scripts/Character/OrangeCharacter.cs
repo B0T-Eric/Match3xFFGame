@@ -24,6 +24,7 @@ public class OrangeCharacter : BaseCharacter
         manaType = ManaType.Orange;
         hexColour = "FF8000";
         onAttack += OnAttack;
+        stats = new OrangeStats(statsSO.maxMana, statsSO.initialMana, statsSO.passiveTwo, statsSO.passiveThree, 0.75f);
         base.Init();
 
     }
@@ -49,7 +50,7 @@ public class OrangeCharacter : BaseCharacter
     }
     //on attack from orange character, take half the damage delt, and the enemy and apply a burn effect.
     //each burn is independant
-    public void OnAttack(BaseCharacter character, int damage)
+    public void OnAttack(EnemyCharacter character, int damage)
     {
         int bonusDamage = Mathf.RoundToInt(damage/burnBonusDamage);
         int burnDamage = Mathf.RoundToInt(damage * burnDamagePercent + bonusDamage);
@@ -58,12 +59,12 @@ public class OrangeCharacter : BaseCharacter
             if (IsPassiveThreeActive)
             {
                 SuperBurn b = new SuperBurn(burnDuration, burnDamage, character, SuperFireIcon);
-                character.AddStatusEffect(b);
+                StatusHandler.AddStatusEffect(b, EnemyCharacter.Instance);
             }
             else
             {
                 Burn b = new Burn(burnDuration, burnDamage, character, Icon);
-                character.AddStatusEffect(b);
+                StatusHandler.AddStatusEffect(b, EnemyCharacter.Instance);
             }
         }
     }
@@ -85,11 +86,11 @@ public class OrangeCharacter : BaseCharacter
             }
         }
     }
-    public override void Attack(BaseCharacter c)
+    public override void Attack(EnemyCharacter c)
     {
         if (state == CharacterState.Alive)
         {
-            int damage = GetDamage();
+            int damage = stats.GetDamage(potential);
             if (damage > 0)
             {
                 if (selectedAttack == 0)

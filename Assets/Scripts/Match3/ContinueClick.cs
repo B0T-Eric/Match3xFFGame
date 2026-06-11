@@ -21,7 +21,7 @@ public class ContinueClick : MonoBehaviour
         foreach (BaseCharacter character in Party.Instance.members)
         {
             //gold digger item logic. this should be made into a delegate or event
-            foreach (DraggableItem item in character.items)
+            foreach (BaseItem item in character.stats.Items)
             {
                 if (item is GoldDigger gd)
                 {

@@ -19,8 +19,15 @@ public class GreenAbility : BaseAbility
                 if(character.statusEffects[i] is IDebuff)
                 {
                     character.statusEffects.RemoveAt(i);
+                    CombatLog.Instance.AmendTextToLog($"{base.character.GetCharacterName()} removed {character.statusEffects[i].GetType().Name} from {character.GetCharacterName()}");
                 }
             }
         }
+        
+    }
+    public override string GetDescription()
+    {
+        return "Cleanse:\nRemoves all debuffs (negative status effects) from all allies." +
+            $"\nCost: {cost}    Cooldown: {abilityCooldown}";
     }
 }

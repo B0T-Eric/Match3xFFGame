@@ -1300,6 +1300,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 418f4aaf34639054ba89d6a136bdecce, type: 2}
   - {fileID: 11400000, guid: 7358164fd7f4f7840ab32bb7e9c14431, type: 2}
   - {fileID: 11400000, guid: b9e9c801c1eba5b4bb7a59a8b78e63f2, type: 2}
+  statusSprites:
+  - {fileID: 21300000, guid: b5ae692e413470f4ca54ca3b81812975, type: 3}
+  - {fileID: 21300000, guid: 586e402383520dc48a781e46df3cb2f9, type: 3}
+  - {fileID: 21300000, guid: 90edb282f30f58344a5135ca30f606f7, type: 3}
+  - {fileID: 21300000, guid: 21d17d86233e6d74b92500a5fdbd6ed0, type: 3}
+  - {fileID: 21300000, guid: 537bf23c37718484884daf1b7946330d, type: 3}
+  - {fileID: 21300000, guid: a9546f4ad5a4f1f428a3f975449fe239, type: 3}
+  - {fileID: 21300000, guid: 4c47d8973b3c04247a8ca85ad95e8941, type: 3}
+  - {fileID: 21300000, guid: c07bcd634963c984793106c8170eefe7, type: 3}
+  - {fileID: 21300000, guid: 25d960b4f5ac7d848b15e01918f9e9ff, type: 3}
+  - {fileID: 21300000, guid: 0ae8c86c0f13db74c8e122742bbfa9cf, type: 3}
 --- !u!1 &1957735791
 GameObject:
   m_ObjectHideFlags: 0

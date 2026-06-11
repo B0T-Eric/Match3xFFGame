@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class CursedFlameShield : DraggableItem, IOnDamageTakenItem, IUpgradableItem
+public class CursedFlameShield : BaseItem, IOnDamageTakenItem, IUpgradableItem
 {
     public int Tier { get; set; }
     public int UpgradeAmount { get; set; } = 1;
@@ -19,7 +19,7 @@ public class CursedFlameShield : DraggableItem, IOnDamageTakenItem, IUpgradableI
     public void OnDamageTaken(BaseCharacter character, int dmg)
     {
         Burn b = new Burn(duration, burnDamage, EnemyCharacter.Instance, burnSprite);
-        EnemyCharacter.Instance.AddStatusEffect(b);
+        StatusHandler.AddStatusEffect(b, EnemyCharacter.Instance);
     }
     public override string GetEffectDesc()
     {

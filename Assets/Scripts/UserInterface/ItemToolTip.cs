@@ -5,10 +5,10 @@ namespace Assets.Scripts.UserInterface
 {
     public class ItemToolTip : ToolTip
     {
-        DraggableItem item;
+        BaseItem item;
         private void Start()
         {
-            item = GetComponent<DraggableItem>();
+            item = GetComponent<BaseItem>();
             
         }
         private void Update()

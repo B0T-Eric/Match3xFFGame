@@ -6,6 +6,8 @@ public class GreenCharacter : BaseCharacter
 {
     public static float revengeDamage = 3f;
     public static int baseRevengeDamage = 20;
+    public float potentialReduction = 0.66f;
+    public float potentialIncrease = 1.33f;
     [SerializeField]
     private GreenSpecialAttack spec;
     public static bool hasSpec = false;
@@ -15,6 +17,7 @@ public class GreenCharacter : BaseCharacter
         manaType = ManaType.Green;
         hexColour = "1CFF00";
         onDamageTaken += DamageTaken;
+        stats = new GreenStats(statsSO.maxMana, statsSO.initialMana, statsSO.passiveTwo, statsSO.passiveThree, 0.75f,potentialReduction,potentialIncrease);
         base.Init();
     }
     #region descriptions
@@ -51,18 +54,6 @@ public class GreenCharacter : BaseCharacter
             hasSpec = true;
             attacks.Add(spec);
         }
-    }
-    public override void GainPotential(int amount)
-    {
-        if (currentMana >= passiveValues.thirdPassiveThreshold)
-        {
-            amount = Mathf.RoundToInt(amount * 1.33f);
-        }
-        else
-        {
-            amount = Mathf.RoundToInt(amount * 0.66f);
-        }
-        base.GainPotential(amount);
     }
     public override void HealMana(int amount)
     {

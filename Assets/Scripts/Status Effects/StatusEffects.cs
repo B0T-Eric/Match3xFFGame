@@ -12,6 +12,13 @@ public class Burn : BaseStatus, IDurationStatus, IDamageStatus, IOnTurnEnd, IDeb
         base.Icon = icon;
         base.character = target;
     }
+    public Burn(int duration, int damage, EnemyCharacter target, Sprite icon)
+    {
+        Duration = duration;
+        Damage = damage;
+        base.Icon = icon;
+        enemyCharacter = target;
+    }
     public override string ToString()
     {
         return $"Burning for {Damage} damage every turn for {Duration} turns.";
@@ -53,6 +60,10 @@ public class SuperBurn : Burn
     private int durationDecreased = 0;
     private int startDuration;
     public SuperBurn(int duration, int damage, BaseCharacter target, Sprite icon) : base(duration, damage, target, icon)
+    {
+        startDuration = duration;
+    }
+    public SuperBurn(int duration, int damage, EnemyCharacter target, Sprite icon) : base(duration, damage, target, icon)
     {
         startDuration = duration;
     }
@@ -241,7 +252,7 @@ public class Poison : BaseStatus, IStackableStatus, IDebuff
             $"\nCurrent Stacks: {StackCount}.";
     }
 }
-public class Hunger : BaseStatus, IStackableStatus, IBuff
+public class Hunger : BaseStatus, IStackableStatus, IBuff, IOnGetDamageMult
 {
     public int StackCount { get; set; }
     public void DecreaseStack()
@@ -270,6 +281,11 @@ public class Hunger : BaseStatus, IStackableStatus, IBuff
     public override string ToString()
     {
         return $"Each stack of Hunger provides 10% increased damage.\nCurrent damage boost:{StackCount /10}%";
+    }
+
+    public int GetDamageMult(int num)
+    {
+        return Mathf.RoundToInt(num * (StackCount / 10));
     }
 }
 public class Wound : BaseStatus, IStackableStatus, IDurationStatus,  IOnHitItem, IDebuff
@@ -336,10 +352,10 @@ public class ExchangeEffect : BaseStatus, IPartyStatus, IBuff
     {
         foreach (BaseCharacter c in Party.Instance.members)
         {
-            c.maxMana -= 10;
-            if (c.currentMana > c.maxMana)
+            c.stats.MaxMana -= 10;
+            if (c.stats.CurrentMana > c.stats.MaxMana)
             {
-                c.currentMana = c.maxMana;
+                c.stats.CurrentMana = c.stats.MaxMana;
             }
         }
         RemoveMana();
@@ -382,7 +398,7 @@ public class ExchangeEffect : BaseStatus, IPartyStatus, IBuff
         return $"Lowered party health by 10, Removed {Type} spirit tokens from pool.";
     }
 }
-public class Bubble : BaseStatus, IDebuff, IOnDamageTakenItem, IUseStatus, IOnTurnStart, IOnApply
+public class Bubble : BaseStatus, IDebuff, IOnEnemyDamageTakenItem, IUseStatus, IOnTurnStart, IOnApply
 {
     public int baseDamage = 20;
     public float damageMultiplier = 2.5f;
@@ -394,16 +410,16 @@ public class Bubble : BaseStatus, IDebuff, IOnDamageTakenItem, IUseStatus, IOnTu
         character.isStunned = true;
     }
 
-    public void OnDamageTaken(BaseCharacter baseCharacter, int damage)
+    public void OnDamageTaken(EnemyCharacter character, int damage)
     {
-        baseCharacter.LoseMana(Mathf.RoundToInt(damage * 2.5f), this.GetType().Name);
+        character.LoseMana(Mathf.RoundToInt(damage * damageMultiplier), this.GetType().Name);
         character.isStunned = false;
         DecreaseUseCount();
     }
 
     public void OnTurnStart()
     {
-        character.LoseMana(baseDamage, this.GetType().Name);
+        enemyCharacter.LoseMana(baseDamage, this.GetType().Name);
         character.isStunned = false;
         DecreaseUseCount();
     }
@@ -418,11 +434,16 @@ public class Bubble : BaseStatus, IDebuff, IOnDamageTakenItem, IUseStatus, IOnTu
         UseCount += count;
     }
 
-    public Bubble(Sprite sprite, BaseCharacter target)
+    public Bubble(Sprite sprite, EnemyCharacter target)
     {
         Icon = sprite;
         UseCount = 1;
-        character = target;
+        enemyCharacter = target;
+    }
+    public override string ToString()
+    {
+        return $"Stunned the enemy and will take {damageMultiplier*100}% from the next attack this turn.\n" +
+            $"Alternatively, at the beginning of next turn if the bubble isn't popped it pops automatically and deals {baseDamage} damage.";
     }
 }
 //reduce damage and reduce damage resistance
@@ -433,14 +454,14 @@ public class Freeze : BaseStatus, IDebuff, IOnGetDamage, IOnGetDamageReduction, 
 
     public int Duration { get; set; }
 
-    public Freeze(Sprite sprite, BaseCharacter target, int damage, int damageReduction, int duration)
+    public Freeze(Sprite sprite,int damage, int damageReduction, int duration)
     {
         Icon = sprite;
         this.damage = damage;
         this.damageReduction = damageReduction;
         Duration = duration;
     }
-    public Freeze(Sprite sprite, BaseCharacter target, int damage, int duration)
+    public Freeze(Sprite sprite,  int damage, int duration)
     {
         Icon = sprite;
         this.damage = damage;
@@ -464,5 +485,14 @@ public class Freeze : BaseStatus, IDebuff, IOnGetDamage, IOnGetDamageReduction, 
     public void IncreaseDuration(int duration)
     {
         Duration += duration;
+    }
+    public override string ToString()
+    {
+        string s = $"Lowers damage delt by the enemy by {damage}.";
+        if (damageReduction > 0)
+        {
+             s += $"\nLowers enemy damage reduction by {damageReduction}";
+        }
+        return s;
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 /// This item applies multiple stacks of poison on attack 
 /// if they are currently buffed or debuffed
 /// </summary>
-public class PoisonChaliceItem : DraggableItem, IOnAttackItem, IUpgradableItem
+public class PoisonChaliceItem : BaseItem, IOnAttackItem, IUpgradableItem
 {
     [SerializeField]
     Sprite poisonSprite;
@@ -16,14 +16,14 @@ public class PoisonChaliceItem : DraggableItem, IOnAttackItem, IUpgradableItem
     public int UpgradeAmount { get; set; } = 1;
     public float UpgradeModifier { get; set; }
 
-    public void OnAttack(BaseCharacter character, int damage)
+    public void OnAttack(EnemyCharacter character, int damage)
     {
         if(itemHolder.statusEffects.Count > 0)
         {
             Poison p = new Poison(poisonSprite);
             for (int i = 0; i < stacksToApply; i++)
             {
-                character.AddStatusEffect(p);
+                StatusHandler.AddStatusEffect(p, character);
             }
         }
     }

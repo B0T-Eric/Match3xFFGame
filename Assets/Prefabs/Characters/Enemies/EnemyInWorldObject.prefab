@@ -473,7 +473,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8285970887679186868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fabfacd11cb5374d8eb7aeb0eaada6c, type: 3}
+  m_Script: {fileID: 11500000, guid: a9eef08f4bd22de4984e6eaeded8df3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IsDisplaying: 0
@@ -481,5 +481,5 @@ MonoBehaviour:
   characterRender: {fileID: 2749759219489676798}
   actionPrefab: {fileID: 5833894992561521966, guid: 12909db7fb0e23a40a1d27fdedfb0f9c, type: 3}
   pointerPrefab: {fileID: 8435450707342307178, guid: f34d7933221140443a00b15de84a7e9e, type: 3}
-  intentContainer: {fileID: 4051475591164547246}
-  pointerDisplay: {fileID: 5561594749851771234}
+  intentContainer: {fileID: 5561594749851771234}
+  pointerDisplay: {fileID: 4051475591164547246}

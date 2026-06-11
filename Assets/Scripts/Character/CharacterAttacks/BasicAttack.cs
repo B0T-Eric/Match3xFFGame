@@ -7,11 +7,11 @@ public class BasicAttack : MonoBehaviour
     public string Description;
     public string Name;
 
-    public virtual void Attack(BaseCharacter c, int damage, BaseCharacter origin, string characterName, OnAttackDelegate onAttack)
+    public virtual void Attack(EnemyCharacter target, int damage, BaseCharacter origin, string characterName, OnAttackEnemyDelegate onAttack)
     {
-        Hit(c, damage, origin,characterName, onAttack);
+        Hit(target, damage, origin,characterName, onAttack);
     }
-    public virtual void Attack(BaseCharacter c, int damage, BaseCharacter origin, string characterName, OnAttackDelegate onAttack, float[] modifiers)
+    public virtual void Attack(EnemyCharacter target, int damage, BaseCharacter origin, string characterName, OnAttackEnemyDelegate onAttack, float[] modifiers)
     {
 
     }
@@ -24,16 +24,16 @@ public class BasicAttack : MonoBehaviour
     /// <param name="characterName">name of attacking character</param>
     /// <param name="onAttack">on attack delegate</param>
     /// <param name="status">status effect to be applied to enemy</param>
-    public virtual void Attack(BaseCharacter target, int damage, BaseCharacter origin, string characterName, OnAttackDelegate onAttack, BaseStatus status)
+    public virtual void Attack(EnemyCharacter target, int damage, BaseCharacter origin, string characterName, OnAttackEnemyDelegate onAttack, BaseStatus status)
     {
 
     }
-    protected void Hit(BaseCharacter c, int damage, BaseCharacter origin, string characterName, OnAttackDelegate onAttack)
+    protected void Hit(EnemyCharacter target, int damage, BaseCharacter origin, string characterName, OnAttackEnemyDelegate onAttack)
     {
-        c.LoseMana(damage, characterName);
+        target.LoseMana(damage, characterName);
         //delegate for apply on hit effects/extra damage
-        onAttack?.Invoke(c, damage);
-        c.onHit?.Invoke(origin);
-        CombatLog.Instance.AmendTextToLog($"{characterName} attacked {c.GetCharacterName()} for {damage}");
+        onAttack?.Invoke(target, damage);
+        target.onHit?.Invoke(origin);
+        CombatLog.Instance.AmendTextToLog($"{characterName} attacked {target.GetCharacterName()} for {damage}");
     }
 }

@@ -4,22 +4,25 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 public enum TurnState { Attack, Heal, Retain, None}
 
 //on attack params: BaseCharacter character = the targetted character by the attack (either enemy or party member)
 public delegate void OnAttackDelegate(BaseCharacter character, int damage);
+//on attack params: EnemyCharacter enemy = the targetted character by the attack (either enemy or party member)
+public delegate void OnAttackEnemyDelegate(EnemyCharacter enemy, int damage);
 //on damage taken params: BaseCharacter baseCharacter = the character which has just recieved damage.
 public delegate void OnDamageTakenDelegate(BaseCharacter baseCharacter, int damage);
+//on damage taken params: BaseCharacter baseCharacter = the character which has just recieved damage.
+public delegate void OnEnemyDamageTakenDelegate(EnemyCharacter enemy, int damage);
 //trigger on end turn effects.
 public delegate void OnTurnEndDelegate();
 //triggers effects on turn start
 public delegate void OnTurnStartDelegate();
 //On Hit delegate is when they're attacked not whenever damage is taken. the parameter character is the character who is attacking.
-public delegate void OnHitDelegate(BaseCharacter character);
+public delegate void OnHitDelegate(EnemyCharacter enemy);
+public delegate void OnHitEnemyDelegate(BaseCharacter character);
 //On Get Damage delegate returns increases/decreases to damage.
 public delegate int OnGetDamage();
 //On Get Damage delegate returns increases/decreases to damage (using original damage to return multiplied value).
@@ -27,32 +30,21 @@ public delegate int OnGetDamageMult(int damage);
 //On Get Damage Reduction returns increases or decreases to damage reduction;
 public delegate int OnGetDamageReduction();
 //On Get Healing returns increases or decreases to mana gain;
-public delegate int OnGetHealing();
-//On Get mult
-public struct PassiveValues
-{
-    public int secPassiveThreshold;
-    public int thirdPassiveThreshold;
-    public PassiveValues(int s, int t)
-    {
-        secPassiveThreshold = s;
-        thirdPassiveThreshold = t;
-    }
-}
+public delegate int OnGetHealFlat();
+//On Get Heal Mult returns multipliers to healing.
+public delegate float OnGetHealMult();
+
 [Serializable]
 public abstract class BaseCharacter : MonoBehaviour
 {
     #region Character Stat Values
+    public PlayerCharacterStats stats;
+
     public CharacterStatsSO statsSO;
-    public int currentMana;
-    public int maxMana;
     public int potential;
     public int nextTurnPotential;
-    public float retainMultiplier;
     public ManaType manaType;
     public ObservableCollection<BaseStatus> statusEffects;
-    protected PassiveValues passiveValues;
-    public int damageTaken = 0;
     protected int attackType = 0;
     #endregion
     #region Character States
@@ -76,30 +68,23 @@ public abstract class BaseCharacter : MonoBehaviour
     public Button turnStateButton;
     #endregion
     #region Character Inventory
-    public List<DraggableItem> items;
-    public OnAttackDelegate onAttack;
+    public OnAttackEnemyDelegate onAttack;
     public OnDamageTakenDelegate onDamageTaken;
     public OnHitDelegate onHit;
     public OnTurnEndDelegate onTurnEnd;
     public OnTurnStartDelegate onTurnStart;
-    public OnGetDamage onGetDamage;
-    public OnGetDamageReduction onGetDamageReduction;
-    public OnGetHealing onGetHealing;
-    public OnGetDamageMult onGetDamageMult;
+
+
     #endregion
     public BaseCompanion companion;
     public CharacterDescription characterDescription;
     public BaseAbility Ability;
     public virtual void Init()
     {
-        passiveValues = new PassiveValues(20,35);
         statusEffects = new ObservableCollection<BaseStatus>();
-        currentMana = statsSO.initialMana;
-        maxMana = statsSO.maxMana;
         state = CharacterState.Alive;
         potential = 0;
         nextTurnPotential = 0;
-        items = new List<DraggableItem>();
         inventorySlots = new CharacterInventorySlot[3];
         statusEffects.CollectionChanged += StatusEffectsChanged;
         GameObject g = transform.GetChild(0).gameObject;  
@@ -116,7 +101,7 @@ public abstract class BaseCharacter : MonoBehaviour
         inventorySlots = GetComponentsInChildren<CharacterInventorySlot>(true);
         turnPicker = GetComponentInChildren<CharacterTurnPicker>();
         turnPicker.SetCharacter(this);
-
+        onTurnEnd += Ability.LowerCooldown;
         Button[] buttons = GetComponentsInChildren<Button>();
         foreach(Button b in buttons)
         {
@@ -125,6 +110,7 @@ public abstract class BaseCharacter : MonoBehaviour
                 abilityButton = b;
             }
         }
+        Ability.InitTextObj();
         abilityButton.onClick.AddListener(AbilityButtonClick);
         manaBar.Init(this);
         description = GetDescription();
@@ -156,7 +142,7 @@ public abstract class BaseCharacter : MonoBehaviour
     protected virtual void UpdateDisplays()
     {
         DisplayPotential();
-        healthText.text = $"{currentMana}";
+        healthText.text = $"{stats.CurrentMana}";
         manaBar.UpdateHealthBar(this);
     }
     public void UpdateDisplays_Public()
@@ -207,100 +193,31 @@ public abstract class BaseCharacter : MonoBehaviour
     }
     public List<BasicAttack> attacks = new List<BasicAttack>();
     public int selectedAttack = 0;
-    public virtual void Attack(BaseCharacter c)
+    public virtual void Attack(EnemyCharacter enemy)
     {
         if (state == CharacterState.Alive)
         {
-            int damage = GetDamage();
+            int damage = stats.GetDamage(potential);
             if (damage > 0)
             {
-                attacks[selectedAttack].Attack(c,damage,this,GetCharacterName(),onAttack);
+                attacks[selectedAttack].Attack(enemy,damage,this,GetCharacterName(),onAttack);
             }
         }
-    }
-
-    protected virtual int GetDamage()
-    {
-        int damage = potential;
-        foreach (DraggableItem item in items)
-        {
-            if (item.itemSO.flatDamageIncrease > 0)
-            {
-                damage += item.itemSO.flatDamageIncrease;
-            }
-            if (item.itemSO.damageMult > 0)
-            {
-                damage = (int)(damage * item.itemSO.damageMult);
-            }
-        }
-        if(onGetDamage != null)
-        {
-            foreach (OnGetDamage getDamage in onGetDamage.GetInvocationList().Cast<OnGetDamage>())
-            {
-                damage += getDamage.Invoke();
-            }
-        }
-        int baseDamage = damage;
-        int bonusDamage = 0;
-        if(onGetDamageMult != null)
-        {
-            foreach(OnGetDamageMult getDamageMult in onGetDamageMult.GetInvocationList().Cast<OnGetDamageMult>())
-            {
-                bonusDamage += getDamageMult.Invoke(baseDamage);
-            }
-        }
-        damage = bonusDamage + baseDamage;
-        return damage;
-    }
-    protected int GetDamageReduction()
-    {
-        int dmgReduction = 0;
-        if(turnState == TurnState.Retain)
-        {
-            dmgReduction += 5;
-        }
-        if(onGetDamageReduction != null)
-        {
-            foreach (OnGetDamageReduction reduction in onGetDamageReduction.GetInvocationList().Cast<OnGetDamageReduction>())
-            {
-                dmgReduction += reduction.Invoke();
-            }
-        }
-        return dmgReduction;
-    }
-    protected float GetHealingMult()
-    {
-        float healAmount = 1;
-        foreach(DraggableItem item in items)
-        {
-            if(item.itemSO.healingMult > 0)
-            {
-                healAmount += item.itemSO.healingMult;
-            }
-        }
-        if (onGetHealing != null)
-        {
-            foreach (OnGetHealing healing in onGetHealing.GetInvocationList().Cast<OnGetHealing>())
-            {
-                healAmount += healing.Invoke();
-            }
-        }
-        return healAmount;
     }
     public virtual void HealMana(int amount)
     {
         if (state == CharacterState.Dead)//dead characters can't be healed
             return;
-        int healAmount = Mathf.RoundToInt(amount * GetHealingMult());
+        int healAmount = stats.GetHealing(amount);
 
-        currentMana += healAmount;
+        stats.CurrentMana += healAmount;
         CombatLog.Instance.AmendTextToLog($"{GetCharacterName()} was healed for {healAmount}");
-        if(currentMana > maxMana )
+        if(stats.CurrentMana > stats.MaxMana)
         {
-            currentMana = maxMana;
+            stats.CurrentMana = stats.MaxMana;
         } 
         //if they are down, heal them back to alive.
-        if (state == CharacterState.Down && currentMana > 0)
+        if (state == CharacterState.Down && stats.CurrentMana > 0)
         {
             display.SetState(CharacterState.Alive);
         }
@@ -310,13 +227,14 @@ public abstract class BaseCharacter : MonoBehaviour
     //method for taking damage on character, is given positive amount which is then removed from mana pool.
     public virtual void LoseMana(int amount, string source = "Unknown")
     {
-        if (state != CharacterState.Dead && currentMana > 0)
+        if (state != CharacterState.Dead && stats.CurrentMana > 0)
         {
             display.DefendTrue();
-            amount -= GetDamageReduction();
+            int baseResist = turnState == TurnState.Retain ? 5 : 0;
+            amount -= stats.GetResist(baseResist);
             amount = Mathf.Max(amount, 0);
             IncreaseDamageTaken(amount);
-            currentMana -= amount;
+            stats.CurrentMana -= amount;
             if (onDamageTaken != null)
             {
                 foreach (OnDamageTakenDelegate onDamageTaken in onDamageTaken.GetInvocationList().Cast<OnDamageTakenDelegate>())
@@ -334,70 +252,41 @@ public abstract class BaseCharacter : MonoBehaviour
     public void CheckState()
     {
         //if the character is down and has dropped below (or equal to) 0, set them to dead.
-        if (currentMana <= 0)
+        if (stats.CurrentMana <= 0)
         {
             if (state == CharacterState.Down)
             {
-                currentMana = 0;
+                stats.CurrentMana = 0;
                 display.SetState(CharacterState.Dead);
             }
             //if the character has dropped below (or equal to) 0 and is alive set them to down.
             else if (state == CharacterState.Alive)
             {
-                currentMana = 1;
+                stats.CurrentMana = 1;
                 display.SetState(CharacterState.Down);
             }
         }
     }
 
-    public bool IsPassiveTwoActive => currentMana >= passiveValues.secPassiveThreshold;
-    public bool IsPassiveThreeActive => currentMana >= passiveValues.thirdPassiveThreshold;
+    public bool IsPassiveTwoActive => stats.CurrentMana >= stats.pTwo;
+    public bool IsPassiveThreeActive => stats.CurrentMana >= stats.pThree;
     protected virtual void UpdatePassives()
     {
 
-    }
-    public virtual float GetPotentialMult()
-    {
-        float mult = 1f;
-        foreach (DraggableItem item in items) 
-        {
-            if (item.itemSO.potentialGainMult != 0f)
-            {
-                mult += item.itemSO.potentialGainMult;
-            }
-        }
-        return mult;
-    }
-    public virtual int GetPotentialIncrease()
-    {
-        int flatIncrease = 0;
-        foreach(DraggableItem item in items)
-        {
-            if(item.itemSO.potentialGainIncrease != 0)
-            {
-                flatIncrease += item.itemSO.potentialGainIncrease;
-            }
-        }
-        return flatIncrease;
     }
     public virtual void GainPotential(int amount)
     {
         if (state == CharacterState.Alive)
         {
-            amount += GetPotentialIncrease();
-            amount = (int)Math.Round(amount * GetPotentialMult());
-            potential += amount;
+            potential += stats.GetPotential(amount);
         }
         UpdateDisplays();
     }
     
     public virtual void RetainPotential()
     {
-        retainMultiplier = GetRetainMult();
-        float potentialVal = potential * retainMultiplier;
-        int rounded = Mathf.RoundToInt(potentialVal);
-        nextTurnPotential = rounded;
-        CombatLog.Instance.AmendTextToLog($"{GetCharacterName()} retained {rounded}");
+        nextTurnPotential = stats.GetNextTurnPotential(potential);
+        CombatLog.Instance.AmendTextToLog($"{GetCharacterName()} retained {nextTurnPotential}");
     }
     //handle start of turn actions
     public virtual void TurnStart()
@@ -441,33 +330,16 @@ public abstract class BaseCharacter : MonoBehaviour
                 }
             }
         }
-        CheckStatusDurations();
-    }
-    //find an remove all status's with 0 or less duration/stacks since they're no longer effective
-    protected void CheckStatusDurations()
-    {
-        List<int> toRemove = new List<int>();
-
-        foreach (BaseStatus status in statusEffects)
+        List<int> toRemove = StatusHandler.CheckStatusDurations(statusEffects);
+        if(toRemove.Count > 0)
         {
-            if ((status is IDurationStatus d && d.Duration <= 0) ||
-                (status is IStackableStatus s && s.StackCount <= 0) ||
-                (status is IUseStatus u && u.UseCount <= 0))
+            foreach (int index in toRemove)
             {
-                toRemove.Add(statusEffects.IndexOf(status));
+                StatusHandler.RemoveStatusEffect(statusEffects[index],this);
             }
         }
-
-        foreach (int index in toRemove)
-        {
-            RemoveStatusEffect(statusEffects[index]);
-        }
     }
-    //calculate retain amount after items / other effects
-    protected virtual float GetRetainMult()
-    {
-        return 0.75f;
-    }
+    
     //this should change the current turns state (action) when the player chooses it.
     public void SetTurnState(TurnState state)
     {
@@ -479,113 +351,10 @@ public abstract class BaseCharacter : MonoBehaviour
         turnState = TurnState.Retain;
         UpdateDisplays();
     }
-    #region Adding/Removing Statuses and Items
-    //add a parsed in status effect to the list
-    //first check if it exists to then either increase stack coun (if possible) and increase duration
-    public virtual void AddStatusEffect(BaseStatus status)
+    #region Adding/Removing Items
+    public void EquipItem(BaseItem item)
     {
-        for (int i = 0; i < statusEffects.Count; i++)
-        {
-            BaseStatus existing = statusEffects[i];
-            if (status is Burn)
-            {
-                statusEffects.Add(status);
-                return;
-            }
-            if (existing.GetType() == status.GetType())
-            {
-                if (existing is IStackableStatus existingStack && status is IStackableStatus newStack)
-                {
-                    existingStack.IncreaseStack(newStack.StackCount);
-                }
-
-                if (existing is IDurationStatus existingDur && status is IDurationStatus newDur)
-                {
-                    existingDur.IncreaseDuration(newDur.Duration);
-                }
-
-                if (existing is IUseStatus existingUse && status is IUseStatus newUse)
-                {
-                    existingUse.IncreaseUseCount(newUse.UseCount);
-                }
-                return;
-            }
-        }
-        statusEffects.Add(status);
-        if(status is IOnTurnEnd end)
-        {
-            onTurnEnd += end.OnTurnEnd;
-        }
-        if(status is IOnTurnStart start)
-        {
-            onTurnStart += start.OnTurnStart;
-        }
-        if(status is IOnDamageTakenItem dmg)
-        {
-            onDamageTaken += dmg.OnDamageTaken;
-        }
-        if(status is IOnAttackItem attack)
-        {
-            onAttack += attack.OnAttack;
-        }
-        if (status is IOnGetDamageReduction onDmgReduction)
-        {
-            onGetDamageReduction += onDmgReduction.GetDamageReduction;
-        }
-        if (status is IOnGetDamage getDamage)
-        {
-            onGetDamage += getDamage.GetDamage;
-        }
-        if (status is IOnGetHealing onHeal)
-        {
-            onGetHealing += onHeal.GetHealing;
-        }
-        if (status is IOnApply)
-        {
-            status.PreformEffect();
-        }
-        if(status is IOnGetDamageMult getDamageMult)
-        {
-            onGetDamageMult += getDamageMult.GetDamageMult;
-        }
-    }
-    //remove a status effected from list on character
-    public virtual void RemoveStatusEffect(BaseStatus status)
-    {
-        if (status is IOnTurnEnd end)
-        {
-            onTurnEnd -= end.OnTurnEnd;
-        }
-        if (status is IOnTurnStart start)
-        {
-            onTurnStart -= start.OnTurnStart;
-        }
-        if (status is IOnAttackItem attack)
-        {
-            onAttack += attack.OnAttack;
-        }
-        if (status is IOnGetDamageReduction onDmgReduction)
-        {
-            onGetDamageReduction -= onDmgReduction.GetDamageReduction;
-        }
-        if (status is IOnGetDamage getDamage)
-        {
-            onGetDamage -= getDamage.GetDamage;
-        }
-        if (status is IOnGetHealing onHeal)
-        {
-            onGetHealing -= onHeal.GetHealing;
-        }
-        if (status is IOnGetDamageMult getDamageMult)
-        {
-            onGetDamageMult -= getDamageMult.GetDamageMult;
-        }
-        statusEffects.Remove(status);
-    }
-
-    public void EquipItem(DraggableItem item)
-    {
-        items.Add(item);
+        stats.Items.Add(item);
         if (item is IOnAttackItem onAttackItem)
         {
             
@@ -607,30 +376,34 @@ public abstract class BaseCharacter : MonoBehaviour
         {
             statItem.OnEquip();
         }
-        if (item is IOnHitItem onHitItem)
+        if (item is IOnEnemyHitItem onHitItem)
         {
             onHit += onHitItem.OnHit;
         }
         if(item is IOnGetDamageReduction onDmgReduction)
         {
-            onGetDamageReduction += onDmgReduction.GetDamageReduction;
+            stats.onGetResist += onDmgReduction.GetDamageReduction;
         }
         if (item is IOnGetDamage getDamage)
         {
-            onGetDamage += getDamage.GetDamage;
+            stats.onGetDmgFlat += getDamage.GetDamage;
         }
-        if (item is IOnGetHealing onHeal)
+        if (item is IOnGetHealFlat onHeal)
         {
-            onGetHealing += onHeal.GetHealing;
+            stats.onGetHealFlat += onHeal.GetHealFlat;
+        }
+        if (item is IOnGetHealMult onHealMult)
+        {
+            stats.onGetHealMult += onHealMult.GetHealMult;
         }
         if (item is IOnGetDamageMult getDamageMult)
         {
-            onGetDamageMult += getDamageMult.GetDamageMult;
+            stats.onGetDmgMult += getDamageMult.GetDamageMult;
         }
     }
-    public void UnequipItem(DraggableItem item)
+    public void UnequipItem(BaseItem item)
     {
-        items.Remove(item);
+        stats.Items.Remove(item);
         if (item is IOnAttackItem onAttackItem)
         { 
             onAttack -= onAttackItem.OnAttack;
@@ -647,7 +420,7 @@ public abstract class BaseCharacter : MonoBehaviour
         {
             onTurnStart -= onTurnStartItem.OnTurnStart;
         }
-        if(item is IOnHitItem onHitItem)
+        if(item is IOnEnemyHitItem onHitItem)
         {
             onHit -= onHitItem.OnHit;
         }
@@ -657,81 +430,28 @@ public abstract class BaseCharacter : MonoBehaviour
         }
         if (item is IOnGetDamageReduction onDmgReduction)
         {
-            onGetDamageReduction -= onDmgReduction.GetDamageReduction;
+            stats.onGetResist -= onDmgReduction.GetDamageReduction;
         }
         if (item is IOnGetDamage getDamage)
         {
-            onGetDamage -= getDamage.GetDamage;
+            stats.onGetDmgFlat -= getDamage.GetDamage;
         }
-        if (item is IOnGetHealing onHeal)
+        if (item is IOnGetHealFlat onHeal)
         {
-            onGetHealing -= onHeal.GetHealing;
+            stats.onGetHealFlat -= onHeal.GetHealFlat;
+        }
+        if (item is IOnGetHealMult onHealMult)
+        {
+            stats.onGetHealMult -= onHealMult.GetHealMult;
         }
         if (item is IOnGetDamageMult getDamageMult)
         {
-            onGetDamageMult -= getDamageMult.GetDamageMult;
+            stats.onGetDmgMult -= getDamageMult.GetDamageMult;
         }
     }
     #endregion
 
     #region public facing getters
-    public virtual int GetDamage_Public()
-    {
-        int damage = potential;
-        if(onGetDamage != null)
-        {
-            foreach (OnGetDamage onGet in onGetDamage.GetInvocationList().Cast<OnGetDamage>())
-            {
-                damage += onGet.Invoke();
-            }
-        }
-        return damage;
-    }
-    public virtual int GetFlatDamage_Public()
-    {
-        int damage = 0;
-        foreach (DraggableItem item in items)
-        {
-            if (item.itemSO.flatDamageIncrease > 0)
-            {
-                damage += item.itemSO.flatDamageIncrease;
-            }
-        }
-        return damage;
-    }
-    public virtual float GetDamageMult_Public()
-    {
-        float mult = 1f;
-        foreach (DraggableItem item in items)
-        {
-            if (item.itemSO.damageMult > 0)
-            {
-                mult += item.itemSO.damageMult;
-            }
-        }
-        return mult;
-    }
-    public virtual int GetDamageReduction_Public()
-    {
-        return GetDamageReduction();
-    }
-    public virtual int GetPotentialIncrease_Public()
-    {
-        return GetPotentialIncrease();
-    }
-    
-    public virtual float GetPotentialMult_Public()
-    {
-        return GetPotentialMult();
-    }
-    public virtual float GetHealMult_Public()
-    {
-        return GetHealingMult();
-    }
-    public virtual float GetRetainMult_Public()
-    {
-        return GetRetainMult();
-    }
     public virtual string GetCharacterName()
     {
         return $"{manaType} Character";
@@ -745,8 +465,8 @@ public abstract class BaseCharacter : MonoBehaviour
         return $"<b><color=#{hexColour}>{GetCharacterName()} </b></color>\n {GetMatchDesc()}  " +
             $"\n<b>Passives:</b>" +
             $"\nPassive 1 ( > 0 mana): {GetPassiveOneDesc()}" +
-            $"\nPassive 2 ( >= {passiveValues.secPassiveThreshold} mana): {GetPassiveTwoDesc()}" +
-            $"\nPassive 3 ( >= {passiveValues.thirdPassiveThreshold} mana): {GetPassiveThreeDesc()}";
+            $"\nPassive 2 ( >= {stats.pTwo} mana): {GetPassiveTwoDesc()}" +
+            $"\nPassive 3 ( >= {stats.pThree} mana): {GetPassiveThreeDesc()}";
     }
     public virtual string GetMatchDesc()
     {
@@ -760,11 +480,11 @@ public abstract class BaseCharacter : MonoBehaviour
     #region Damage Taken
     public void IncreaseDamageTaken(int damage)
     {
-        damageTaken += damage;
+        stats.damageTaken += damage;
     }
     public void ResetDamageTaken()
     {
-        damageTaken = 0;
+        stats.damageTaken = 0;
     }
     #endregion
 }

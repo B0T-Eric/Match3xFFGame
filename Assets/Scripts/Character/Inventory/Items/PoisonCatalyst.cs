@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// when out going damage from the holders attacking turn, deal damage equal to stack count times a multiplier.
 /// </summary>
-public class PoisonCatalyst : DraggableItem, IOnAttackItem, IUpgradableItem, ICombinableItem
+public class PoisonCatalyst : BaseItem, IOnAttackItem, IUpgradableItem, ICombinableItem
 {
     private float damageMultiplier = 3;
     private int damageThreshold = 20;
@@ -14,7 +14,7 @@ public class PoisonCatalyst : DraggableItem, IOnAttackItem, IUpgradableItem, ICo
     public int UpgradeAmount { get; set; } = 1;
     public float UpgradeModifier { get; set; } = 0.5f;
 
-    public void OnAttack(BaseCharacter character, int damage)
+    public void OnAttack(EnemyCharacter character, int damage)
     {
         if(damage >= damageThreshold)
         {

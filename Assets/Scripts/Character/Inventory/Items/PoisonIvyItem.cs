@@ -5,7 +5,7 @@ using UnityEngine;
 /// This class defined the poison ivy item which should apply a poison status effect 
 /// to the enemy when the character with the item equipped is attacked by anything.
 /// </summary>
-public class PoisonIvyItem : DraggableItem, IOnDamageTakenItem, IUpgradableItem
+public class PoisonIvyItem : BaseItem, IOnDamageTakenItem, IUpgradableItem
 {
     [SerializeField]
     Sprite poisonSprite;
@@ -20,7 +20,7 @@ public class PoisonIvyItem : DraggableItem, IOnDamageTakenItem, IUpgradableItem
         poison = new Poison(poisonSprite);
         for (int i = 0; i < stacksToApply; i++)
         {
-            EnemyCharacter.Instance.AddStatusEffect(poison);
+            StatusHandler.AddStatusEffect(poison, EnemyCharacter.Instance);
         }
     }
     public override string GetEffectDesc()

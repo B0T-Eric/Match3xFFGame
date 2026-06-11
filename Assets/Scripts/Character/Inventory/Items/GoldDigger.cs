@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-public class GoldDigger : DraggableItem, IStatItem
+public class GoldDigger : BaseItem, IStatItem
 {
     [SerializeField]
     TextMeshProUGUI goldText;

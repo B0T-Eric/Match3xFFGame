@@ -149,11 +149,11 @@ public class Party : MonoBehaviour
             character.ResetDamageTaken();
         }
     }
-    public void EquipItemOnCharacter(DraggableItem item)
+    public void EquipItemOnCharacter(BaseItem item)
     {
         foreach(BaseCharacter character in members)
         {
-            if(character.items.Count < character.inventorySlots.Length)
+            if(character.stats.Items.Count < character.inventorySlots.Length)
             {
                 character.EquipItem(item);
                 break;

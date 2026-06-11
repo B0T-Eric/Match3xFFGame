@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PinkSpecialAttack : BasicAttack
 {
-    public override void Attack(BaseCharacter c, int damage, BaseCharacter origin, string characterName, OnAttackDelegate onAttack)
+    public override void Attack(EnemyCharacter c, int damage, BaseCharacter origin, string characterName, OnAttackEnemyDelegate onAttack)
     {
         if(damage < 10 && origin.IsPassiveThreeActive)
         {

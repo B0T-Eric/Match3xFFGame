@@ -11,17 +11,17 @@ public class PurpleCompanion : BaseCompanion
     bool active = false;
     public override void PreformAction()
     {
-        if(pairedCharacter.damageTaken >= 15 && !active)
+        if(pairedCharacter.stats.damageTaken >= 15 && !active)
         {
             active = true;
         }
         if (active)
         {
-            int healAmount = pairedCharacter.damageTaken / 9;
-            int damageAmount = pairedCharacter.damageTaken / 3;
+            int healAmount = pairedCharacter.stats.damageTaken / 9;
+            int damageAmount = pairedCharacter.stats.damageTaken / 3;
             pairedCharacter.HealMana(Mathf.RoundToInt(healAmount));
             CombatLog.Instance.AmendTextToLog($"{companionName} healed {pairedCharacter.GetCharacterName()} for {healAmount}");
-            EnemyCharacter.Instance.LoseMana(Mathf.RoundToInt(pairedCharacter.damageTaken / 9), companionName);
+            EnemyCharacter.Instance.LoseMana(Mathf.RoundToInt(pairedCharacter.stats.damageTaken / 9), companionName);
             CombatLog.Instance.AmendTextToLog($"{companionName} dealt {damageAmount} to {EnemyCharacter.Instance.GetCharacterName()}");
         }
         else

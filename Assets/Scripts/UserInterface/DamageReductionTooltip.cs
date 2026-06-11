@@ -12,9 +12,9 @@ public class DamageReductionTooltip : ToolTip
     private void Update()
     {
         Tooltip = $"<color=grey>Defence Stats</color>\n" +
-            $"Damage Reduction = {character.GetDamageReduction_Public()}." +
+            $"Damage Reduction = {character.stats.GetResist()}." +
             $"\nDamage reduction lowers damage taken by the specified amount." +
-            $"\nFormula = Damage Incoming ({IncomingDamage()}) - Damage Reduction ({character.GetDamageReduction_Public()}).";
+            $"\nFormula = Damage Incoming ({IncomingDamage()}) - Damage Reduction ({character.stats.GetResist()}).";
     }
     private string IncomingDamage()
     {

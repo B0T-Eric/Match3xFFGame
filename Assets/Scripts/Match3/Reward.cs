@@ -21,8 +21,8 @@ public class Reward : MonoBehaviour
         button = GetComponent<Button>();
         //pick Item from List
         item = GetItem();
-        rewardSprite.sprite = item.GetComponent<DraggableItem>().itemSO.itemImage;
-        rewardText.text = item.GetComponent<DraggableItem>().itemSO.itemName;
+        rewardSprite.sprite = item.GetComponent<BaseItem>().itemSO.itemImage;
+        rewardText.text = item.GetComponent<BaseItem>().itemSO.itemName;
         button.onClick.AddListener(() => endCombatScreen.SetSelectedItem(item));
         button.onClick.AddListener(() => endCombatScreen.ChangeButtonVisual(this));
         

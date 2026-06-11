@@ -1,12 +1,12 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class EnemyCharacter : BaseCharacter
+public class EnemyCharacter : MonoBehaviour
 {
     //insure one enemy exists.
     private static EnemyCharacter instance;
@@ -18,14 +18,27 @@ public class EnemyCharacter : BaseCharacter
     protected int maxDamage;
     [SerializeField]
     protected int minDamage;
-    protected int currentTurnDamage;
-    TextMeshProUGUI nameText;
 
+    public Sprite sprite;
+    TextMeshProUGUI nameText;
+    public EnemyManaBar manaBar;
+    public ObservableCollection<BaseStatus> statusEffects;
+    public TextMeshProUGUI damageText;
     [SerializeField]
     public List<EnemyAction> enemyActions;
     protected int actionIndex;
     protected EnemyActionIndicator Indicator;
     string enemyName;
+    public EnemyInGameDisplay display;
+    [SerializeField]
+    EnemyStatsSO statsSO;
+    public EnemyCharacterStats stats;
+    public bool isStunned = false;
+    public OnAttackDelegate onAttack;
+    public OnEnemyDamageTakenDelegate onDamageTaken;
+    public OnHitEnemyDelegate onHit;
+    public OnTurnEndDelegate onTurnEnd;
+    public OnTurnStartDelegate onTurnStart;
     private void Awake()
     {
         instance = this;
@@ -38,55 +51,41 @@ public class EnemyCharacter : BaseCharacter
     {
         Indicator = indicator;
     }
-    public override void Init()
+    public virtual void Init()
     {
         InitializeStats();
         InitializeDisplays();
 
         UpdateDisplays();
     }
-    #region descriptions
-    public override string GetPassiveOneDesc()
-    {
-        return $"";
-    }
-    public override string GetPassiveTwoDesc()
-    {
-        return $"";
-    }
-    public override string GetPassiveThreeDesc()
-    {
-        return $"";
-    }
-    #endregion
     protected virtual void InitializeDisplays()
     {
         nameText = GameObject.Find("EnemyNameText").GetComponent<TextMeshProUGUI>();
-        manaBar = GameObject.Find("EnemyHealthBar").GetComponent<ManaBar>();
-        statusEffects = new System.Collections.ObjectModel.ObservableCollection<BaseStatus>();
+        manaBar = GameObject.Find("EnemyHealthBar").GetComponent<EnemyManaBar>();
+        statusEffects = new ObservableCollection<BaseStatus>();
         statusEffects.CollectionChanged += StatusEffectsChanged;
-        potentialText = GameObject.Find("EnemyDmgText").GetComponent<TextMeshProUGUI>();
+        damageText = GameObject.Find("EnemyDmgText").GetComponent<TextMeshProUGUI>();
         GameContainer.Instance.DisplayEnemy(this);
-        manaBar.Init(this);
+        manaBar.InitEnemy(this);
         nameText.text = GetCharacterName();
     }
-    public override string GetCharacterName()
+    public virtual string GetCharacterName()
     {
         return $"{enemyName}";
     }
-    protected void InitializeStats()
+    protected virtual void InitializeStats()
     {
-        EnemyStatsSO statsSO = base.statsSO as EnemyStatsSO;
+        stats = new EnemyCharacterStats();
         statsSO.DetermineHealth();
-        maxMana = statsSO.maxMana;
-        currentMana = maxMana;
+        stats.MaxMana = statsSO.maxMana;
+        stats.CurrentMana = statsSO.maxMana;
         minDamage = Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
         maxDamage = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
         enemyName = statsSO.EnemyName;
-    }
-    public override int GetDamage_Public()
+    }   
+    public virtual int GetDamage_Public()
     {
-        return currentTurnDamage;
+        return stats.Damage;
     }
     private void StatusEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
@@ -100,12 +99,6 @@ public class EnemyCharacter : BaseCharacter
         //disable game, remove enemy object, display rewards
         Destroy(gameObject);
     }
-
-    //protected virtual void SelectTargets() 
-    //{
-    //    int targetCount = Random.Range(1, Party.Instance.members.Count);
-    //    targets = GetTargets(targetCount);
-    //}
     protected virtual void SelectTargets() 
     {
         List<BaseCharacter> validTargets = new List<BaseCharacter>();
@@ -130,7 +123,7 @@ public class EnemyCharacter : BaseCharacter
         }
         return randTargets;
     }
-    public override void TurnStart()
+    public virtual void TurnStart()
     {
 
         if (onTurnStart != null)
@@ -144,12 +137,47 @@ public class EnemyCharacter : BaseCharacter
         {
             isStunned = false;
         }
-        CheckStatusDurations();
+        List<int> toRemove = StatusHandler.CheckStatusDurations(statusEffects);
+        if (toRemove.Count > 0)
+        {
+            foreach (int index in toRemove)
+            {
+                StatusHandler.RemoveStatusEffect(statusEffects[index], this);
+            }
+        }
         SelectTargets();
-        currentTurnDamage = GetDamage();
+        stats.Damage = stats.GetDamage();
         UpdateDisplays();
     }
-    public override async Task<bool> PreformTurn()
+    public void TurnEnd()
+    {
+        if (onTurnEnd != null)
+        {
+            foreach (OnTurnEndDelegate onTurnEnd in onTurnEnd.GetInvocationList())
+            {
+                onTurnEnd.Invoke();
+            }
+        }
+        if (statusEffects.Count > 0)
+        {
+            foreach (BaseStatus s in statusEffects)
+            {
+                if (s is IDurationStatus ds)
+                {
+                    ds.DecreaseDuration();
+                }
+            }
+        }
+        List<int> toRemove = StatusHandler.CheckStatusDurations(statusEffects);
+        if (toRemove.Count > 0)
+        {
+            foreach (int index in toRemove)
+            {
+                StatusHandler.RemoveStatusEffect(statusEffects[index], this);
+            }
+        }
+    }
+    public virtual async Task<bool> PreformTurn()
     {
         if (!isStunned)
         {
@@ -179,40 +207,18 @@ public class EnemyCharacter : BaseCharacter
             action.PreformAction(this);
         }
     }
-    public void Attack()
+    public virtual void Attack()
     {
         foreach (BaseCharacter target in targets)
         {
             Attack(target);
         }
     }
-    public override void Attack(BaseCharacter c)
+    public virtual void Attack(BaseCharacter c)
     {
-        c.LoseMana(currentTurnDamage, GetCharacterName());
+        c.LoseMana(stats.Damage, GetCharacterName());
     }
-    //get damage from a range based on a min and max value, then distribute the damage evenly between targets
-    //if the damage is to 1 target make sure it's not over 60.
-    protected override int GetDamage()
-    {
-        int damage = Random.Range(minDamage,maxDamage);
-        if(statusEffects.Count > 0)
-        {
-            foreach (BaseStatus status in statusEffects)
-            {
-                if (status is Weakness)
-                {
-                    Weakness weakness = (Weakness)status;
-                    damage = Mathf.RoundToInt(damage * weakness.ApplyWeakness());
-                }
-            }
-
-        }
-        
-        int targetCount = targets.Count;
-        damage = damage / targetCount;
-        return damage;
-    }
-    public override void LoseMana(int amount, string source = "Unknown")
+    public virtual void LoseMana(int amount, string source = "Unknown")
     {
         display.DefendTrue();
         if (statusEffects.Count > 0)
@@ -226,24 +232,30 @@ public class EnemyCharacter : BaseCharacter
                 }
             }
         }
-        currentMana -= amount;
+        stats.CurrentMana -= amount;
         CombatLog.Instance.AmendTextToLog($"{GetCharacterName()} took {amount} damage from {source}");
         UpdateDisplays();
     }
-
-
-    protected override void UpdateDisplays()
+    public void IncreaseDamageTaken(int damage)
+    {
+        stats.damageTaken += damage;
+    }
+    public void ResetDamageTaken()
+    {
+        stats.damageTaken = 0;
+    }
+    protected virtual void UpdateDisplays()
     {
         manaBar.UpdateHealthBar(this);
         if (Party.Instance.HasKnowledgeOfEnemy)
         {
             //display damage and targets
-            potentialText.gameObject.SetActive(true);
-            potentialText.text = $"{currentTurnDamage}";
+            damageText.gameObject.SetActive(true);
+            damageText.text = $"{stats.Damage}";
         }
         else
         {
-            potentialText.gameObject.SetActive(false);
+            damageText.gameObject.SetActive(false);
         }
     }
 }

@@ -17,7 +17,7 @@ public class ForgeEvent : BaseEvent
         OptionOutcomes = GameResources.Instance.ForgeRewardPool.Cast<BaseEventReward>().ToList();
         foreach (BaseCharacter c in Party.Instance.members)
         {
-            foreach (DraggableItem item in c.items)
+            foreach (BaseItem item in c.stats.Items)
             {
                 if(item is IUpgradableItem uItem)
                 allPlayerItems.Add(uItem);
@@ -66,7 +66,7 @@ public class ForgeEvent : BaseEvent
             } 
             else
             {
-                DraggableItem item = allPlayerItems[i] as DraggableItem;
+                BaseItem item = allPlayerItems[i] as BaseItem;
                 IUpgradableItem upItem = item as IUpgradableItem;
                 text.text = $"Upgrade {item.itemSO.itemName}";
                 b.onClick.AddListener(() => upReward.UpgradeItem(upItem,choiceBaseDamage,this));

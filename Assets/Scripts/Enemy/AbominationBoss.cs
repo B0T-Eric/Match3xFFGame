@@ -27,17 +27,17 @@ public class AbominationBoss : EnemyCharacter
     }
     public override void Attack(BaseCharacter c)
     {
-        c.LoseMana(currentTurnDamage, GetCharacterName());
+        c.LoseMana(stats.Damage, GetCharacterName());
     }
     public override string GetCharacterName()
     {
         return $"Abomination";
     }
-    protected override int GetDamage()
-    {
-        int hungerDamageAmp = GetHungerAmp();
-        return maxDamage + hungerDamageAmp;
-    }
+    //protected override int GetDamage()
+    //{
+    //    int hungerDamageAmp = GetHungerAmp();
+    //    return maxDamage + hungerDamageAmp;
+    //}
     private int GetHungerAmp()
     {
         var hunger = Enumerable.FirstOrDefault(Enumerable.OfType<Hunger>(statusEffects));

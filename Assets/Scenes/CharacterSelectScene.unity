@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3bdb8a816f3134caab393d937c0108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StageText: {fileID: 397013889}
+  StageText: {fileID: 0}
 --- !u!1 &31649266
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,11 +397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: 'Drag to rearrange party order, top to bottom.
-
-    The order of the party
-    is important, they perform actions from top to bottom order, combos can be triggered
-    if order is ideal.'
+  Tooltip: 
 --- !u!114 &32949586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,7 +487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: Enemy damage & health scaling reduced by 25%
+  Tooltip: 
 --- !u!114 &41650005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3818,7 +3814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: Enemy damage and health scaling increased by 50%
+  Tooltip: 
 --- !u!1 &564678693
 GameObject:
   m_ObjectHideFlags: 0
@@ -4355,7 +4351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: Click here to confirm your party, proceeding to the map.
+  Tooltip: 
 --- !u!1 &621013927
 GameObject:
   m_ObjectHideFlags: 0
@@ -4932,7 +4928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3bdb8a816f3134caab393d937c0108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StageText: {fileID: 709207064}
+  StageText: {fileID: 0}
 --- !u!1 &709207062
 GameObject:
   m_ObjectHideFlags: 0
@@ -5270,8 +5266,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8cbf11869d0f8041a56574cad0219b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusDisplay: {fileID: 4135935120684652481, guid: 177eb8e0d9d20d441b43cca0d97b2797, type: 3}
-  statusDisplayUI: {fileID: 4135935120684652481, guid: 8d5ee2e06dc989c468a3715d2f86e5c1, type: 3}
+  statusDisplay: {fileID: 0}
+  statusDisplayUI: {fileID: 0}
 --- !u!114 &729380342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5336,11 +5332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: 'View each characters ability descriptions by clicking 4 icons below the
-    characters portait.
-
-    Change characters by clicking on the icons at the bottom
-    of the screen.'
+  Tooltip: 
 --- !u!114 &733054487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6595,7 +6587,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 995405971}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b84db37bd0cf0f4da6f001caac5d378, type: 3}
+  m_Script: {fileID: 11500000, guid: 23383af8767706748b836175da25c3b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   log: {fileID: 1654917785}
@@ -9468,7 +9460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: Default enemy health and damage scaling
+  Tooltip: 
 --- !u!1 &1426581260
 GameObject:
   m_ObjectHideFlags: 0
@@ -10475,7 +10467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51c62efdc2358f3409f0dc4d7ebc59ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 434228098}
+  canvas: {fileID: 1257979958}
   tooltipText: {fileID: 564678695}
   backgroundRectTransform: {fileID: 860283836}
 --- !u!1 &1707743973

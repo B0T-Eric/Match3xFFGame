@@ -12,4 +12,12 @@ public class EnemyAction : MonoBehaviour
     {
 
     }
+    public virtual void PreformAction(EnemyCharacter target)
+    {
+
+    }
+    public virtual void PreformAction(List<EnemyCharacter> targets)
+    {
+
+    }
 }

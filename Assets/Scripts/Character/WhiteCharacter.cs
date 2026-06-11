@@ -1,5 +1,6 @@
 using Assets.Scripts.Character.CharacterAttacks;
 using System.Linq;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 /// <summary>
 /// 
@@ -19,22 +20,6 @@ public class WhiteCharacter : BaseCharacter
     float weakModifier = 0.25f;
     [SerializeField]
     Sprite brittleSprite, weakSprite;
-    
-    public override void GainPotential(int amount)
-    {
-        if(amount == 4)
-        {
-            amount += 3;
-        }
-        if(amount > 4)
-        {
-            amount += 6;
-        }
-        amount += GetPotentialIncrease();
-        amount = (int)Mathf.Round(amount * GetPotentialMult());
-        potential += amount;
-        UpdateDisplays();
-    }
     protected override void UpdatePassives()
     {
         if (preparationAttack.IsPreparing)
@@ -102,34 +87,25 @@ public class WhiteCharacter : BaseCharacter
     {
         Ability.ActivateAbility(EnemyCharacter.Instance);
     }
-    protected override float GetRetainMult()
-    {
-        float mult = 0.75f;
-        foreach(DraggableItem item in items)
-        {
-            mult += ItemPotentialModifier;
-        }
-        return mult;
-    }
     public void OnAttack(BaseCharacter character, int damage)
     {
         Brittle brittle = new Brittle(bUseCount, bModifier, brittleSprite);
         Weakness weakness = new Weakness(weakDuration,weakModifier,weakSprite);
-        int halfHp = character.maxMana / 2;
-        if (character.currentMana > halfHp)
+        int halfHp = character.stats.MaxMana / 2;
+        if (character.stats.CurrentMana > halfHp)
         {
-            character.AddStatusEffect(weakness);
+            StatusHandler.AddStatusEffect(weakness, EnemyCharacter.Instance);
         }
         else
         {
-            character.AddStatusEffect(brittle);
+            StatusHandler.AddStatusEffect(brittle, EnemyCharacter.Instance);
         }
     }
     public override void Init()
     {
         manaType = ManaType.White;
         hexColour = "FFFFFF";
+        stats = new WhiteStats(statsSO.maxMana, statsSO.initialMana, statsSO.passiveTwo, statsSO.passiveThree, 0.75f, ItemPotentialModifier);
         base.Init();
-
     }
 }

@@ -15,7 +15,7 @@ public class StatusDisplay : MonoBehaviour
         string sceneName = SceneManager.GetActiveScene().name;
         if (sceneName == "GameScene")
         {
-            Game game = GameObject.Find("Game").GetComponent<Game>();
+            GameResources game = GameResources.Instance;
             int index = 0;
             if (status.GetType() == typeof(Burn))
             {
@@ -44,6 +44,18 @@ public class StatusDisplay : MonoBehaviour
             else if (status.GetType() == typeof(Wound))
             {
                 index = 6;
+            }
+            else if (status.GetType() == typeof(Bubble))
+            {
+                index = 7;
+            }
+            else if (status.GetType() == typeof(SuperBurn))
+            {
+                index = 8;
+            }
+            else if (status.GetType() == typeof(Freeze))
+            {
+                index = 9;
             }
             ToggleText(status);
             this.status.Changed += Status_Changed;

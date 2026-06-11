@@ -1,6 +1,6 @@
 ﻿public class CharacterToolTip : ToolTip
 {
-    BaseCharacter character;
+    protected BaseCharacter character;
     private void Start()
     {
         character = transform.parent.parent.parent.GetComponent<BaseCharacter>();

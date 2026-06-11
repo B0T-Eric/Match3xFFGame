@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonVialItem : DraggableItem, IOnTurnEnd, IUpgradableItem
+public class PoisonVialItem : BaseItem, IOnTurnEnd, IUpgradableItem
 {
     Sprite poisonSprite;
     int stacksToApply = 1;
@@ -14,7 +14,7 @@ public class PoisonVialItem : DraggableItem, IOnTurnEnd, IUpgradableItem
         Poison p = new Poison(poisonSprite);
         for (int i = 0; i < stacksToApply; i++)
         {
-            EnemyCharacter.Instance.AddStatusEffect(p);
+            StatusHandler.AddStatusEffect(p, EnemyCharacter.Instance);
         }
     }
     public override string GetEffectDesc()

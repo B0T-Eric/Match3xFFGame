@@ -23,6 +23,7 @@ public class PurpleCharacter : BaseCharacter
     {
         manaType = ManaType.Purple;
         hexColour = "AD00FF";
+        stats = new PurpleStats(statsSO.maxMana, statsSO.initialMana, statsSO.passiveTwo, statsSO.passiveThree, 0.75f);
         base.Init();
         ApplyPassive();
     }
@@ -50,13 +51,14 @@ public class PurpleCharacter : BaseCharacter
     }
     public override void LoseMana(int amount, string source = "Unknown")
     {
-        if (state != CharacterState.Dead && currentMana > 0)
+        if (state != CharacterState.Dead && stats.CurrentMana > 0)
         {
             display.DefendTrue();
-            amount -= GetDamageReduction();
+            int baseResist = turnState == TurnState.Retain ? 5 : 0;
+            amount -= stats.GetResist(baseResist);
             amount = Mathf.Max(amount, 0);
             IncreaseDamageTaken(amount);
-            currentMana -= amount;
+            stats.CurrentMana -= amount;
             if (onDamageTaken != null)
             {
                 foreach (OnDamageTakenDelegate onDamageTaken in onDamageTaken.GetInvocationList().Cast<OnDamageTakenDelegate>())
@@ -65,11 +67,11 @@ public class PurpleCharacter : BaseCharacter
                 }
             }
             //if the character is down and has dropped below (or equal to) 0, set them to dead.
-            if (currentMana <= 0)
+            if (stats.CurrentMana <= 0)
             {
                 if (state == CharacterState.Down)
                 {
-                    currentMana = 0;
+                    stats.CurrentMana = 0;
                     display.SetState(CharacterState.Dead);
                 }
                 //if the character has dropped below (or equal to) 0 and is alive set them to down.
@@ -85,7 +87,7 @@ public class PurpleCharacter : BaseCharacter
                     }
                     else
                     {
-                        currentMana = 1;
+                        stats.CurrentMana = 1;
                         display.SetState(CharacterState.Down);
                     }
                 }
@@ -106,9 +108,9 @@ public class PurpleCharacter : BaseCharacter
     {
         foreach(BaseCharacter c in Party.Instance.members)
         {
-            c.onGetDamageReduction += AllyReduction;
+            c.stats.onGetResist += AllyReduction;
         }
-        onGetDamageReduction += SelfReduction;
+        stats.onGetResist += SelfReduction;
     }
     int AllyReduction()
     {
@@ -121,7 +123,7 @@ public class PurpleCharacter : BaseCharacter
     public void OnDamageTaken(BaseCharacter c, int damage)
     {
         int p1 = Mathf.RoundToInt(damage * retaliationMult);
-        int p2 = Mathf.RoundToInt(damage * (retainMultiplier + retaliationBuff));
+        int p2 = Mathf.RoundToInt(damage * (stats.retainMult + retaliationBuff));
         if (IsPassiveTwoActive)
         {
             Retaliate(p2);    

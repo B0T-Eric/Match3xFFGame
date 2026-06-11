@@ -10,13 +10,13 @@ public class EnemyApplyStatus : EnemyAction
     /// <param name="target"> the chracter having the status applied too it.</param>
     public override void PreformAction(BaseCharacter target)
     {
-        target.AddStatusEffect(status);
+        StatusHandler.AddStatusEffect(status, target);
     }
     public override void PreformAction(List<BaseCharacter> targets)
     {
         foreach (BaseCharacter target in targets)
         {
-            target.AddStatusEffect(status);
+            StatusHandler.AddStatusEffect(status,target);
         }
     }
     /// <summary>

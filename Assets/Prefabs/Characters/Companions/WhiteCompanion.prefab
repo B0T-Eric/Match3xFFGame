@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5348412528565645964}
   - component: {fileID: 1677437026390749135}
   - component: {fileID: 2164225426597734893}
-  - component: {fileID: -7134357335748493507}
+  - component: {fileID: 5216480591251337186}
   m_Layer: 0
   m_Name: WhiteCompanion
   m_TagString: Untagged
@@ -92,7 +92,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 83b27c052a31dbd448314e6062a50d3d, type: 3}
   companionName: white guy
   weaknessSprite: {fileID: 21300000, guid: 586e402383520dc48a781e46df3cb2f9, type: 3}
---- !u!114 &-7134357335748493507
+--- !u!114 &5216480591251337186
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,7 +101,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 4954119056080985005}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: f5c5e803ab85fe847865429befb97fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Tooltip: 
+  companion: {fileID: 2164225426597734893}

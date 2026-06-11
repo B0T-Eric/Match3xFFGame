@@ -6,9 +6,9 @@ public class KillEnemy : MonoBehaviour
 {
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.X) && EnemyCharacter.Instance.currentMana > 0)
+        if (Input.GetKeyDown(KeyCode.X) && EnemyCharacter.Instance.stats.CurrentMana > 0)
         {
-            EnemyCharacter.Instance.LoseMana(EnemyCharacter.Instance.maxMana);
+            EnemyCharacter.Instance.LoseMana(EnemyCharacter.Instance.stats.MaxMana);
         }
     }
 }

@@ -28,7 +28,7 @@ public class GameContainer : MonoBehaviour
             characterDisplays[i].DisplayCharacter(characters[i]);
         }
     }
-    public void DisplayEnemy(BaseCharacter character)
+    public void DisplayEnemy(EnemyCharacter character)
     {
         if(character is WolfEnemy wolves)
         {

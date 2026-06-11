@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public enum ItemRarity { None,Common, Uncommon, Rare, Cursed}
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class BaseItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public ItemScriptableObject itemSO;
     public Image image;
@@ -124,6 +124,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 // item effects to trigger on attack (triggered on the hit)
 public interface IOnAttackItem
 {
+    void OnAttack(EnemyCharacter character, int damage);
+}
+public interface IOnEnemyAttackItem
+{
     void OnAttack(BaseCharacter character, int damage);
 }
 // item effects to trigger on damage taken
@@ -131,9 +135,17 @@ public interface IOnDamageTakenItem
 {
     void OnDamageTaken(BaseCharacter baseCharacter, int damage);
 }
+public interface IOnEnemyDamageTakenItem
+{
+    void OnDamageTaken(EnemyCharacter baseCharacter, int damage);
+}
 public interface IOnHitItem
 {
     void OnHit(BaseCharacter character);
+}
+public interface IOnEnemyHitItem
+{
+    void OnHit(EnemyCharacter character);
 }
 // item effects to trigger on turn end
 public interface IOnTurnEnd

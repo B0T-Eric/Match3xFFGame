@@ -11,6 +11,7 @@ public class YellowCharacter : BaseCharacter
     float maxHpDamage = 0.03f;
     public override void Init()
     {
+        stats = new YellowStats(statsSO.maxMana, statsSO.initialMana, statsSO.passiveTwo, statsSO.passiveThree, 0.75f);
         manaType = ManaType.Yellow;
         hexColour = "FFEA00";
         base.Init();
@@ -23,7 +24,7 @@ public class YellowCharacter : BaseCharacter
     }
     public override string GetPassiveTwoDesc()
     {
-        return $"While above {passiveValues.secPassiveThreshold} mana, gain a {baseEvasionChance*100}% chance to evade enemy damage.\n" +
+        return $"While above {stats.pTwo} mana, gain a {baseEvasionChance*100}% chance to evade enemy damage.\n" +
             $"Evasion chance increases by {evasionIncrease * 100}% for each mana above 20.";
     }
     public override string GetPassiveThreeDesc()
@@ -57,7 +58,7 @@ public class YellowCharacter : BaseCharacter
     void Retaliation(int dmg)
     {
         EnemyCharacter c = EnemyCharacter.Instance;
-        int damage = Mathf.RoundToInt(c.maxMana * maxHpDamage);
+        int damage = Mathf.RoundToInt(c.stats.MaxMana * maxHpDamage);
         c.LoseMana(damage, $"{GetCharacterName()} retaliation");
         nextTurnPotential = damage;
     }
@@ -65,7 +66,7 @@ public class YellowCharacter : BaseCharacter
     {
         float evasion = baseEvasionChance;
         float increase = 0;
-        for (int i = 20; i < currentMana; i++)
+        for (int i = 20; i < stats.CurrentMana; i++)
         {
             increase += evasionIncrease;
         }

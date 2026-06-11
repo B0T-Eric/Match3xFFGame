@@ -9,10 +9,17 @@ public class BlueAbility : BaseAbility
 {
     [SerializeField]
     Sprite bubbleSprite;
-    public override void ActivateAbility(BaseCharacter target)
+    public override void ActivateAbility(EnemyCharacter target)
     {
         base.ActivateAbility();
         Bubble b = new(bubbleSprite, target);
-        target.AddStatusEffect(b);
+        StatusHandler.AddStatusEffect(b, target);
+        CombatLog.Instance.AmendTextToLog($"{character.GetCharacterName()} used Bubble Trap");
+    }
+    public override string GetDescription()
+    {
+        return $"Bubble Trap:\nEntrap the enemy in a bubble, preventing their next turn." +
+            $"\nOn the next turn or when the enemy is attacked next the bubble pops." +
+            $"\nCost: {cost}    Cooldown: {abilityCooldown}";
     }
 }

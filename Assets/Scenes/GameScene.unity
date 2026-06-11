@@ -471,7 +471,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 115087081}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ac0c27772d29ce4f98be6d70c74ba80, type: 3}
+  m_Script: {fileID: 11500000, guid: da7937f541c4f414abf71dc26cf8063f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyPrefab: {fileID: 8285970887679186868, guid: a6667b074d37dbf4a9c0dbedb90c55d8, type: 3}
@@ -2015,9 +2015,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1171310271}
-  - component: {fileID: 1171310274}
   - component: {fileID: 1171310273}
   - component: {fileID: 1171310272}
+  - component: {fileID: 1171310274}
   m_Layer: 5
   m_Name: EnemyHealthBar
   m_TagString: Untagged
@@ -2093,12 +2093,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1171310270}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4e9323d383f37a4a8b1e547ca5d369b, type: 3}
+  m_Script: {fileID: 11500000, guid: c4a8598e668eb9c4699f6a8b27c82873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   manaFillImage: {fileID: 1835461031}
   character: {fileID: 0}
-  enemyHealth: {fileID: 2035040456}
+  manaText: {fileID: 2035040456}
+  enemy: {fileID: 0}
 --- !u!1 &1186531122
 GameObject:
   m_ObjectHideFlags: 0
@@ -2212,14 +2213,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aea4029145dd314bb1673f994ea2e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusSprites:
-  - {fileID: 21300000, guid: b5ae692e413470f4ca54ca3b81812975, type: 3}
-  - {fileID: 21300000, guid: 586e402383520dc48a781e46df3cb2f9, type: 3}
-  - {fileID: 21300000, guid: 90edb282f30f58344a5135ca30f606f7, type: 3}
-  - {fileID: 21300000, guid: 21d17d86233e6d74b92500a5fdbd6ed0, type: 3}
-  - {fileID: 21300000, guid: 537bf23c37718484884daf1b7946330d, type: 3}
-  - {fileID: 21300000, guid: a9546f4ad5a4f1f428a3f975449fe239, type: 3}
-  - {fileID: 21300000, guid: 4c47d8973b3c04247a8ca85ad95e8941, type: 3}
   match3: {fileID: 1186531123}
 --- !u!4 &1236835769
 Transform:
@@ -3242,7 +3235,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Health
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

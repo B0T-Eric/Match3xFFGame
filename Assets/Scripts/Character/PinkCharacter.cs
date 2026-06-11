@@ -23,6 +23,7 @@ public class PinkCharacter : BaseCharacter
         onAttack += OnAttack;
         attacks.Clear();
         attacks.Add(spec);
+        stats = new PinkStats(statsSO.maxMana, statsSO.initialMana, statsSO.passiveTwo, statsSO.passiveThree, 0.75f);
         base.Init();
     }
     #region descriptions
@@ -46,11 +47,11 @@ public class PinkCharacter : BaseCharacter
         return $"If damage is less than 10 damage becomes 10.\nDamage greater than 20 heals for 25% of the damage dealt.";
     }
     #endregion
-    public override void Attack(BaseCharacter c)
+    public override void Attack(EnemyCharacter c)
     {
         if (state == CharacterState.Alive)
         {
-            int damage = GetDamage();
+            int damage = stats.GetDamage(potential);
             if (damage > 0)
             {
                 if (selectedAttack == 0)
@@ -62,7 +63,7 @@ public class PinkCharacter : BaseCharacter
         }
         nextTurnPotential = 0;
     }
-    private void OnAttack(BaseCharacter c, int damage)
+    private void OnAttack(EnemyCharacter c, int damage)
     {
         if (damage > 20 && IsPassiveThreeActive)
         {
@@ -75,7 +76,7 @@ public class PinkCharacter : BaseCharacter
         stanceActive = true;
         onHit += OnHit;
     }
-    public void OnHit(BaseCharacter character)
+    public void OnHit(EnemyCharacter character)
     {
         if (stanceActive)
         {
@@ -88,8 +89,8 @@ public class PinkCharacter : BaseCharacter
     {
         switch (num)
         {
-            case 0: AddStatusEffect(new Rage(rageSprite)); break;
-            case 1: AddStatusEffect(new Passion(passionSprite)); break;
+            case 0: StatusHandler.AddStatusEffect(new Rage(rageSprite), this); break;
+            case 1: StatusHandler.AddStatusEffect(new Passion(passionSprite), this); break;
         }
     }
 

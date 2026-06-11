@@ -16,12 +16,12 @@ public class WolfEnemy : EnemyCharacter
     {
         
         InitializeStats();
-        maxMana = RoundToNearestMultipleOfFour(maxMana);
+        stats.MaxMana = RoundToNearestMultipleOfFour(stats.MaxMana);
         WolfPack = new List<Wolf>();
         WolfIndex = 3;
         for (int i = 0; i < PackSize; i++)
         {
-            WolfPack.Add(new Wolf(((maxMana/PackSize)), WoundSprite, ref statusEffects));
+            WolfPack.Add(new Wolf(((stats.MaxMana/PackSize)), WoundSprite, ref statusEffects));
             int rng = UnityEngine.Random.Range(0, 2);
             WolfPack[i].SetAttackToggle(Convert.ToBoolean(rng));
         }
@@ -68,35 +68,17 @@ public class WolfEnemy : EnemyCharacter
         }
         target.TakeDamge(amount);
         //maybe?
-        currentMana -= amount;
+        stats.CurrentMana -= amount;
         if (target.IsDead)
         {
             WolfIndex--;
             WolfPack.Remove(target);
             GameContainer.Instance.enemyDisplays[WolfIndex].gameObject.SetActive(false);
             GameContainer.Instance.enemyDisplays.RemoveAt(WolfIndex);
-            maxMana -= target.MaxHealth;
+            stats.MaxMana -= target.MaxHealth;
         }
         CombatLog.Instance.AmendTextToLog($"Wolf took {amount} damage from {source}");
         UpdateDisplays();
-    }
-    //do not consider targets.
-    protected override int GetDamage()
-    {
-        int damage = UnityEngine.Random.Range(minDamage, maxDamage);
-        if (statusEffects.Count > 0)
-        {
-            foreach (BaseStatus status in statusEffects)
-            {
-                if (status is Weakness)
-                {
-                    Weakness weakness = (Weakness)status;
-                    damage = Mathf.RoundToInt(damage * weakness.ApplyWeakness());
-                }
-            }
-
-        }
-        return damage;
     }
     //call for wolf to preform the turn which will randomly alternate attacks.
     public override async Task<bool> PreformTurn()
@@ -117,7 +99,7 @@ public class WolfEnemy : EnemyCharacter
         base.TurnStart();
         foreach (Wolf wolf in WolfPack)
         {
-            wolf.SetTurnDamage(currentTurnDamage);
+            wolf.SetTurnDamage(stats.GetDamage());
 
         }
     }
@@ -138,15 +120,16 @@ public class WolfEnemy : EnemyCharacter
         }
 
     }
-    public override int GetDamage_Public()
-    {
-        int damage = 0;
-        foreach(Wolf w in WolfPack)
-        {
-            damage += w.GetDamage();
-        }
-        return damage / PackSize;
-    }
+
+    //public int GetDamage_Public()
+    //{
+    //    int damage = 0;
+    //    foreach(Wolf w in WolfPack)
+    //    {
+    //        damage += w.GetDamage();
+    //    }
+    //    return damage / PackSize;
+    //}
 
 }
 public class Wolf
@@ -174,7 +157,7 @@ public class Wolf
     public void Wound()
     {
         target.LoseMana(TurnDamage,"Wolf");
-        target.AddStatusEffect(WoundStatus);
+        StatusHandler.AddStatusEffect(WoundStatus, target);
     }
     public int GetDamage()
     {

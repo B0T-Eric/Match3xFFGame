@@ -15,6 +15,7 @@ public class GameResources : MonoBehaviour
     public List<ExchangeReward> ExchangeRewardPool;
     public List<UpgradeEventReward> ForgeRewardPool;
     public List<CompanionEventReward> CompanionRewardPool;
+    public Sprite[] statusSprites;
     //recipees dictionary (id of item 1, id of item 2, id of result item)
     public Dictionary<(int,int),int> MergeItemRecipes = new();
     private void Awake()

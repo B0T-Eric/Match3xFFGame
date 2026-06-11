@@ -28,6 +28,7 @@ public class BlueCharacter : BaseCharacter
     {
         manaType = ManaType.Blue;
         hexColour = "000CFF";
+        stats = new BlueStats(statsSO.maxMana, statsSO.initialMana, statsSO.passiveTwo, statsSO.passiveThree, 0.75f, flatAmp, percentAmp, p3Amp);
         base.Init();
        
     }
@@ -40,13 +41,13 @@ public class BlueCharacter : BaseCharacter
             {
                 if(IsPassiveThreeActive)
                 {
-                    Freeze f = new Freeze(freezeSprite, character ,freezeDamageReduction, freezeArmourReduction,FreezeDuration);
-                    character.AddStatusEffect(f);
+                    Freeze f = new Freeze(freezeSprite ,freezeDamageReduction, freezeArmourReduction,FreezeDuration);
+                    StatusHandler.AddStatusEffect(f, EnemyCharacter.Instance);
                 }
                 else
                 {
-                    Freeze f = new Freeze(freezeSprite, character, freezeDamageReduction,FreezeDuration);
-                    character.AddStatusEffect(f);
+                    Freeze f = new Freeze(freezeSprite, freezeDamageReduction,FreezeDuration);
+                    StatusHandler.AddStatusEffect(f, EnemyCharacter.Instance);
                 }
             }
         }
@@ -70,32 +71,5 @@ public class BlueCharacter : BaseCharacter
         return $"Freezes now lower damage and reduce enemy damage reduction by {freezeDamageReduction}. \nDamage is increased by an additional {(p3Amp -1 )*100}% when the enemy is affected by a debuff";
     }
     #endregion
-    protected override int GetDamage()
-    {
-        int damage = base.GetDamage();
-        int debuffCount = EnemyCharacter.Instance.statusEffects.Where(status => status is IDebuff).Count();
-        //increase damage by amount of debuffs on the character;
-        if(debuffCount > 0)
-        {
-            int percentIncrease = Mathf.RoundToInt(damage * (percentAmp * debuffCount));
-            int flatIncrease = damage + (debuffCount * flatAmp);
-            //when third passive is active increase the total damage gained from debuffs by 25%;
-            if (IsPassiveThreeActive)
-            {
-                percentIncrease = Mathf.RoundToInt(percentIncrease * p3Amp);
-                flatIncrease = Mathf.RoundToInt(flatIncrease * p3Amp);
-            }
-            //pick the higher value to increase damage by.
-            if (flatIncrease > percentIncrease)
-            {
-                damage += flatIncrease;
-            }
-            else
-            {
-                damage += percentIncrease;
-            }
-        }
-        return damage; 
-    }
 
 }

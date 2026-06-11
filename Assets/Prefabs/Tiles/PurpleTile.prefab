@@ -42,7 +42,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3630179269748451982}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5da88728cd6918b4687aa956c896a8b3, type: 3}
+  m_Script: {fileID: 11500000, guid: bc86e331f5ebab547a83fce309b3471e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   disappearDuration: 0.25

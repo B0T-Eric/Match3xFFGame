@@ -8,8 +8,8 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
     [SerializeField]
     public BaseCharacter character;
     public bool isOccupied = false;
-    DraggableItem equippedItem;
-    public DraggableItem GetItem()
+    BaseItem equippedItem;
+    public BaseItem GetItem()
     {
         return equippedItem;
     }
@@ -21,7 +21,7 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
     {
         GameObject obj = Instantiate(itemObject);
         obj.transform.SetParent(this.transform);
-        DraggableItem item = obj.GetComponent<DraggableItem>();
+        BaseItem item = obj.GetComponent<BaseItem>();
         equippedItem = item;
         character.EquipItem(item);
         isOccupied = true;
@@ -30,7 +30,7 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
     {
         GameObject dropped = eventData.pointerDrag;
         if (dropped == null) return;
-        DraggableItem incomingItem = dropped.GetComponent<DraggableItem>();
+        BaseItem incomingItem = dropped.GetComponent<BaseItem>();
         if (incomingItem == null) return;
         if (!isOccupied)
         {   
@@ -44,7 +44,7 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
         {
             if (equippedItem is ICombinableItem && incomingItem is ICombinableItem)
             {
-                GameObject combinedItem = DraggableItem.LookUpRecipe(equippedItem.itemSO.ID, incomingItem.itemSO.ID);
+                GameObject combinedItem = BaseItem.LookUpRecipe(equippedItem.itemSO.ID, incomingItem.itemSO.ID);
                 GameObject itemToDestroy = equippedItem.gameObject;
                 UnequipItem();
                 Destroy(incomingItem.gameObject);
@@ -66,7 +66,7 @@ public class CharacterInventorySlot : MonoBehaviour, IDropHandler
             equippedItem = null;
         }
     }
-    public void EquipItem(DraggableItem item)
+    public void EquipItem(BaseItem item)
     {
         equippedItem = item;
         if (!isOccupied)

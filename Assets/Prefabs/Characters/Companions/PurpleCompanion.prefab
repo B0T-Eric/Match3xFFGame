@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5348412528565645964}
   - component: {fileID: 1677437026390749135}
   - component: {fileID: 923031806959520137}
-  - component: {fileID: 7950345103752695354}
+  - component: {fileID: 1339454046887020556}
   m_Layer: 0
   m_Name: PurpleCompanion
   m_TagString: Untagged
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 1d68b246dbb253249a62989c2c83a3cf, type: 3}
   companionName: purple guy
---- !u!114 &7950345103752695354
+--- !u!114 &1339454046887020556
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,7 +100,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 4954119056080985005}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: f5c5e803ab85fe847865429befb97fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Tooltip: 
+  companion: {fileID: 923031806959520137}

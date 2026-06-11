@@ -39,7 +39,7 @@ public class RestManager : MonoBehaviour
 
     private static void EmberOfGraceUpgrade(BaseCharacter character)
     {
-        foreach (DraggableItem item in character.items)
+        foreach (BaseItem item in character.stats.Items)
         {
             if (item is EmberOfGrace e)
             {

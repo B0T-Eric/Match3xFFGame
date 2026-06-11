@@ -3,39 +3,42 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class ManaBar : MonoBehaviour
 {
     public Image manaFillImage;
     public BaseCharacter character;
-    public TextMeshProUGUI enemyHealth;
+    public TextMeshProUGUI manaText;
     public void Init(BaseCharacter c)
     {
         character = c;
-        if(c is not EnemyCharacter)
+        if(ColorUtility.TryParseHtmlString("#"+c.hexColour, out Color colour))
         {
-            if(ColorUtility.TryParseHtmlString("#"+c.hexColour, out Color colour))
-            {
-                manaFillImage.color = colour;
-            }
+            manaFillImage.color = colour;
         }
-        UpdateHealthBar(c);
+        //UpdateHealthBar(c);
+    }
+    public virtual void Init(EnemyCharacter e)
+    {
+
+    }
+    public virtual void UpdateHealthBar(EnemyCharacter e)
+    {
+       
     }
     public void UpdateHealthBar(BaseCharacter c)
     {
-        SetMana(c.currentMana);
-        if (c is EnemyCharacter)
-        {
-            SetManaText(c.currentMana);
-        }
+        SetMana(c.stats.CurrentMana);
+        SetManaText(c.stats.CurrentMana, manaText.text, character.stats.MaxMana);
     }
-    private void SetManaText(int mana)
+    protected void SetManaText(int mana, string text, int maxMana)
     {
-        enemyHealth.text = $"{mana} / {character.statsSO.maxMana}";
+            text = $"{mana} / {maxMana}";
     }
-    private void SetMana(float mana)
+    protected virtual void SetMana(float mana)
     {
-        manaFillImage.fillAmount = (float)(mana / character.statsSO.maxMana);
+        manaFillImage.fillAmount = (float)(mana / character.stats.MaxMana);
     }
 }
