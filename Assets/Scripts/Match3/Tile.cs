@@ -15,23 +15,53 @@ public class Tile : MonoBehaviour
     }
 
     FallingState falling;
-
+    [SerializeField]
+    SpriteRenderer enhancementRenderer;
+    Enhancement enhancement;
     PrefabInstancePool<Tile> pool;
     float disappearProgress;
     public Tile Spawn (Vector3 position)
     {
         Tile instance = pool.GetInstance(this);
         instance.pool = pool;
-        instance.transform.SetParent(GameObject.Find("GridBack").transform);
+        //instance.transform.SetParent(GameObject.Find("GridBack").transform);
         instance.transform.localPosition = position;
         instance.transform.localScale = Vector3.one;
         instance.disappearProgress = -1f;
         instance.falling.progress = -1f;
         instance.enabled = false;
+        instance.enhancement = EnhancementHandler.TryGetEnhancement();
+        if (instance.enhancement != null)
+        {
+            instance.enhancementRenderer.sprite = instance.enhancement.GetSprite();
+            if (enhancement is IOnSpawnAdd)
+            {
+                enhancement.ApplyEnhancementEffect();
+            }
+            if (enhancement is IOnSpawnRemove)
+            {
+                enhancement.RemoveEnhancementEffect();
+            }
+        }
+        else
+        {
+            enhancementRenderer.gameObject.SetActive(false);
+        }
         return instance;
     }
     public void Despawn()
     {
+        if(enhancement != null)
+        {
+            if(enhancement is IOnClearAdd && enhancement != null)
+            {
+                enhancement.ApplyEnhancementEffect();
+            }
+            if(enhancement is IOnClearRemove && enhancement != null)
+            {
+                enhancement.RemoveEnhancementEffect();
+            }
+        }
         pool.Recycle(this);
     }
     public float Disappear()

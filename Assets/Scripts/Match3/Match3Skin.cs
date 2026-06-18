@@ -67,14 +67,7 @@ public class Match3Skin : MonoBehaviour
 
     public void StartNewGame()
     {
-        CombatLog.Instance.ResetLog();
-        Party.Instance.DisplayCharactersOnGameStart();
-        container.gameObject.SetActive(true);
-        endTurnButton.onClick.AddListener(EndTurnClick);
-        busyDuration = 0f;
-        SpawnEnemy();
-        turnCount = 1;
-        NewTurn();
+        StartCombat();
         gameOverText.gameObject.SetActive(false);
         this.gameObject.SetActive(true);
         game.StartNewGame();
@@ -101,6 +94,33 @@ public class Match3Skin : MonoBehaviour
                 tiles[x, y] = SpawnTile(game[x, y], x, y);
             }
         }
+        //test add enhancements
+        Party.Instance.AvailableEnhancements.Add(EnhancementHandler.enhancePool[0]);
+        foreach (Enhancement e in Party.Instance.AvailableEnhancements)
+        {
+            AddEnhancement(e);
+        }
+    }
+    [SerializeField]
+    EnhanceQueueDisplay enhanceQueueDisplay;
+    private void StartCombat()
+    {
+
+
+        CombatLog.Instance.ResetLog();
+        Party.Instance.DisplayCharactersOnGameStart();
+        container.SetActive(true);
+        endTurnButton.onClick.AddListener(EndTurnClick);
+        busyDuration = 0f;
+        SpawnEnemy();
+        turnCount = 1;
+        NewTurn();
+    }
+    public void AddEnhancement(Enhancement e)
+    {
+        EnhancementHandler.AddEnhancement(e);
+        //display queued item
+        enhanceQueueDisplay.UpdateDisplay();
     }
     private void SpawnEnemy()
     {
@@ -131,7 +151,7 @@ public class Match3Skin : MonoBehaviour
         CombatLog.Instance.AmendTextToLog($"Start of turn {turnCount}");
     }
 
-    Tile SpawnTile(TileState t, float x, float y) => tilePrefabs[(int)t - 1].Spawn(new Vector3(x + tileOffset.x, y + tileOffset.y));
+    Tile SpawnTile(TileState t, float x, float y) => tilePrefabs[(int)t - 1].Spawn(new Vector3(x + tileOffset.x, y + tileOffset.y,1f));
     public void DoWork()
     {
         if(busyDuration > 0f)
@@ -334,10 +354,7 @@ public class Match3Skin : MonoBehaviour
     float2 ScreenToTileSpace(Vector3 screenPosition)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-        float gridZ = GameObject.Find("GridBack").transform.position.z;
-        float t = (gridZ - ray.origin.z) / ray.direction.z;
-        Vector3 p = ray.origin + ray.direction * t;
-        //Vector3 p = ray.origin - ray.direction * (ray.origin.z / ray.direction.z);
+        Vector3 p = ray.origin - ray.direction * (ray.origin.z / ray.direction.z);
         return float2(p.x - tileOffset.x + 0.5f, p.y - tileOffset.y + 0.5f);
     }
 }

@@ -1311,6 +1311,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c07bcd634963c984793106c8170eefe7, type: 3}
   - {fileID: 21300000, guid: 25d960b4f5ac7d848b15e01918f9e9ff, type: 3}
   - {fileID: 21300000, guid: 0ae8c86c0f13db74c8e122742bbfa9cf, type: 3}
+  enhancementSprites:
+  - {fileID: 21300000, guid: 2c26f96fcd41a714db5a5035ded2f312, type: 3}
 --- !u!1 &1957735791
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,9 +1,10 @@
 ﻿using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public abstract class Enhancement : MonoBehaviour
+public abstract class Enhancement
 {
     protected Sprite sprite;
     protected ManaType type;
@@ -47,16 +48,26 @@ public abstract class Enhancement : MonoBehaviour
             }
         }
     }
-    public Enhancement()
+    public Enhancement(Sprite sprite,ManaType type)
     {
-
+        SetSprite(sprite);
+        SetType(type);
+        SetTargets(Party.Instance.members);
     }
 }
-public interface IOnClearEnhancement
+public interface IOnClearAdd
 {
 
 }
-public interface IOnSpawnEnhancement
+public interface IOnSpawnAdd
+{
+
+}
+public interface IOnSpawnRemove
+{
+
+}
+public interface IOnClearRemove
 {
 
 }
@@ -71,6 +82,10 @@ public static class EnhancementHandler
     /// collection containing enhancements, first in first out so the enhancements are cycled through.
     /// </summary>
     private static Queue<Enhancement> Enhancements = new Queue<Enhancement>();
+    public static List<Enhancement> FetchAllEnhancements()
+    {
+        return Enhancements.ToArray().ToList();
+    }
     public static void AddEnhancement(Enhancement enhancement)
     {
         Enhancements.Enqueue(enhancement);
@@ -86,15 +101,27 @@ public static class EnhancementHandler
     /// </returns>Enhancement from front of queue.
     public static Enhancement TryGetEnhancement()
     {
-        if(chance <= Random.Range(0, 101))
+        if(Enhancements.Count > 0)
         {
-            chance = 15;
-            return GetEnhancement();
+            if (chance <= Random.Range(0, 101))
+            {
+                chance = 15;
+                return GetEnhancement();
+            }
+            else
+            {
+                chance += 5;
+                return null;
+            }
         }
         else
         {
-            chance += 5;
             return null;
         }
     }
+    public static Enhancement[] enhancePool = new Enhancement[]
+        {
+            new DmgEnhance(GameResources.Instance.enhancementSprites[0],ManaType.None,1),
+
+        };
 }

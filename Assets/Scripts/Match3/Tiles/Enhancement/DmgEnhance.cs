@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-public class DmgEnhance : Enhancement, IOnGetDamage
+public class DmgEnhance : Enhancement, IOnGetDamage, IOnClearRemove, IOnSpawnAdd
 {
     private int Damage;
 
@@ -18,5 +18,17 @@ public class DmgEnhance : Enhancement, IOnGetDamage
         {
             character.stats.onGetDmgFlat += GetDamage;
         }
+    }
+    public override void RemoveEnhancementEffect()
+    {
+        foreach (BaseCharacter character in targets)
+        {
+            character.stats.onGetDmgFlat -= GetDamage;
+        }
+    }
+
+    public DmgEnhance(Sprite sprite, ManaType type, int damage) : base(sprite,type)
+    {
+        SetDamage(damage);
     }
 }

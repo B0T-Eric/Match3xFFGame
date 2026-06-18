@@ -13,6 +13,7 @@ public class Party : MonoBehaviour
     public List<GameObject> selectedCharacters = new List<GameObject>();
     public List<BaseCharacter> members = new List<BaseCharacter>();
     public ObservableCollection<BaseStatus> statuses = new ObservableCollection<BaseStatus>();
+    
     public int maxPartySize = 4;
     public int inventorySize = 7;
     public CharacterDisplayManager partyDisplayManager;
@@ -22,6 +23,7 @@ public class Party : MonoBehaviour
     public bool HasKnowledgeOfEnemy;
     public int RestCount;
     public TextMeshProUGUI StageText, TurnText, MovesText, StageNameText;
+    public List<Enhancement> AvailableEnhancements = new List<Enhancement>();
     private void Awake()
     {
         
@@ -54,6 +56,8 @@ public class Party : MonoBehaviour
         }
         statuses.CollectionChanged += Statuses_CollectionChanged;
     }
+
+
     public void RemoveTileType(TileState type)
     {
         AllowedTileTypes.Remove(type);
