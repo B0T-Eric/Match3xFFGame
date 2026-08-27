@@ -121,6 +121,17 @@ public class EnemyCharacterStats : CharacterStats
     public int MinDamage;
     public int MaxDamage;
     public int Damage;
+
+    public EnemyCharacterStats()
+    {
+    }
+
+    public EnemyCharacterStats(int maxMana, int startMana, int minDamage, int maxDamage) : base(maxMana, startMana)
+    {
+        MinDamage = minDamage;
+        MaxDamage = maxDamage;
+    }
+
     /// <summary>
     /// Empty GetDamage call returns random damage using min and max damage.
     /// </summary>
@@ -128,7 +139,7 @@ public class EnemyCharacterStats : CharacterStats
     public override int GetDamage()
     {
         //initial damage roll
-        int damage = UnityEngine.Random.Range(MinDamage, MaxDamage);
+        int damage = Random.Range(MinDamage, MaxDamage);
         if (onGetDmgFlat != null)
         {
             foreach (OnGetDamage getDamage in onGetDmgFlat.GetInvocationList().Cast<OnGetDamage>())
@@ -146,6 +157,7 @@ public class EnemyCharacterStats : CharacterStats
         }
         return damage;
     }
+    
 }
 public class WolfStats : EnemyCharacterStats
 {

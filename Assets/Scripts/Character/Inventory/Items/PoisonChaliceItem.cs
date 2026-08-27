@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -18,7 +19,7 @@ public class PoisonChaliceItem : BaseItem, IOnAttackItem, IUpgradableItem
 
     public void OnAttack(EnemyCharacter character, int damage)
     {
-        if(itemHolder.statusEffects.Count > 0)
+        if(itemHolder.statusEffects.OfType<IDebuff>().Any())
         {
             Poison p = new Poison(poisonSprite);
             for (int i = 0; i < stacksToApply; i++)

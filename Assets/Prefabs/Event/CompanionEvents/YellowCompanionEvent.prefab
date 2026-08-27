@@ -45,8 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OptionOutcomes: []
-  description: A place of worship, guarded by mothelves, we approach asking for aid,
-    and a friendly acolyte offers their assistance.
+  description: A hopeful friend wants to join your party.
   eventName: Temple of the Sun
   buttonPrefab: {fileID: 4475252590323969463, guid: 9582e7b4bca7cfd46844cd04d777580a, type: 3}
   rewardIndex: 6

@@ -1,7 +1,9 @@
 ﻿using NUnit.Framework;
+using Palmmedia.ReportGenerator.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class Enhancement
@@ -9,6 +11,16 @@ public abstract class Enhancement
     protected Sprite sprite;
     protected ManaType type;
     protected List<BaseCharacter> targets;
+    protected string name;
+    protected string desc;
+    public void SetName(string s)
+    {
+        name = s;
+    }
+    public string GetName()
+    {
+        return name;
+    }
     public ManaType GetManaType()
     {
         return type;
@@ -25,13 +37,31 @@ public abstract class Enhancement
     {
         this.sprite = sprite;
     }
+    private string ListTargets()
+    {
+        string s = "";
+        if (targets.Count == 1)
+        {
+            s = targets[0].GetCharacterName();
+        }
+        else
+        {
+            foreach (BaseCharacter c in targets)
+            {
+                s += $"{c.GetCharacterName()},";
+            }
+            char[] trimChars = { ',', ' ' };
+            s = s.Trim(trimChars);
+        }
+        return s;
+    }
     public virtual void ApplyEnhancementEffect()
     {
-
+        CombatLog.Instance.AmendTextToLog($"Applied {name} enhancements effect to {ListTargets()}.");
     }
     public virtual void RemoveEnhancementEffect()
     {
-
+        CombatLog.Instance.AmendTextToLog($"Removed {name} enhancements effect to {ListTargets()}.");
     }
     public void SetTargets(List<BaseCharacter> characters)
     {
@@ -48,11 +78,12 @@ public abstract class Enhancement
             }
         }
     }
-    public Enhancement(Sprite sprite,ManaType type)
+    public Enhancement(Sprite sprite,ManaType type,string name)
     {
         SetSprite(sprite);
         SetType(type);
         SetTargets(Party.Instance.members);
+        SetName(name);
     }
 }
 public interface IOnClearAdd
@@ -92,7 +123,9 @@ public static class EnhancementHandler
     }
     private static Enhancement GetEnhancement()
     {
-        return Enhancements.Dequeue();
+        Enhancement e = Enhancements.Dequeue();
+        Match3Skin.Instance.enhanceQueueDisplay.UpdateDisplay();
+        return e;
     }
     /// <summary>
     /// Randomly return an enhancement, with escalating chance.
@@ -121,7 +154,7 @@ public static class EnhancementHandler
     }
     public static Enhancement[] enhancePool = new Enhancement[]
         {
-            new DmgEnhance(GameResources.Instance.enhancementSprites[0],ManaType.None,1),
+            new DmgEnhance(GameResources.Instance.enhancementSprites[0],ManaType.None,"Damage",1),
 
         };
 }

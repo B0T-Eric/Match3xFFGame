@@ -45,9 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OptionOutcomes: []
-  description: Upon entering what seems to be a run down blacksmith's house you come
-    across the owner, a warhammer wielding bricked up bloke with a friendly face,
-    upon sharing stories, he asks to join you?
+  description: A hopeful friend wants to join your party.
   eventName: Abandoned Smiths House
   buttonPrefab: {fileID: 4475252590323969463, guid: 9582e7b4bca7cfd46844cd04d777580a, type: 3}
   rewardIndex: 4

@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3bdb8a816f3134caab393d937c0108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StageText: {fileID: 0}
+  StageText: {fileID: 397013889}
 --- !u!1 &31649266
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,7 +397,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: 
+  Tooltip: 'The order of your party members matters;
+
+    To change this, simply
+    drag and drop between the 4 slots below.'
 --- !u!114 &32949586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,7 +490,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: 
+  Tooltip: Lower enemy health & damage scaling.
 --- !u!114 &41650005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1144,9 +1147,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.9254902, b: 0.3764706, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0, g: 1, b: 0.16342616, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3814,7 +3817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: 
+  Tooltip: Slightly increases enemy damage & health scaling.
 --- !u!1 &564678693
 GameObject:
   m_ObjectHideFlags: 0
@@ -4928,7 +4931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3bdb8a816f3134caab393d937c0108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StageText: {fileID: 0}
+  StageText: {fileID: 709207064}
 --- !u!1 &709207062
 GameObject:
   m_ObjectHideFlags: 0
@@ -5332,7 +5335,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: 
+  Tooltip: 'To cycle through character descriptions;
+
+    Use the buttons on the
+    left of this panel.
+
+    To change character;
+
+    Use the circle buttons at
+    the bottom of the screen.'
 --- !u!114 &733054487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6817,9 +6828,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.9254902, b: 0.3764706, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0, g: 1, b: 0.16342616, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -9460,7 +9471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5462e7d7ec836e9499cb85afa1481f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tooltip: 
+  Tooltip: Default enemy health & damage.
 --- !u!1 &1426581260
 GameObject:
   m_ObjectHideFlags: 0
@@ -10368,8 +10379,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -10384,7 +10395,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -11530,9 +11541,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.9254902, b: 0.3764706, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0, g: 1, b: 0.16342616, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -12696,9 +12707,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.9254902, b: 0.3764706, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0, g: 1, b: 0.16342616, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1

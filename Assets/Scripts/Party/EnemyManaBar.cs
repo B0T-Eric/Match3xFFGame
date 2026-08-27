@@ -13,7 +13,7 @@ public class EnemyManaBar : ManaBar
         UpdateHealthBar(e);
     }
     public override void UpdateHealthBar(EnemyCharacter e)
-    {
+     {
         SetMana(e.stats.CurrentMana);
         SetManaText(e.stats.CurrentMana, manaText.text, e.stats.MaxMana);
     }

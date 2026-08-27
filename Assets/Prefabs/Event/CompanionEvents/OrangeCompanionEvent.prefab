@@ -45,8 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OptionOutcomes: []
-  description: At the site of a fallen star lay a woman with eyes as firey as the
-    sun itself, however she was badly injured, should we help her?
+  description: A hopeful friend wants to join your party.
   eventName: A fallen star
   buttonPrefab: {fileID: 4475252590323969463, guid: 9582e7b4bca7cfd46844cd04d777580a, type: 3}
   rewardIndex: 2

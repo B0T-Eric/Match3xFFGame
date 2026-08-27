@@ -45,8 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OptionOutcomes: []
-  description: A charming lady who lives with her ferrets offer us a helping hand,
-    do we bring her along for the journey?
+  description: A hopeful friend wants to join your party.
   eventName: Druid Grove
   buttonPrefab: {fileID: 4475252590323969463, guid: 9582e7b4bca7cfd46844cd04d777580a, type: 3}
   rewardIndex: 1

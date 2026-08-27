@@ -223,6 +223,7 @@ MonoBehaviour:
   rewardSprite: {fileID: 2462764834935059785}
   endCombatScreen: {fileID: 0}
   button: {fileID: 0}
+  selected: 0
 --- !u!114 &2159506212756222081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -881,6 +882,7 @@ MonoBehaviour:
   rewardSprite: {fileID: 8895142591959007663}
   endCombatScreen: {fileID: 0}
   button: {fileID: 0}
+  selected: 0
 --- !u!114 &3144161281037746115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1255,14 +1257,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -260616568, guid: e1d71c7dd6ff35747afb21f6fcb87173, type: 3}
+  m_Sprite: {fileID: -1301647911, guid: e1d71c7dd6ff35747afb21f6fcb87173, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1756,6 +1758,7 @@ MonoBehaviour:
   rewardSprite: {fileID: 278267001532459498}
   endCombatScreen: {fileID: 0}
   button: {fileID: 0}
+  selected: 0
 --- !u!114 &2753785952172930501
 MonoBehaviour:
   m_ObjectHideFlags: 0

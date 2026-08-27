@@ -17,6 +17,8 @@ public class Tile : MonoBehaviour
     FallingState falling;
     [SerializeField]
     SpriteRenderer enhancementRenderer;
+    [SerializeField]
+    ManaType manaType;
     Enhancement enhancement;
     PrefabInstancePool<Tile> pool;
     float disappearProgress;
@@ -36,17 +38,15 @@ public class Tile : MonoBehaviour
             instance.enhancementRenderer.sprite = instance.enhancement.GetSprite();
             if (enhancement is IOnSpawnAdd)
             {
-                enhancement.ApplyEnhancementEffect();
+                instance.enhancement.ApplyEnhancementEffect();
             }
-            if (enhancement is IOnSpawnRemove)
+            if (instance.enhancement is IOnSpawnRemove)
             {
-                enhancement.RemoveEnhancementEffect();
+                instance.enhancement.RemoveEnhancementEffect();
             }
-        }
-        else
-        {
-            enhancementRenderer.gameObject.SetActive(false);
-        }
+            instance.enhancementRenderer.enabled = true;
+            Debug.Log($"Applied Enhancement to {instance.manaType} tile at {position.ToString()}");
+        }  
         return instance;
     }
     public void Despawn()

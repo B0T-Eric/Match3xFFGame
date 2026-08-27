@@ -12,12 +12,17 @@ public class EnhanceQueueDisplay : MonoBehaviour
     List<GameObject> displays = new List<GameObject>();
     public void UpdateDisplay()
     {
-        displays.Clear();
-        foreach(Enhancement e in EnhancementHandler.FetchAllEnhancements())
+        foreach(GameObject go in displays)
         {
-            GameObject obj = Instantiate(prefab, transform.position, Quaternion.identity);
+            Destroy(go);
+        }
+        displays.Clear();
+        foreach (Enhancement e in EnhancementHandler.FetchAllEnhancements())
+        {
+            GameObject obj = Instantiate(prefab);
             Image image = obj.GetComponent<Image>();
             image.sprite = e.GetSprite();
+            obj.transform.SetParent(transform);
             displays.Add(obj);
         }
     }

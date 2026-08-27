@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAction : MonoBehaviour
+public abstract class EnemyAction : MonoBehaviour
 {
     public Sprite sprite;
     public virtual void PreformAction(BaseCharacter target)

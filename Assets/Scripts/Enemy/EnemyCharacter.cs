@@ -14,6 +14,7 @@ public class EnemyCharacter : MonoBehaviour
     //all targets retrieved from parties.
     public List<BaseCharacter> targets;
     //enemy stats
+    [Header("Damage Stats")]
     [SerializeField]
     protected int maxDamage;
     [SerializeField]
@@ -75,12 +76,10 @@ public class EnemyCharacter : MonoBehaviour
     }
     protected virtual void InitializeStats()
     {
-        stats = new EnemyCharacterStats();
         statsSO.DetermineHealth();
-        stats.MaxMana = statsSO.maxMana;
-        stats.CurrentMana = statsSO.maxMana;
-        minDamage = Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
-        maxDamage = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
+        int min = Mathf.RoundToInt(minDamage * MapController.Instance.EnemyDamageModifier);
+        int max = Mathf.RoundToInt(maxDamage * MapController.Instance.EnemyDamageModifier);
+        stats = new EnemyCharacterStats(statsSO.maxMana, statsSO.maxMana,min,max);
         enemyName = statsSO.EnemyName;
     }   
     public virtual int GetDamage_Public()
@@ -181,7 +180,12 @@ public class EnemyCharacter : MonoBehaviour
     {
         if (!isStunned)
         {
-            if (actionIndex == enemyActions.Count)
+            if (enemyActions == null || enemyActions.Count == 0)
+            {
+                await Task.Delay(1000);
+                return true;
+            }
+            if (actionIndex >= enemyActions.Count)
             {
                 actionIndex = 0;
             }
@@ -198,13 +202,13 @@ public class EnemyCharacter : MonoBehaviour
     }
     protected virtual void HandleActions(EnemyAction action, int index)
     {
-        if (action is EnemyAttack)
+        if (action is EnemyAttack attack)
         {
-            action.PreformAction(this);
+            attack.PreformAction(this);
         }
-        else if (action is EnemyHeal)
+        else if (action is EnemyHeal heal)
         {
-            action.PreformAction(this);
+            heal.PreformAction(this);
         }
     }
     public virtual void Attack()
@@ -213,6 +217,16 @@ public class EnemyCharacter : MonoBehaviour
         {
             Attack(target);
         }
+    }
+    //Future change needed for how healing is handled.
+    public virtual void Heal(int amount)
+    {
+        stats.CurrentMana += amount;
+        if (stats.CurrentMana > stats.MaxMana)
+        {
+            stats.CurrentMana = stats.MaxMana;
+        }
+        manaBar.UpdateHealthBar(this);
     }
     public virtual void Attack(BaseCharacter c)
     {

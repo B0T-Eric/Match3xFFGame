@@ -14,6 +14,7 @@ public class DmgEnhance : Enhancement, IOnGetDamage, IOnClearRemove, IOnSpawnAdd
     }
     public override void ApplyEnhancementEffect()
     {
+        base.ApplyEnhancementEffect();
         foreach(BaseCharacter character in targets)
         {
             character.stats.onGetDmgFlat += GetDamage;
@@ -21,13 +22,14 @@ public class DmgEnhance : Enhancement, IOnGetDamage, IOnClearRemove, IOnSpawnAdd
     }
     public override void RemoveEnhancementEffect()
     {
+        base.RemoveEnhancementEffect();
         foreach (BaseCharacter character in targets)
         {
             character.stats.onGetDmgFlat -= GetDamage;
         }
     }
 
-    public DmgEnhance(Sprite sprite, ManaType type, int damage) : base(sprite,type)
+    public DmgEnhance(Sprite sprite, ManaType type, string name, int damage) : base(sprite,type,name)
     {
         SetDamage(damage);
     }

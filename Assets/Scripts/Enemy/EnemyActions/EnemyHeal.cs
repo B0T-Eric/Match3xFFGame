@@ -4,8 +4,8 @@ using UnityEngine;
 public class EnemyHeal : EnemyAction
 {
     public int HealAmount;
-    public override void PreformAction(BaseCharacter target)
+    public override void PreformAction(EnemyCharacter target)
     {
-        target.HealMana(HealAmount);
+        target.Heal(HealAmount);
     }
 }

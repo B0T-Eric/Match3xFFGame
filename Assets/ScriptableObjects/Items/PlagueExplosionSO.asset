@@ -18,6 +18,9 @@ MonoBehaviour:
   flatDamageIncrease: 0
   healingMult: 0
   damageReduction: 0
+  healFlat: 0
+  retainMult: 0
   itemImage: {fileID: 21300000, guid: ee3bf8a671129464eaa530ede9214366, type: 3}
   itemName: Plague Explosion
   ID: 10
+  Rarity: 2

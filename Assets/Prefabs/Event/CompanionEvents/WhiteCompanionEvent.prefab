@@ -45,8 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OptionOutcomes: []
-  description: In the centre of a clearing lays some human remains and a large porcelain
-    doll, do you take it?
+  description: A hopeful friend wants to join your party.
   eventName: A strange clearing
   buttonPrefab: {fileID: 4475252590323969463, guid: 9582e7b4bca7cfd46844cd04d777580a, type: 3}
   rewardIndex: 5

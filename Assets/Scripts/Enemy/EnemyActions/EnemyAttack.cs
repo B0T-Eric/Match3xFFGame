@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class EnemyAttack : EnemyAction
 {
-    public override void PreformAction(BaseCharacter target)
+    public override void PreformAction(EnemyCharacter enemyCharacter)
     {
-        target.display.AttackTrue();
+        enemyCharacter.display.AttackTrue();
     }
 }

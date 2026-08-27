@@ -15,12 +15,14 @@ public class RestManager : MonoBehaviour
     [SerializeField]
     GameObject selectCharObj;
     List<GameObject> charObjects = new List<GameObject>();
+    [SerializeField]
+    Transform container;
     private void Start()
     {
         continueButton.enabled = false;
         foreach (BaseCharacter character in Party.Instance.members)
         {
-            GameObject rcObj = Instantiate(selectCharObj,transform,false);
+            GameObject rcObj = Instantiate(selectCharObj,container.transform,false);
             charObjects.Add(rcObj);
             RestCharacter rc = rcObj.GetComponent<RestCharacter>();
             rc.DisplayCharacter(character);

@@ -15,7 +15,7 @@ public class Match3Skin : MonoBehaviour
     float dragThreshold = 0.5f;
 
     [SerializeField]
-    TextMeshProUGUI gameOverText;
+    GameObject gameOverText;
 
     [SerializeField]
     GameObject container;
@@ -68,7 +68,7 @@ public class Match3Skin : MonoBehaviour
     public void StartNewGame()
     {
         StartCombat();
-        gameOverText.gameObject.SetActive(false);
+        gameOverText.SetActive(false);
         this.gameObject.SetActive(true);
         game.StartNewGame();
         tileOffset = -0.5f * (float2)(game.Size - 1);
@@ -102,7 +102,7 @@ public class Match3Skin : MonoBehaviour
         }
     }
     [SerializeField]
-    EnhanceQueueDisplay enhanceQueueDisplay;
+    public EnhanceQueueDisplay enhanceQueueDisplay;
     private void StartCombat()
     {
 
@@ -299,6 +299,7 @@ public class Match3Skin : MonoBehaviour
     }
     private void Victory()
     {
+        movesObject.SetActive(false);
         //turn off game, display reward screen
         foreach(BaseCharacter bc in Party.Instance.members)
         {
