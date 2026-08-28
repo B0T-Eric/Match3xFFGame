@@ -202,17 +202,19 @@ public class PlayerCharacterStats : CharacterStats
     public override int GetDamage(int potential)
     {
         int damage = potential;
+        int itemDamage = 0;
         foreach (BaseItem item in Items)
         {
             if (item.itemSO.flatDamageIncrease > 0)
             {
-                damage += item.itemSO.flatDamageIncrease;
+                itemDamage += item.itemSO.flatDamageIncrease;
             }
             if (item.itemSO.damageMult > 0)
             {
-                damage = (int)(damage * item.itemSO.damageMult);
+                itemDamage = Mathf.RoundToInt(damage * item.itemSO.damageMult);
             }
         }
+        damage += itemDamage;
         if (onGetDmgFlat != null)
         {
             foreach (OnGetDamage getDamage in onGetDmgFlat.GetInvocationList().Cast<OnGetDamage>())
@@ -425,7 +427,7 @@ public class BlueStats : PlayerCharacterStats
     }
     public override int GetDamage(int potential)
     {
-        int damage = base.GetDamage();
+        int damage = base.GetDamage(potential);
         int debuffCount = EnemyCharacter.Instance.statusEffects.Where(status => status is IDebuff).Count();
         //increase damage by amount of debuffs on the character;
         if (debuffCount > 0)

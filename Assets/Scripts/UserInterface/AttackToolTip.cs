@@ -12,7 +12,7 @@ public class AttackToolTip : ToolTip
     private void Update()
     {
         Tooltip = $"<color=red>Attack Stats</color>\n" +
-            $"Attack damage = {character.stats.GetDamage()}." +
+            $"Attack damage = {character.stats.GetDamage(character.potential)}." +
             $"\nAttack damage formula = (potential + flat damage * damage multiplier.";
     }
 }

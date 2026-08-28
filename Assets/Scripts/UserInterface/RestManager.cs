@@ -73,6 +73,7 @@ public class RestManager : MonoBehaviour
         healButton.gameObject.SetActive(false);
         singleButton.gameObject.SetActive(false);
         continueButton.enabled = true;
+        HoverToolTip.HideTootTip_Static();
     }
     public void SelectCharacter(BaseCharacter c)
     {

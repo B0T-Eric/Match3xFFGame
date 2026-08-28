@@ -14,6 +14,7 @@ public class InGameCharacterDisplay : MonoBehaviour
     [SerializeField]
     protected SpriteRenderer characterRender;
     protected Animator animator;
+    [SerializeField]
     SpriteRenderer companionRender;
     public virtual void DisplayCharacter(BaseCharacter c)
     {

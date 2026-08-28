@@ -5270,7 +5270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusDisplay: {fileID: 0}
-  statusDisplayUI: {fileID: 0}
+  statusDisplayUI: {fileID: 4135935120684652481, guid: 8d5ee2e06dc989c468a3715d2f86e5c1, type: 3}
 --- !u!114 &729380342
 MonoBehaviour:
   m_ObjectHideFlags: 0

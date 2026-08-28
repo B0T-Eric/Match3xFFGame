@@ -31,11 +31,11 @@ public class ManaBar : MonoBehaviour
     public void UpdateHealthBar(BaseCharacter c)
     {
         SetMana(c.stats.CurrentMana);
-        SetManaText(c.stats.CurrentMana, manaText.text, character.stats.MaxMana);
+        SetManaText(c.stats.CurrentMana, manaText, character.stats.MaxMana);
     }
-    protected void SetManaText(int mana, string text, int maxMana)
+    protected void SetManaText(int mana, TextMeshProUGUI text, int maxMana)
     {
-            text = $"{mana} / {maxMana}";
+            text.text = $"{mana} / {maxMana}";
     }
     protected virtual void SetMana(float mana)
     {

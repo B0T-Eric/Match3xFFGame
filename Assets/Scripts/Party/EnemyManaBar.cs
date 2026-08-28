@@ -10,12 +10,13 @@ public class EnemyManaBar : ManaBar
     public void InitEnemy(EnemyCharacter e)
     {
         enemy = e;
-        UpdateHealthBar(e);
+        manaText.text = "init";
+        UpdateHealthBar(enemy);
     }
     public override void UpdateHealthBar(EnemyCharacter e)
      {
         SetMana(e.stats.CurrentMana);
-        SetManaText(e.stats.CurrentMana, manaText.text, e.stats.MaxMana);
+        SetManaText(e.stats.CurrentMana, manaText, e.stats.MaxMana);
     }
     protected override void SetMana(float mana)
     {

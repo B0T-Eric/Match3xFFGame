@@ -29,6 +29,16 @@ public class GameResources : MonoBehaviour
     {
         //poison catalyst and plague = plague explosion
         MergeItemRecipes.Add((3, 9), 10);
+        //2 pages -> scrolls
+        MergeItemRecipes.Add((11, 11), 15);
+        MergeItemRecipes.Add((12, 12), 16);
+        MergeItemRecipes.Add((13, 13), 17);
+        MergeItemRecipes.Add((14, 14), 18);
+        //2 scrolls -> books
+        MergeItemRecipes.Add((15, 15), 19);
+        MergeItemRecipes.Add((16, 16), 20);
+        MergeItemRecipes.Add((17, 17), 21);
+        MergeItemRecipes.Add((18, 18), 22);
     }
     public GameObject GetRandomItem()
     {
