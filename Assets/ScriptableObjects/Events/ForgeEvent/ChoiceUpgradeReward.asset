@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rewardSprite: {fileID: 0}
   OptionSelectText: Select Items to upgrade.
+  IsRandom: 0
+  UpgradeUses: 2

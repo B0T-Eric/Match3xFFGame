@@ -5,7 +5,14 @@ using UnityEngine;
 public class UpgradeEventReward : BaseEventReward
 {
     public bool IsRandom;
+    private bool isRandom;
     public int UpgradeUses;
+    private int upgradeUses;
+    private void OnEnable()
+    {
+        isRandom = IsRandom;
+        upgradeUses = UpgradeUses;
+    }
     public void UpgradeRandomItems(List<IUpgradableItem> items, int damage)
     {
         foreach (IUpgradableItem item in items)
@@ -19,19 +26,19 @@ public class UpgradeEventReward : BaseEventReward
     }
     public void UpgradeItem(IUpgradableItem item, int damage, BaseEvent parent)
     {
-        if(UpgradeUses == 0)
+        if(upgradeUses == 0)
         {
             parent.ToggleButtons();
         }
         else
         {
             item.Upgrade();
-            int copyUses = UpgradeUses;
-            UpgradeUses--;
             foreach (BaseCharacter c in Party.Instance.members)
             {
-                c.LoseMana(damage + (copyUses - UpgradeUses));
+                //private modifiable upgrade uses minus the max/starting upgrade uses + base damage = resulting damage taken.
+                c.LoseMana(damage + (upgradeUses - UpgradeUses));
             }
+            upgradeUses--;
             Debug.Log($"Successful upgrade of {item}");
         }
         

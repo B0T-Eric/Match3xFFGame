@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +14,7 @@ public class MapScrollhandler : MonoBehaviour
     void Start()
     {
         int rooms = RunSettings.GetMapSize();
-        maxY = (rooms * 48 );
+        maxY = (rooms * 64 );
         scrollRectTransform = scrollContent.GetComponent<RectTransform>();
         scrollRect.onValueChanged.AddListener(HeightLimiter);
     }

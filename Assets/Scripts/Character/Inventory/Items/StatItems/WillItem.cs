@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class WillItem : BaseItem
+public class WillItem : BaseItem, ICombinableItem
 {
 
     public override string GetEffectDesc()

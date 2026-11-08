@@ -42,6 +42,7 @@ public class ContinueClick : MonoBehaviour
         if (MapController.Instance.currentLocation.ItemType == MapItem.Boss) //this should check for if the navigation item type is a Boss.
         {
             MapController.Instance.DefeatBoss();
+            Application.Quit();
         }
         SceneManager.LoadScene("NavigationScene");
 

@@ -229,7 +229,11 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         if (state != CharacterState.Dead && stats.CurrentMana > 0)
         {
-            display.DefendTrue();
+            if(display != null)
+            {
+                display.DefendTrue();
+            }
+            
             int baseResist = turnState == TurnState.Retain ? 5 : 0;
             amount -= stats.GetResist(baseResist);
             amount = Mathf.Max(amount, 0);

@@ -53,13 +53,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statsSO: {fileID: 11400000, guid: b6811223b03184c42a216f2dea95472d, type: 2}
-  currentMana: 0
-  maxMana: 0
   potential: 0
   nextTurnPotential: 0
-  retainMultiplier: 0
   manaType: 2
-  damageTaken: 0
   state: 0
   turnState: 0
   isStunned: 0
@@ -78,13 +74,14 @@ MonoBehaviour:
   inventorySlots: []
   abilityButton: {fileID: 0}
   turnStateButton: {fileID: 0}
-  items: []
   companion: {fileID: 0}
   characterDescription: {fileID: 6403115736728953652}
   Ability: {fileID: 4782915181954209240}
   attacks:
   - {fileID: 7314730946404048180}
   selectedAttack: 0
+  potentialReduction: 0.66
+  potentialIncrease: 1.33
   spec: {fileID: 4031470902583298094}
 --- !u!114 &7314730946404048180
 MonoBehaviour:
@@ -113,7 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passiveIcons:
-  - {fileID: 21300000, guid: 6708ba7235c11524c9c5b7bd546399e9, type: 3}
+  - {fileID: 21300000, guid: 5fd8dda420c54e84285244c81f94c208, type: 3}
   - {fileID: -1156505173, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
   - {fileID: 360038554, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
   - {fileID: -1263489021, guid: 7f6be44ac3288e841bcc58d93d785988, type: 3}
@@ -143,6 +140,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a55e2c5cd292cdb41bc06d4c327bd2a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cooldownText: {fileID: 0}
+  costText: {fileID: 0}
   abilityCooldown: 3
   cost: 12
   character: {fileID: 6580062804281725069}

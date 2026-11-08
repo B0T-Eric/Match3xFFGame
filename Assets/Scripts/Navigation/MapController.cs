@@ -92,7 +92,7 @@ public class MapController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.B))
         {
-            await SceneManager.LoadSceneAsync("BossScene");
+            
         }
     }
     public GameObject GetRandomBoss()
@@ -398,10 +398,83 @@ public class MapController : MonoBehaviour
     }
     public void BossRoomClear()
     {
-        FlipDirection();
-        ReplaceStart();
+        //FlipDirection();
+        //ReplaceStart();
+        RegenerateMapKeepingPlayerAsStart();
         BossDefeated = false;
         StartCoroutine(DelayedUI());
+    }
+    private void RegenerateMapKeepingPlayerAsStart()
+    {
+        if (currentLocation == null)
+            return;
+
+        NavigationItem startItem = currentLocation;
+        GameObject startGO = startItem.gameObject;
+
+        // Destroy all other map GameObjects (preserve the current boss tile)
+        for (int r = 0; r < rows; r++)
+        {
+            if (navGrid == null || navGrid[r] == null) continue;
+            for (int c = 0; c < cols; c++)
+            {
+                GameObject g = navGrid[r][c];
+                if (g != null && g != startGO)
+                {
+                    // safe remove - let Unity cleanup
+                    Destroy(g);
+                }
+            }
+        }
+
+        // Recreate the navGrid structure
+        navGrid = new GameObject[rows][];
+        for (int r = 0; r < rows; r++)
+        {
+            navGrid[r] = new GameObject[cols];
+        }
+
+        int center = cols / 2;
+
+        // Place the preserved boss tile as the new start tile (row 0, centered).
+        navGrid[0][center] = startGO;
+
+        // Update the preserved item to be the start tile (cleared) with no encounter.
+        startItem.RowNumber = 0;
+        startItem.ColumnIndex = center;
+        startItem.PlayerIsHere = true;
+        startItem.SetCleared(true);
+        startItem.ItemType = MapItem.Normal;
+        startItem.SetEnemy(null);
+
+        // Re-populate enemy lists and generate the rest of the rows.
+        // Note: InitializeMapItem is used when creating new tiles; preserved start already exists.
+        for (int r = 1; r < rows; r++)
+        {
+            PopulateEnemiesPerRow(r);
+            if (r > 1 && r < rows - 2)
+            {
+                int roomsToPlace = Random.Range(2, 5);
+                navGrid[r] = PopulateRow(cols, roomsToPlace, r);
+            }
+            else if (r == rows - 1)
+            {
+                navGrid[r][center] = GetMapItem(MapItem.Boss, r, center);
+            }
+            else // row after start and before boss must spawn 2
+            {
+                navGrid[r] = GetLayouts(2, r, cols);
+            }
+        }
+
+        // Recompute connections for the preserved start now that neighbors exist.
+        startItem.MakeConnections(ref navGrid);
+
+        // Clean-up any disconnected items (same logic as initial generation).
+        RemoveDisconnectedItems();
+
+        // Ensure currentLocation references the preserved start item.
+        currentLocation = startItem;
     }
     private void FlipDirection()
     {

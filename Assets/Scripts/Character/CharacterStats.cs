@@ -202,19 +202,18 @@ public class PlayerCharacterStats : CharacterStats
     public override int GetDamage(int potential)
     {
         int damage = potential;
-        int itemDamage = 0;
+        float damageMult = 0;
         foreach (BaseItem item in Items)
         {
             if (item.itemSO.flatDamageIncrease > 0)
             {
-                itemDamage += item.itemSO.flatDamageIncrease;
+                damage += item.itemSO.flatDamageIncrease;
             }
             if (item.itemSO.damageMult > 0)
             {
-                itemDamage = Mathf.RoundToInt(damage * item.itemSO.damageMult);
+                damageMult += item.itemSO.damageMult;
             }
         }
-        damage += itemDamage;
         if (onGetDmgFlat != null)
         {
             foreach (OnGetDamage getDamage in onGetDmgFlat.GetInvocationList().Cast<OnGetDamage>())
@@ -428,26 +427,30 @@ public class BlueStats : PlayerCharacterStats
     public override int GetDamage(int potential)
     {
         int damage = base.GetDamage(potential);
-        int debuffCount = EnemyCharacter.Instance.statusEffects.Where(status => status is IDebuff).Count();
-        //increase damage by amount of debuffs on the character;
-        if (debuffCount > 0)
+        if (EnemyCharacter.Instance != null)
         {
-            int percentIncrease = Mathf.RoundToInt(damage * (MultAmp * debuffCount));
-            int flatIncrease = damage + (debuffCount * FlatAmp);
-            //when third passive is active increase the total damage gained from debuffs by 25%;
-            if (IsPassiveThreeActive)
+
+            int debuffCount = EnemyCharacter.Instance.statusEffects.Where(status => status is IDebuff).Count();
+            //increase damage by amount of debuffs on the character;
+            if (debuffCount > 0)
             {
-                percentIncrease = Mathf.RoundToInt(percentIncrease * p3Amp);
-                flatIncrease = Mathf.RoundToInt(flatIncrease * p3Amp);
-            }
-            //pick the higher value to increase damage by.
-            if (flatIncrease > percentIncrease)
-            {
-                damage += flatIncrease;
-            }
-            else
-            {
-                damage += percentIncrease;
+                int percentIncrease = Mathf.RoundToInt(damage * (MultAmp * debuffCount));
+                int flatIncrease = damage + (debuffCount * FlatAmp);
+                //when third passive is active increase the total damage gained from debuffs by 25%;
+                if (IsPassiveThreeActive)
+                {
+                    percentIncrease = Mathf.RoundToInt(percentIncrease * p3Amp);
+                    flatIncrease = Mathf.RoundToInt(flatIncrease * p3Amp);
+                }
+                //pick the higher value to increase damage by.
+                if (flatIncrease > percentIncrease)
+                {
+                    damage += flatIncrease;
+                }
+                else
+                {
+                    damage += percentIncrease;
+                }
             }
         }
         return damage;

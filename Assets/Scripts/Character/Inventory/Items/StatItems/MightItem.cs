@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-public class MightItem : BaseItem
+public class MightItem : BaseItem, ICombinableItem
 {
 
     public override string GetEffectDesc()
